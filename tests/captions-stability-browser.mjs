@@ -160,13 +160,13 @@ try {
   await page.evaluate(() => stream(6,10,'일본어로 바뀐 번역',false,'ja'));
   await page.clock.runFor(180);
   assert.equal(await page.evaluate(() => read()), '일본어로 바뀐 번역', 'A language correction must not hold the old-language stream');
-  await page.evaluate(() => { overlay.clear(); stream(1,1,'이미 읽은 앞 문장입니다. '.repeat(20)+'마지막 내용',true); });
+  await page.evaluate(() => { overlay.clear(); stream(1,1,`${'이미 읽은 앞 문장입니다. '.repeat(20)}마지막 내용`,true); });
   await page.clock.runFor(6000);
   const readPart = await page.evaluate(() => read());
   await page.evaluate(() => stream(2,2,'이미'));
   await page.clock.runFor(180);
   assert.equal(await page.evaluate(() => read()),readPart,'A regenerated prefix must preserve the current two-line reading part');
-  await page.evaluate(() => stream(2,3,'이미 읽은 앞 문장입니다. '.repeat(20)+'교정한 내용',true));
+  await page.evaluate(() => stream(2,3,`${'이미 읽은 앞 문장입니다. '.repeat(20)}교정한 내용`,true));
   await page.clock.runFor(180);
   assert.equal(await page.evaluate(() => read()),readPart,'An unread tail correction must not replay a read prefix');
   await page.setViewportSize({width:320,height:520});
