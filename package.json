@@ -19,7 +19,7 @@
     "test:conversation:ja:live": "node tests/framework-chrome-tab-engine.mjs --japanese-conversation",
     "test:captions-stability": "node tests/captions-stability-browser.mjs",
     "test:conversation": "python3 -m http.server 8790 --bind 127.0.0.1 --directory tests/fixtures/conversation",
-    "dev": "vite build --config vite.chrome.config.ts --watch",
+    "dev": "node scripts/dev-chrome.mjs",
     "build": "vite build --config vite.chrome.config.ts",
     "lint": "biome lint apps/chrome packages tests scripts vite.config.ts vite.chrome.config.ts",
     "test": "npm run test:js && npm run test:captions-stability",

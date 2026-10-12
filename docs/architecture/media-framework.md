@@ -33,6 +33,12 @@ Whisper normally re-decodes after roughly one second of new PCM and publishes th
 
 If a snapshot removes the unfinished successor or returns no uncommitted text, withdraw its draft and release its identity before trimming or starting the next turn. A final empty/filler-only correction in the translation queue likewise withdraws a previously accepted provisional source rather than silently filtering its finalization. Queued translations are removed and in-flight replies are rejected by exact revision/withdrawal checks. An orphaned provisional head must not block the retirement of every later completed row.
 
+## Local development
+
+Local development uses `scripts/dev-chrome.mjs`: a Vite build watcher writes only `.ralph/dev/extension`, a loopback fixture server owns port 8790, and an owned Chrome for Testing profile loads the extension. The browser's official local components reuse the existing harness cache; extension settings/model caches remain in the dev profile. This adds no shipping runtime or external service. Shutdown closes only these owned resources and keeps cached models; extension reload after rebuild is manual.
+
+Custom launch arguments bypass Playwright's default startup-page wait. The launcher explicitly waits for Chrome's initial blank page before navigating it, then closes other restored pages in its own context. Startup leaves one conversation tab/window and does not open extension management automatically. The launcher owns SIGINT/SIGTERM cleanup to avoid racing Playwright's process-exit handlers.
+
 ## Models
 
 With Chrome defaults, manual English and Japanese share Chrome's on-device streaming path. Interim results publish after a 180 ms coalescing gate; native finals bypass it. Native results can accumulate several turns before reporting final. A span closed by the existing measured audio pause finalizes when its previously published text is unchanged in a subsequent result; the last open span stays provisional. Later native corrections retain the span ID and increase its revision. The existing revision pipeline shows drafts before translation and preserves paired translations while corrections are pending. WebGPU availability does not override a supported native speech API. Unsupported native speech uses the Whisper fallback.

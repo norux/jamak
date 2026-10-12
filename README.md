@@ -54,7 +54,7 @@ With Chrome defaults, automatic mode requires WebGPU and prepares Whisper Turbo 
 Node.js **22.12+** is required.
 
 ```sh
-npm run dev       # Watch and rebuild the extension; reload it in Chrome
+npm run dev       # Watch builds, serve fixtures and open isolated Chrome for Testing
 npm run verify    # Lint, types, build, unit tests and caption display checks
 npm run test:conversation # Serve English (~58 s) and Japanese (~76 s) conversations
 ```
@@ -62,6 +62,8 @@ npm run test:conversation # Serve English (~58 s) and Japanese (~76 s) conversat
 The conversation player opens at `http://127.0.0.1:8790`; select Japanese with the page link or `?language=ja`. Both fixtures contain eight distinct turns and two synthetic voices. Real model and tab-capture checks are documented in [Testing](docs/testing.md).
 
 `npm test` runs the unit/fixture suite and caption display checks. For a focused unit test, use `node --import tsx --test tests/<name>.test.ts`; individual browser checks run directly with `node tests/<name>.mjs`. The former `test:framework:*` aliases are removed; their individual test files remain available.
+
+`npm run dev` requires Playwright's browser (`npx playwright install chromium`). It automatically loads the extension in Chrome for Testing and opens one window with only the Japanese conversation tab. Startup waits for Chrome’s first page and closes other restored tabs/windows in this owned test profile. Use Jamak on the conversation tab, then play the audio. Development builds and the persistent test profile live in `.ralph/dev/extension` and `.ralph/dev/chrome-profile`, separate from `apps/chrome/dist` and your normal Chrome profile. Chrome may download its local language packs on first startup. After a rebuild, open `chrome://extensions` in the test browser and reload the extension; Vite configuration changes require restarting the command. Ctrl+C or closing the test browser stops the watcher and fixture server, retaining downloaded models and test settings. Port 8790 must be free; stop a separately running `npm run test:conversation` first. Use the test profile without account synchronization to keep it isolated.
 
 See [Architecture](docs/architecture/media-framework.md), [Coding conventions](docs/coding-conventions.md), and [AGENTS.md](AGENTS.md) before contributing. Feature changes must keep code and these documents consistent.
 
