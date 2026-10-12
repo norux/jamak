@@ -154,6 +154,7 @@ export function createPresentationPolicy(initial: SessionIdentity, clock: Presen
         paint(entry, caption, true);
       } else {
         const immediate = event.type === "speaker" || caption.source.speakerId !== entry.caption.source.speakerId || finalPair(caption)
+          || caption.translation.state === "paired" && caption.translation.revision.final
           || (caption.source.final && caption.source.sourceRevision !== entry.caption.source.sourceRevision)
           || (entry.caption.translation.state === "pending" && caption.translation.state === "paired");
         if (!immediate && clock.now() - entry.updatedAt < draftUpdateMs) entry.pending = caption;

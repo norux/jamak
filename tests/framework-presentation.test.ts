@@ -101,6 +101,27 @@ test("streaming overlay corrections coalesce within 180ms instead of waiting one
   if (event?.type === "update") assert.equal(event.caption.source.sourceRevision, 3);
 });
 
+test("completed translation flushes before the next provisional source can replace its queued paint", () => {
+  const h = harness(180); const first = caption(); h.accept(first);
+  h.runFor(20);
+  assert.equal(first.translation.state, "paired");
+  if (first.translation.state !== "paired") return;
+  h.policy.accept({ type: "translation", revision: { ...first.translation.revision, translationRevision: 2, text: "교정 중" } });
+  h.runFor(20);
+  h.policy.accept({ type: "translation", revision: { ...first.translation.revision,
+    translationRevision: 3, text: "교정된 전체 문장", final: true } });
+  const completed = h.events.at(-1);
+  assert.equal(completed?.at, 40, "Generation completion must not remain queued behind the draft cadence");
+  assert.equal(completed?.event.type, "update");
+  if (completed?.event.type === "update") {
+    assert.equal(completed.event.caption.source.final, false);
+    assert.equal(completed.event.caption.translation.state === "paired" ? completed.event.caption.translation.revision.text : undefined, "교정된 전체 문장");
+  }
+  h.policy.accept({ type: "transcript", revision: caption(2).source });
+  h.runFor(180);
+  assert.equal(h.events.at(-1), completed, "The next source must retain the completed text while its translation is pending");
+});
+
 test("pending source paints immediately and source final alone cannot initiate translation replay", () => {
   const h = harness();
   const c = caption();

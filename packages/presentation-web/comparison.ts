@@ -28,7 +28,9 @@ export function createComparisonView(container: HTMLElement, timeBasis: "video" 
   host.append(style, status, stack, table); container.append(host);
   const rows = new Map<string, HTMLTableRowElement>();
   const listeners = new Set<(progress: DisplayProgress) => void>();
-  const entries: { caption: CaptionRevision; offset: number; end: number; partIndex: number; fading: boolean; displayedText: string; holdingTranslation: boolean; cue: HTMLDivElement; text: HTMLSpanElement; measure: HTMLSpanElement }[] = [];
+  const entries: { caption: CaptionRevision; offset: number; end: number; partIndex: number; fading: boolean; displayedText: string;
+    translationSource?: { revision: number; language: string }; replacementText?: string; holdingTranslation: boolean;
+    cue: HTMLDivElement; text: HTMLSpanElement; content: Text; measure: HTMLSpanElement }[] = [];
   let identity: SessionIdentity | undefined;
   let disposed = false;
 
@@ -39,7 +41,7 @@ export function createComparisonView(container: HTMLElement, timeBasis: "video" 
   function layout() {
     if (disposed) return;
     for (const entry of entries) {
-      const { cue, text, measure } = entry;
+      const { cue, content, measure } = entry;
       cue.style.opacity = entry.fading ? "0" : "1";
       const characters = Array.from(entry.displayedText.trim());
       let low = Math.min(entry.offset + 1, characters.length); let high = characters.length;
@@ -54,7 +56,15 @@ export function createComparisonView(container: HTMLElement, timeBasis: "video" 
       cue.dataset.utteranceId = entry.caption.source.utteranceId;
       entry.end = low;
       const displayedText = characters.slice(entry.offset, low).join("");
-      if (text.textContent !== displayedText) text.textContent = displayedText;
+      if (content.data !== displayedText) {
+        const previous = content.data;
+        let prefix = 0;
+        while (prefix < previous.length && prefix < displayedText.length && previous[prefix] === displayedText[prefix]) prefix++;
+        let suffix = 0;
+        while (suffix < previous.length - prefix && suffix < displayedText.length - prefix
+          && previous[previous.length - suffix - 1] === displayedText[displayedText.length - suffix - 1]) suffix++;
+        content.replaceData(prefix, previous.length - prefix - suffix, displayedText.slice(prefix, displayedText.length - suffix));
+      }
       measure.textContent = "";
     }
     const bounds = stack.getBoundingClientRect();
@@ -89,24 +99,36 @@ export function createComparisonView(container: HTMLElement, timeBasis: "video" 
       if (!entry) {
         const cue = document.createElement("div"); cue.className = "interpreter-live";
         const text = document.createElement("span");
+        const content = document.createTextNode(""); text.append(content);
         const measure = document.createElement("span"); measure.className = "interpreter-measure"; measure.setAttribute("aria-hidden", "true");
         cue.append(text, measure); stack.append(cue);
         entry = { caption: event.caption, offset: 0, end: 0, partIndex: 0, fading: false,
-          displayedText: event.caption.source.text, holdingTranslation: false, cue, text, measure }; entries.push(entry);
+          displayedText: event.caption.source.text, holdingTranslation: false, cue, text, content, measure }; entries.push(entry);
       }
+      const previousText = entry.displayedText;
+      const previousTranslation = entry.translationSource;
       const holdingTranslation = event.caption.translation.state === "pending"
         && (entry.caption.translation.state === "paired" || entry.holdingTranslation);
       // Keep the last translation on screen while the corrected pair is pending.
-      if (!holdingTranslation) entry.displayedText = event.caption.translation.state === "paired"
-        ? event.caption.translation.revision.text : event.caption.source.text;
+      if (event.caption.translation.state === "paired") {
+        const source = event.caption.source; const translation = event.caption.translation.revision;
+        if (previousTranslation && previousTranslation.revision !== source.sourceRevision) {
+          entry.replacementText = previousTranslation.language === source.language && source.language !== translation.languages.target
+            ? previousText : undefined;
+        }
+        entry.translationSource = { revision: source.sourceRevision, language: source.language };
+        // Regeneration starts at the beginning. Keep the old sentence until
+        // the new stream can extend it verbatim or supplies its complete correction.
+        if (!entry.replacementText || translation.final || translation.text.startsWith(entry.replacementText)) entry.displayedText = translation.text;
+        if (translation.final) entry.replacementText = undefined;
+      } else if (!holdingTranslation) entry.displayedText = event.caption.source.text;
       entry.holdingTranslation = holdingTranslation;
       // Source and translated text have independent layout offsets.
-      if (!holdingTranslation && entry.caption.translation.state !== event.caption.translation.state) {
+      if (!holdingTranslation && !previousTranslation && entry.caption.translation.state !== event.caption.translation.state) {
         entry.offset = 0; entry.end = 0; entry.partIndex = 0;
       }
-      if (event.type === "update" && entry.offset && !holdingTranslation && entry.displayedText !==
-        (entry.caption.translation.state === "paired" ? entry.caption.translation.revision.text : entry.caption.source.text)) {
-        const previous = Array.from((entry.caption.translation.state === "paired" ? entry.caption.translation.revision.text : entry.caption.source.text).trim());
+      if (event.type === "update" && entry.offset && !holdingTranslation && entry.displayedText !== previousText) {
+        const previous = Array.from(previousText.trim());
         const next = Array.from(entry.displayedText.trim());
         let prefix = 0;
         while (prefix < previous.length && prefix < next.length && previous[prefix] === next[prefix]) prefix++;

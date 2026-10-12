@@ -22,7 +22,7 @@ try {
     globalThis.overlay = createVideoOverlay(document, null, identity);
     globalThis.send = (id, revision, text, pending = false, speakerId, final = false) => overlay.compare({
       source: { identity, utteranceId: id, sourceRevision: revision, text: 'Corrected English source', final, speakerId, language: 'en', audioRange: {startMs: id === 'one' ? 0 : 1000, endMs: id === 'one' ? 1000 : 2000} },
-      translation: pending ? {state:'pending'} : {state:'paired', revision:{identity,utteranceId:id,sourceRevision:revision,translationRevision:revision,languages:{source:'en',target:'ko'},text,final}} });
+      translation: pending ? {state:'pending'} : {state:'paired', revision:{identity,utteranceId:id,sourceRevision:revision,translationRevision:revision,languages:{source:'en',target:'ko'},text,final:true}} });
     globalThis.read = () => document.querySelector('[data-interpreter-overlay]').shadowRoot.querySelector('.interpreter-live span')?.textContent ?? '';
     send('one', 1, '첫 번째 문장');
   });
@@ -112,6 +112,63 @@ try {
   assert.equal(await page.evaluate(() => read()), '뒤 자막', 'Completed rows must still leave in their original order');
   await page.clock.runFor(250);
   assert.equal(await page.evaluate(() => read()), '');
+  await page.evaluate(() => {
+    overlay.clear();
+    globalThis.stream = (sourceRevision, translationRevision, text, final = false, language = 'en') => {
+      const source = {identity:{sessionId:'stability',targetId:'tab',epoch:0},utteranceId:'stream',sourceRevision,
+        text:'Growing original',language,final:false,audioRange:{startMs:0,endMs:2000}};
+      if (globalThis.streamSourceRevision !== sourceRevision) overlay.compare({source,translation:{state:'pending'}});
+      globalThis.streamSourceRevision = sourceRevision;
+      overlay.compare({source,translation:{state:'paired',revision:{identity:source.identity,utteranceId:'stream',
+        sourceRevision,translationRevision,languages:{source:language,target:'ko'},text,final}}});
+    };
+    stream(1,1,'내일 역');
+  });
+  assert.equal(await page.evaluate(() => read()), '내일 역', 'The initial translation still streams immediately');
+  await page.evaluate(() => stream(1,2,'내일 역에서 만나요.',true));
+  await page.clock.runFor(180);
+  assert.equal(await page.evaluate(() => read()), '내일 역에서 만나요.');
+  await page.evaluate(() => {
+    const text = document.querySelector('[data-interpreter-overlay]').shadowRoot.querySelector('.interpreter-live span');
+    globalThis.streamTextNode = text.firstChild;
+    globalThis.unchangedSuffix = document.createRange();
+    unchangedSuffix.setStart(streamTextNode,5); unchangedSuffix.setEnd(streamTextNode,streamTextNode.length);
+    stream(2,3,'내일');
+  });
+  await page.clock.runFor(180);
+  assert.equal(await page.evaluate(() => read()), '내일 역에서 만나요.', 'A regenerated prefix must not erase the visible sentence');
+  await page.evaluate(() => stream(2,4,'내일 학교에서'));
+  await page.clock.runFor(180);
+  assert.equal(await page.evaluate(() => read()), '내일 역에서 만나요.', 'Hold the previous sentence while a changed replacement is incomplete');
+  await page.evaluate(() => stream(2,5,'내일 학교에서 만나요.',true));
+  await page.clock.runFor(180);
+  assert.equal(await page.evaluate(() => read()), '내일 학교에서 만나요.');
+  assert.equal(await page.evaluate(() => streamTextNode === document.querySelector('[data-interpreter-overlay]').shadowRoot.querySelector('.interpreter-live span').firstChild),true,
+    'Correct the existing text node rather than recreating the sentence');
+  assert.equal(await page.evaluate(() => unchangedSuffix.toString()), '서 만나요.', 'Text outside the changed region keeps its browser range');
+  await page.evaluate(() => stream(3,6,'내일 학교에서 만나요. 책도'));
+  await page.clock.runFor(180);
+  assert.equal(await page.evaluate(() => read()), '내일 학교에서 만나요. 책도', 'A continuation of the visible text keeps streaming');
+  await page.evaluate(() => stream(3,7,'내일 학교에서 만나요. 책도 가져와요.',true));
+  await page.clock.runFor(180);
+  await page.evaluate(() => stream(4,8,'내일',true));
+  await page.clock.runFor(180);
+  assert.equal(await page.evaluate(() => read()), '내일', 'A completed shorter translation must still remove obsolete words');
+  await page.evaluate(() => stream(5,9,'한국어로 바로 교정',false,'ko'));
+  await page.clock.runFor(180);
+  assert.equal(await page.evaluate(() => read()), '한국어로 바로 교정', 'Korean bypass does not wait for translation completion');
+  await page.evaluate(() => stream(6,10,'일본어로 바뀐 번역',false,'ja'));
+  await page.clock.runFor(180);
+  assert.equal(await page.evaluate(() => read()), '일본어로 바뀐 번역', 'A language correction must not hold the old-language stream');
+  await page.evaluate(() => { overlay.clear(); stream(1,1,'이미 읽은 앞 문장입니다. '.repeat(20)+'마지막 내용',true); });
+  await page.clock.runFor(6000);
+  const readPart = await page.evaluate(() => read());
+  await page.evaluate(() => stream(2,2,'이미'));
+  await page.clock.runFor(180);
+  assert.equal(await page.evaluate(() => read()),readPart,'A regenerated prefix must preserve the current two-line reading part');
+  await page.evaluate(() => stream(2,3,'이미 읽은 앞 문장입니다. '.repeat(20)+'교정한 내용',true));
+  await page.clock.runFor(180);
+  assert.equal(await page.evaluate(() => read()),readPart,'An unread tail correction must not replay a read prefix');
   await page.setViewportSize({width:320,height:520});
   await page.evaluate(() => { overlay.clear(); for (let i=0;i<12;i++) send(`burst-${i}`,1,`대화 ${i}`,false,i%2+1,true); });
   const observed = new Map(); const retired = new Set();
@@ -134,5 +191,5 @@ try {
   }
   assert.equal(observed.size,12,'Every queued caption must eventually become visible');
   assert.equal(retired.size,12,'Concurrent reading must clear this burst without a serial four-second wait per row');
-  console.log(JSON.stringify({passed:true,readyCaptionStacked:true,concurrentReading:true,narrowBurst:12,pendingTranslationHeld:true,provisionalHeldUntilFinal:true,lateCorrectionKeepsRow:true,pendingFinalCorrectionHeld:true,withdrawalUnblocksStack:true,unreadSentencePreserved:true,speakerBackgrounds:true,finalHoldMs:4000,fadeMs:250}));
+  console.log(JSON.stringify({passed:true,readyCaptionStacked:true,concurrentReading:true,narrowBurst:12,pendingTranslationHeld:true,provisionalHeldUntilFinal:true,lateCorrectionKeepsRow:true,pendingFinalCorrectionHeld:true,withdrawalUnblocksStack:true,streamedCorrectionKeepsSentence:true,changedTextPatched:true,unreadSentencePreserved:true,speakerBackgrounds:true,finalHoldMs:4000,fadeMs:250}));
 } finally { await browser.close(); }
