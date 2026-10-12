@@ -127,7 +127,8 @@ export function createLocalSpeechHost(document: Document, language: "ja" | "en",
               const id = `local-${draft.index}-${spanIndex}-${index}`;
               const previous = records.get(id);
               if (!text.trim()) continue;
-              const final = draft.final || previous?.final === true || index < parts.length - 1 && previous?.text === text;
+              const final = draft.final || previous?.final === true
+                || previous?.text === text && (spanIndex < boundaries.length || index < parts.length - 1);
               if (previous?.text === text && previous.final === final) continue;
               const record = { text, revision: (previous?.revision ?? 0) + 1, final,
                 startMs: previous?.startMs ?? Math.max(span.startMs, index ? records.get(`local-${draft.index}-${spanIndex}-${index - 1}`)?.endMs ?? span.startMs : span.startMs), endMs: span.endMs };

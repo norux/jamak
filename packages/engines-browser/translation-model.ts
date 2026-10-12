@@ -1,4 +1,18 @@
 export const translationCandidates = {
+  hyMt2: {
+    dtype: "q4f16",
+    model: { id: "DavidLuong/Hy-MT2-1.8B-ONNX-q4f16", version: "cb415aec769544c3f9cefdc312142b592e731bb9" },
+    files: [
+      { path: "config.json", bytes: 1518 },
+      { path: "generation_config.json", bytes: 221 },
+      { path: "chat_template.jinja", bytes: 654 },
+      { path: "tokenizer.json", bytes: 9527287 },
+      { path: "tokenizer_config.json", bytes: 166491 },
+      { path: "special_tokens_map.json", bytes: 488 },
+      { path: "onnx/model_q4f16.onnx", bytes: 1373443906,
+        sha256: "c0f5921fe143b05a420334392c59c175389d87dcfd60dc2554ca1c629eebec2a" },
+    ],
+  },
   nllb: {
     dtype: "q8",
     model: { id: "Xenova/nllb-200-distilled-600M", version: "261c31d1a5732c67cdd16d80e8d6088507c7ccea" },

@@ -213,6 +213,48 @@ test("unpunctuated cumulative native results split at audio pauses without losin
   await recognizer.close(); await stream.return?.(); f.host.dispose();
 });
 
+test("a stable closed native speech span finalizes before Chrome's cumulative result", async () => {
+  for (const [language, firstText, nextText] of [["en", "We can meet tomorrow", "I will bring your book"],
+    ["ja", "明日駅で会おう", "本を持っていくよ"]] as const) {
+    const f = fixture(language); await f.host.prepare();
+    const recognizer = f.host.createRecognizer(identity, () => {});
+    const stream = recognizer.run(f.input)[Symbol.asyncIterator]();
+    const first = stream.next(); await f.feed("clock", 0.05);
+    const native = f.instances.at(-1); assert.ok(native);
+    native.emit(firstText); const draft = (await first).value;
+    for (let i = 0; i < 12; i++) await f.feed();
+    await f.feed("clock", 0.05);
+    native.emit(`${firstText}${language === "en" ? " " : ""}${nextText}`);
+    const closed = (await stream.next()).value;
+    assert.equal(closed?.utteranceId, draft?.utteranceId);
+    assert.equal(closed?.text, firstText);
+    assert.equal(closed?.final, true, "Stable completed span must not wait for the entire native result to finalize");
+    const following = (await stream.next()).value;
+    assert.equal(following?.text, nextText); assert.equal(following?.final, false);
+    await recognizer.close(); await stream.return?.(); f.host.dispose();
+  }
+});
+
+test("a closed native span waits for stable text after a correction", async () => {
+  const f = fixture(); await f.host.prepare();
+  const recognizer = f.host.createRecognizer(identity, () => {});
+  const stream = recognizer.run(f.input)[Symbol.asyncIterator]();
+  const first = stream.next(); await f.feed("clock", 0.05);
+  const native = f.instances.at(-1); assert.ok(native);
+  native.emit("We meet today"); const draft = (await first).value;
+  for (let i = 0; i < 12; i++) await f.feed();
+  await f.feed("clock", 0.05);
+  native.emit("We meet tomorrow please bring the book");
+  const corrected = (await stream.next()).value;
+  assert.equal(corrected?.utteranceId, draft?.utteranceId);
+  assert.equal(corrected?.text, "We meet tomorrow"); assert.equal(corrected?.final, false);
+  assert.equal((await stream.next()).value?.final, false);
+  native.emit("We meet tomorrow please bring the book");
+  const stable = (await stream.next()).value;
+  assert.equal(stable?.utteranceId, draft?.utteranceId); assert.equal(stable?.final, true);
+  await recognizer.close(); await stream.return?.(); f.host.dispose();
+});
+
 test("numeric corrections keep pause boundaries and never duplicate a later let's-meet phrase", async () => {
   const f=fixture(); await f.host.prepare();
   const recognizer=f.host.createRecognizer(identity,()=>{});
@@ -221,6 +263,8 @@ test("numeric corrections keep pause boundaries and never duplicate a later let'
   native.emit('Sunday works for me is 1:30 okay'); await first;
   for(let i=0;i<12;i++)await f.feed(); await f.feed('clock',0.05);
   native.emit("Sunday works for me is 1:30 okay sure let's meet at the station");
+  const closed=(await stream.next()).value;
+  assert.equal(closed?.text,'Sunday works for me is 1:30 okay'); assert.equal(closed?.final,true);
   const meeting=(await stream.next()).value;
   assert.equal(meeting?.text,"sure let's meet at the station");
   native.emit("Sunday works for me is 1 30 okay let's meet at the station",true);

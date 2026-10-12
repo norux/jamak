@@ -54,7 +54,7 @@ export function createRevisionStore(initial: SessionIdentity, maxStoredCaptions:
     const translation = stored.translation.state === "paired" ? stored.translation.revision : undefined;
     records.set(key(stored.source), { caption: stored,
       translationRevision: translation?.translationRevision ?? old?.translationRevision ?? 0,
-      translationFinal: translation?.final ?? old?.translationFinal ?? false,
+      translationFinal: translation?.final ?? false,
       targetLanguage: translation?.languages.target ?? old?.targetLanguage });
     if (records.size > maxStoredCaptions) {
       const oldest = records.entries().next().value;

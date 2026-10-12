@@ -221,11 +221,11 @@ test("revision store pairs exact revisions, permits final correction, rejects st
   assert.equal(acceptTranslation(translation(3, 4, false)), undefined);
   assert.ok(acceptSource(source(4, true)));
   assert.equal(acceptTranslation(translation(4, 3, true)), undefined, "Pending source must retain translation revision watermark");
-  assert.equal(acceptTranslation(translation(4, 4, false)), undefined, "Final translation cannot regress after a source correction");
-  assert.equal(acceptTranslation(translation(4, 4, true))?.translation.state, "paired");
+  assert.equal(acceptTranslation(translation(4, 4, false))?.translation.state, "paired", "A new source revision starts its own translation stream");
+  assert.equal(acceptTranslation(translation(4, 5, true))?.translation.state, "paired");
   assert.equal(store.accept({ type: "paired-caption", caption: { source: source(5, true), translation: { state: "paired", revision: translation(4, 5, true) } } }), undefined);
   assert.equal(store.snapshot()[0].source.sourceRevision, 4, "Invalid pair must not partly update source");
-  assert.ok(store.accept({ type: "paired-caption", caption: { source: source(5, true), translation: { state: "paired", revision: translation(5, 5, true) } } }));
+  assert.ok(store.accept({ type: "paired-caption", caption: { source: source(5, true), translation: { state: "paired", revision: translation(5, 6, true) } } }));
   assert.equal(acceptSource(source(6, true, { ...identity, epoch: 9 })), undefined);
   assert.equal(acceptTranslation({ ...translation(5, 5, true), languages: { source: "en", target: "ko" } }), undefined);
   assert.equal(acceptSource({ ...source(6, true), sourceRevision: NaN }), undefined);

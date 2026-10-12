@@ -19,7 +19,7 @@ test("model settings restore Chrome defaults on invalid data and retain independ
       const options = {recognition:recognition.id,translation:translation.id};
       assert.equal(validModelOptions(options),true); saved = JSON.stringify(options); assert.deepEqual(readModelOptions(),options);
       if (recognition.id !== "chrome") assert.ok(registeredCandidate(asrCandidates[recognition.id].model,asrCandidates[recognition.id].dtype).requiredBytes > 0);
-      if (translation.id !== "chrome") assert.ok(registeredCandidate(translationCandidates[translation.id].model).cacheName.includes("translation"));
+      if (translation.id !== "chrome") assert.ok(registeredCandidate(translationCandidates[translation.id].model,translationCandidates[translation.id].dtype).cacheName.includes("translation"));
     }
   } finally { if(original) Object.defineProperty(globalThis,"localStorage",original); else Reflect.deleteProperty(globalThis,"localStorage"); }
 });
@@ -64,9 +64,9 @@ test("engine prepares the explicit recognition and translation choices, with Chr
       } finally {await engine.port.close();}
       assert.ok(workers.slice(before).every(w => w.terminated),"Switching models must release every resident worker");
     }
-    for(const source of ["auto","ko"] as const) {
+    for(const source of ["auto","ko"] as const) for(const translation of ["nllb","hyMt2"] as const) {
       const before = workers.length;
-      const engine = createChromeEngine(document,source,()=>{},"offscreen",()=>undefined,{recognition:"tiny",translation:"nllb"});
+      const engine = createChromeEngine(document,source,()=>{},"offscreen",()=>undefined,{recognition:"tiny",translation});
       try {await engine.prepareFromGesture();assert.equal(workers.slice(before).find(w=>w.url.pathname.endsWith("asr-worker.ts"))?.messages[0].candidate,"tiny");assert.equal(workers.slice(before).some(w=>w.url.pathname.endsWith("model-translator-worker.ts")),source !== "ko");}
       finally {await engine.port.close();}
     }
@@ -91,11 +91,19 @@ test("local model translator preserves revision pairing and rejects replies afte
   const identity = {sessionId:"models",targetId:"tab" as MediaTargetId,epoch:1};
   try {
     const prepared = host.prepare();workers[0].reply({type:"ready"});await prepared;
-    const source = {identity,utteranceId:"turn",sourceRevision:3,text:"明日は駅で会いましょう。",language:"ja",final:true,audioRange:{startMs:0,endMs:1000}};
+    const source = {identity,utteranceId:"turn",sourceRevision:3,text:"明日は駅で会いましょう。",language:"ja",final:false,audioRange:{startMs:0,endMs:1000}};
     const stream = host.translate(source,{source:"ja",target:"ko"})[Symbol.asyncIterator]();
     const next = stream.next();
     assert.equal(workers[0].last?.language,"ja");workers[0].reply({type:"result",text:"내일 역에서 만나요."});
     const result = (await next).value;assert.equal(result?.sourceRevision,3);assert.equal(result?.utteranceId,"turn");assert.deepEqual(result?.identity,identity);await stream.return?.();
+    const streamed = host.translate({...source,sourceRevision:4},{source:"ja",target:"ko"})[Symbol.asyncIterator]();
+    const partial = streamed.next();workers[0].reply({type:"chunk",text:"내일 "});
+    assert.equal((await partial).value?.final,false);
+    workers[0].reply({type:"chunk",text:"내일 역"});workers[0].reply({type:"chunk",text:"내일 역에서 "});
+    workers[0].reply({type:"result",text:"내일 역에서 만나요."});
+    await new Promise<void>(resolve=>queueMicrotask(resolve));
+    const completed = (await streamed.next()).value;
+    assert.equal(completed?.text,"내일 역에서 만나요.");assert.equal(completed?.final,true);await streamed.return?.();
     const stopped = host.translate({...source,sourceRevision:4},{source:"ja",target:"ko"})[Symbol.asyncIterator]().next();
     host.stop();workers[0].reply({type:"result",text:"늦은 결과"});await assert.rejects(stopped,/Translation stopped/);assert.equal(workers[0].terminated,true);
     const restarting = host.prepare();workers[1].reply({type:"ready"});await restarting;

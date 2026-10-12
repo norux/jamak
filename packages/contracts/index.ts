@@ -80,6 +80,7 @@ export interface TranslationRevision {
   readonly translationRevision: number;
   readonly languages: LanguagePair;
   readonly text: string;
+  // Generation is complete for this source revision; recognition can still revise it.
   readonly final: boolean;
 }
 
@@ -227,6 +228,7 @@ export interface SpeechRecognizer {
 }
 
 export interface TextTranslator {
+  readonly streaming?: boolean;
   translate(source: TranscriptRevision, languages: LanguagePair): AsyncIterable<TranslationRevision>;
   cancel(identity: SessionIdentity): Promise<void>;
   close(): Promise<void>;

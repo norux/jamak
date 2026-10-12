@@ -13,6 +13,7 @@ import { build } from "vite";
 
 const autoLanguage = process.argv.includes("--auto-language");
 const japaneseConversation = process.argv.includes("--japanese-conversation");
+const hyMt2 = process.argv.includes("--hy-mt2");
 const conversation = process.argv.includes("--conversation") || japaneseConversation;
 const captureLoss = process.argv.includes("--capture-loss");
 const lifecycle = process.argv.includes("--lifecycle");
@@ -71,7 +72,7 @@ assert.equal(manifest.host_permissions, undefined);
 assert.equal(manifest.action.default_popup, "popup.html");
 const observations = { scope: latency ? "Six isolated synthetic sentences: estimated last audible PCM sample to complete Korean meaning in actual page DOM, <=1000 ms; no public-video/ten-minute acceptance"
   : "Production popup/offscreen ownership, real local streaming or turbo WebGPU/native Korean/page/reference lifetime and source retirement; no strict sentence-end latency/public-video/ten-minute acceptance",
-  pageErrors: [], checks: [], runs: [], companionEndpoints: [], speechMode: localSpeech ? "Production preference: Japanese / English Chrome on-device streaming" : "Whisper snapshots", modelProvisioning: modelDirectory ? "Two SHA-256 verified official ONNX files seeded into extension cache; actual remaining model downloads and real inference" : "Official pinned model downloads and browser-managed SODA components", translatorProvisioning: "Chrome-managed TranslateKit and ja/en/ko language components; no substituted translations" };
+  pageErrors: [], checks: [], runs: [], qualityFailures: [], companionEndpoints: [], speechMode: localSpeech ? "Production preference: Japanese / English Chrome on-device streaming" : "Whisper snapshots", modelProvisioning: modelDirectory ? "Two SHA-256 verified official ONNX files seeded into extension cache; actual remaining model downloads and real inference" : "Official pinned model downloads and browser-managed SODA components", translatorProvisioning: hyMt2 ? "Advanced-selected pinned Hy-MT2 q4f16 WebGPU; actual downloads and streaming inference" : "Chrome-managed TranslateKit and ja/en/ko language components; no substituted translations" };
 function serve(request, response) {
   const url = new URL(request.url, "http://localhost");
   const model = modelDirectory && modelFiles.find(([, filename]) => url.pathname === `/${filename}`);
@@ -127,7 +128,8 @@ try {
     observations.companionEndpoints.push({ port, result });
     assert.equal(result, "ECONNREFUSED", "Companion/Ollama must be absent; never stop user apps");
   }
-  profile = await mkdtemp(resolve(".ralph/media-framework/chrome-tab-engine-profile-"));
+  profile = hyMt2 ? resolve(".ralph/media-framework/hy-mt2-conversation-profile") : await mkdtemp(resolve(".ralph/media-framework/chrome-tab-engine-profile-"));
+  await mkdir(profile, { recursive: true });
   // Existing explicitly prepared CfT native components, in this disposable test
   // profile only. Chrome downloads/verifies them; no Translator results are injected.
   const components = ["Chrome TranslateKit", "Chrome TranslateKit en-ja", "Chrome TranslateKit en-ko", ...(localSpeech ? download ? ["SODA*"] : ["SODA Library", "SODA ja-JP Models", "SODA en-US Models", "SODA ko-KR Models"] : [])];
@@ -173,6 +175,7 @@ try {
     await writeFile(resolve(profile,'Default','Preferences'),JSON.stringify({accessibility:{captions:{live_caption_language:'ko-KR'}},intl:{accept_languages:'ko-KR,ko,en-US,en'}}));
     observations.captionLanguage='ko-KR';
   }
+  await rm(resolve(profile, "DevToolsActivePort"), { force: true });
   browserProcess = spawn(installedChrome ? '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome' : chromium.executablePath(), ["--no-first-run", "--no-default-browser-check", `--user-data-dir=${profile}`,
     ...installedChrome ? [] : [`--chrome-for-testing-config=${configuration}`], "--enable-unsafe-extension-debugging", "--remote-debugging-port=0",
     "--window-position=0,30", "--window-size=700,700",
@@ -286,7 +289,7 @@ try {
         globalThis.runtimeObservations=[];globalThis.translationCalls=[];globalThis.localSpeechEvents=[];globalThis.captionRevisions=[];
         const sendMessage=chrome.runtime.sendMessage.bind(chrome.runtime);
         chrome.runtime.sendMessage=function(message,...args){
-          if(message.channel==='interpreter-event-v1'&&message.type==='caption')captionRevisions.push({atMs:performance.timeOrigin+performance.now(),source:message.caption.source});
+          if(message.channel==='interpreter-event-v1'&&message.type==='caption')captionRevisions.push({atMs:performance.timeOrigin+performance.now(),source:message.caption.source,translation:message.caption.translation});
           return sendMessage(message,...args);
         };
         const Speech=globalThis.SpeechRecognition??globalThis.webkitSpeechRecognition;
@@ -317,7 +320,11 @@ try {
         const create=Translator.create.bind(Translator);
         Translator.create=async(...args)=>{const translator=await create(...args);const translate=translator.translate.bind(translator);
           translator.translate=async(text,...options)=>{const call={source:text};translationCalls.push(call);
-            const result=await translate(text,...options);call.korean=result;return result;};return translator;};
+            const result=await translate(text,...options);call.korean=result;return result;};
+          if(translator.translateStreaming){const streaming=translator.translateStreaming.bind(translator);
+            translator.translateStreaming=(text,...options)=>{const call={source:text,korean:'',chunks:0};translationCalls.push(call);
+              return streaming(text,...options).pipeThrough(new TransformStream({transform(chunk,controller){call.korean+=chunk;call.chunks++;controller.enqueue(chunk);}}));};}
+          return translator;};
       })()`);
       if (modelDirectory) await worker.evaluate(async ({origin,files}) => {
         const version='360ebcde2559d60bb474678be3c1de9ef347d01a';
@@ -378,6 +385,19 @@ try {
     await switched.close();
     console.log(JSON.stringify({phase:'hidden-ready',...scenario,message:ready.message,diagnostic:ready.diagnostic}));
 
+    if (hyMt2 && scenario === scenarios[0]) {
+      popup = await openPopup();
+      const opened = context.waitForEvent("page", { predicate: p => p.url().includes("advanced.html") });
+      await popup.click("#advanced");
+      const advanced = await opened; await advanced.waitForLoadState();
+      await advanced.locator("#translation").selectOption("hyMt2");
+      const selected = await waitState(value => value?.state === "ready" && value.options?.translation === "hyMt2", 600000);
+      assert.ok(selected.models.some(model => model.name.includes("Hy-MT2")));
+      await advanced.screenshot({ path: resolve(".ralph/media-framework/advanced-hy-mt2-real.png") });
+      await advanced.close();
+      observations.checks.push("Actual Advanced selection, pinned Hy-MT2 download/preparation and independent Chrome recognition");
+    }
+
     popup=await openPopup();await popup.click('#start');
     await waitState(value=>value?.state==='running');await popup.close();
     if (conversation || autoLanguage) await page.evaluate(() => {
@@ -398,7 +418,7 @@ try {
           }
           const text = cue.querySelector('span')?.textContent ?? '';
           const signature = `${text}|${style.opacity}`;
-          if (previous.get(id) !== signature) captionFrames.push({atMs:performance.now(),text,utteranceId:id,speakerId:cue.dataset.speakerId,opacity:style.opacity});
+          if (previous.get(id) !== signature) captionFrames.push({atMs:performance.now(),mediaSeconds:media.currentTime,text,utteranceId:id,speakerId:cue.dataset.speakerId,opacity:style.opacity});
           previous.set(id,signature);
         }
         for (const id of previous.keys()) if (!present.has(id)) {
@@ -527,7 +547,7 @@ try {
         }
         accuracy={metric:'CER',edits:previous[hypothesis.length],referenceUnits:reference.length,rate:previous[hypothesis.length]/reference.length};
       }
-      const report = `.ralph/caption-conversation/live${japaneseConversation ? '-ja' : ''}.json`;
+      const report = `.ralph/caption-conversation/live${japaneseConversation ? '-ja' : ''}${hyMt2 ? '-hy-mt2' : ''}.json`;
       const mediaState = await page.evaluate(()=>({currentTime:media.currentTime,duration:media.duration,ended:media.ended,loop:media.loop,events:mediaEvents}));
       const playAtMs = mediaState.events.find(event=>event.type==='playing').atMs;
       const firstSource = frames.find(frame=>frame.text && frame.opacity!=='0');
@@ -546,15 +566,24 @@ try {
         const final=revisions.find(revision=>revision.source.utteranceId===caption.source.utteranceId&&revision.source.final);
         return frames.some(frame=>frame.utteranceId===caption.source.utteranceId&&frame.text&&frame.opacity!=='0'&&frame.atMs+pageTimeOrigin<final.atMs);
       });
+      const firstTurnKorean = frames.filter(frame => frame.mediaSeconds >= conversationManifest.turns[0].startSeconds
+        && frame.mediaSeconds < conversationManifest.turns[0].endSeconds && /[가-힣]/u.test(frame.text) && frame.opacity !== '0');
+      const firstTurnUpdates = new Map();
+      for (const frame of firstTurnKorean) {
+        const texts = firstTurnUpdates.get(frame.utteranceId) ?? new Set(); texts.add(frame.text); firstTurnUpdates.set(frame.utteranceId, texts);
+      }
+      const firstTurnKoreanUpdates = Math.max(0, ...[...firstTurnUpdates.values()].map(texts => texts.size));
       const streaming = {drafts:drafts.length,confirmedDrafts:confirmedDrafts.length,visibleBeforeFinal:visibleDrafts.length,
-        withdrawnDrafts:new Set(revisions.filter(revision=>revision.source.retracted).map(revision=>revision.source.utteranceId)).size};
+        withdrawnDrafts:new Set(revisions.filter(revision=>revision.source.retracted).map(revision=>revision.source.utteranceId)).size,
+        firstTurnKoreanUpdates, firstTurnKoreanFrames: firstTurnKorean, passed: firstTurnKoreanUpdates >= 2};
       const remainingOverlay = await page.evaluate(()=>Array.from(document.querySelector('[data-interpreter-overlay]')?.shadowRoot.querySelectorAll('.interpreter-live')??[]).map(row=>row.dataset.utteranceId));
-      const result = {state:completed.state,fixtureSha256:createHash('sha256').update(media.get('/conversation.wav')).digest('hex'),mediaState,latency,streaming,remainingOverlay,revisions,captions,frames,native,meaning,accuracy,diagnostic:(await state()).diagnostic,workers:await runtime.evaluate("runtimeObservations")};
+      const result = {state:completed.state,fixtureSha256:createHash('sha256').update(media.get('/conversation.wav')).digest('hex'),mediaState,pageTimeOrigin,latency,streaming,remainingOverlay,revisions,captions,frames,native,meaning,accuracy,diagnostic:(await state()).diagnostic,workers:await runtime.evaluate("runtimeObservations")};
       await mkdir('.ralph/caption-conversation', {recursive:true});
       await writeFile(report, JSON.stringify(result,null,2));
       assert.equal(mediaState.loop,false,'Conversation audio must not loop');
       assert.equal(mediaState.events.filter(event=>event.type==='playing').length,1,'Require a single uninterrupted conversation playback');
       assert.equal(mediaState.ended,true,'Conversation audio must remain ended during caption drain');
+      assert.ok(streaming.passed, 'Korean must visibly update at least twice in the same caption while the first turn is still speaking');
       if (nativeSpeech) {
         assert.ok(native.some(event=>event.type==='start' && event.local && event.trackKind==='audio'));
         assert.ok(native.some(event=>event.type==='result' && event.finals.includes(false)), 'Native interim speech must arrive before final');
@@ -570,10 +599,9 @@ try {
       assert.deepEqual(remainingOverlay, [], 'Every overlay row must drain after playback; a finished last row cannot mask stuck earlier rows');
       if (japaneseConversation) {
         assert.ok(captions.every(c=>c.source.final), 'Every Japanese phrase must reach final');
-        assert.ok(accuracy.rate <= 0.12, `Japanese conversation CER: ${accuracy.rate}`);
+        if (accuracy.rate > 0.12) observations.qualityFailures.push({ metric: "CER", ...accuracy });
         for (const turn of meaning) {
-          assert.deepEqual(turn.missingSource, [], `Lost Japanese meaning: ${turn.reference}`);
-          assert.deepEqual(turn.missingKorean, [], `Lost Korean meaning: ${turn.reference}`);
+          if (turn.missingSource.length || turn.missingKorean.length) observations.qualityFailures.push(turn);
         }
       }
       const turns = japaneseConversation ? [] : captions.filter(c=>c.source.text.split(/\s+/).length >= 10);
@@ -687,6 +715,7 @@ try {
     : 'Popup closure/tab switching completes preparation hidden; reference closure preserves next real translated caption and page overlay; reopening restores bounded history; Stop clears overlay/capture and rejects late captions; source navigation/closure stops preparation');
   }
   assert.deepEqual(observations.pageErrors,[]);
+  assert.deepEqual(observations.qualityFailures, [], "Conversation recognition/translation quality failed; flow checks are reported separately");
   console.log(JSON.stringify({passed:true,...observations}));
 } catch(error) {console.error(JSON.stringify({passed:false,...observations,error:error.stack}));process.exitCode=1}
-finally {await browser?.close();browserProcess?.kill();await browserExit;await new Promise(done=>server.close(done));if(profile) await rm(profile,{recursive:true,force:true});if(latencyDirectory)await rm(latencyDirectory,{recursive:true,force:true})}
+finally {await browser?.close();browserProcess?.kill();await browserExit;await new Promise(done=>server.close(done));if(profile && !hyMt2) await rm(profile,{recursive:true,force:true});if(latencyDirectory)await rm(latencyDirectory,{recursive:true,force:true})}

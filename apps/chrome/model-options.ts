@@ -9,6 +9,7 @@ export const recognitionChoices = [
 ] as const;
 export const translationChoices = [
   { id: "chrome", name: "Chrome 기본 · TranslateKit", detail: "Chrome 언어 팩으로 기기 안에서 번역합니다." },
+  { id: "hyMt2", name: "Hy-MT2 1.8B · q4f16", detail: "약 1.38 GB · WebGPU 필요 · 생성 중인 번역을 바로 표시합니다. Apache-2.0" },
   { id: "nllb", name: "NLLB-200 Distilled 600M · q8", detail: "약 912 MB · CPU에서 실행 · 연구·비상업용(CC-BY-NC-4.0)" },
   { id: "m2m100", name: "M2M100 418M · q8", detail: "약 640 MB · CPU에서 실행" },
 ] as const;

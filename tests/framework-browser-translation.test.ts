@@ -3,6 +3,7 @@ import { test } from "node:test";
 import type { CaptionRevision, MediaTargetId, TextTranslator, TranscriptRevision, TranslationRevision } from "../packages/contracts";
 import { createDocumentTranslator } from "../packages/engines-browser/document-translator";
 import { createTranslationQueue } from "../packages/engines-browser/translation-queue";
+import { createRevisionStore } from "../packages/core/revision-store";
 
 const identity = { sessionId: "translation-test", targetId: "video" as MediaTargetId, epoch: 1 };
 const pair = { source: "ja", target: "ko" };
@@ -30,6 +31,43 @@ test("a final filler correction withdraws the displayed draft and rejects its in
     assert.equal(calls.length, 1); assert.equal(captions.length, 2);
     assert.deepEqual(queue.snapshot(), []);
   } finally { await queue.cancel(); }
+});
+
+test("native translation streams paired drafts before completion and aborts on Stop", async () => {
+  const f = fixture("offscreen");
+  let controller!: ReadableStreamDefaultController<string>;
+  let signal!: AbortSignal;
+  Object.assign(f.native, { translateStreaming(_text: string, options: { signal: AbortSignal }) {
+    signal = options.signal;
+    return new ReadableStream<string>({ start(value) { controller = value; } });
+  } });
+  try {
+    const prepared = f.host.prepare(); f.loads[0].resolve(f.native); await prepared;
+    const stream = f.host.translate(source("one", 3, true), pair)[Symbol.asyncIterator]();
+    const first = stream.next(); controller.enqueue("내일 ");
+    const draft = (await first).value;
+    assert.equal(draft?.text, "내일 "); assert.equal(draft?.final, false);
+    assert.equal(draft?.sourceRevision, 3); assert.equal(f.calls.length, 0);
+    const second = stream.next(); controller.enqueue("만나요.");
+    assert.equal((await second).value?.text, "내일 만나요.");
+    const finished = stream.next(); controller.close();
+    assert.equal((await finished).value?.final, true); await stream.return?.();
+    const stopped = f.host.translate(source("one", 4, true), pair)[Symbol.asyncIterator]().next();
+    f.host.stop(); assert.equal(signal.aborted, true);
+    await assert.rejects(stopped, /Abort/);
+  } finally { await f.host.close(); }
+});
+
+test("a corrected final source accepts its own translation stream but rejects obsolete chunks", () => {
+  const store = createRevisionStore(identity, 10);
+  const first = source("one", 1, true);
+  store.accept({ type: "transcript", revision: first });
+  const translated = { identity, utteranceId: "one", sourceRevision: 1, translationRevision: 1, languages: pair, text: "첫 번역", final: true };
+  store.accept({ type: "translation", revision: translated });
+  store.accept({ type: "transcript", revision: source("one", 2, true) });
+  assert.equal(store.accept({ type: "translation", revision: { ...translated, translationRevision: 2, final: false } }), undefined);
+  const corrected = store.accept({ type: "translation", revision: { ...translated, sourceRevision: 2, translationRevision: 3, text: "교정 중", final: false } });
+  assert.equal(corrected?.translation.state, "paired");
 });
 
 function deferred<T>() {
@@ -149,7 +187,8 @@ test("document Translator probes real API states without creation and preserves 
     (input.identity as { epoch: number }).epoch = 9;
     f.calls[0].result.resolve("합성 번역");
     const translated = (await result).value as TranslationRevision;
-    assert.deepEqual(translated.identity, identity); assert.equal(translated.sourceRevision, 1); assert.equal(translated.final, false);
+    assert.deepEqual(translated.identity, identity); assert.equal(translated.sourceRevision, 1);
+    assert.equal(translated.final, true, "Generation completion is independent of provisional recognition");
     assert.equal(translated.translationRevision, 1); assert.deepEqual(translated.languages, pair);
     await iterator.return?.();
     await assert.rejects(f.host.translate(source(), { source: "ja", target: "en" })[Symbol.asyncIterator]().next(), /language-pair-unsupported/);
@@ -235,6 +274,99 @@ function queued(limit = 3) {
   const queue = createTranslationQueue(identity, pair, translator, limit, 300, caption => captions.push(caption), reason => failures.push(reason));
   return { queue, calls, captions, failures, cancellations: () => cancellations };
 }
+
+test("unchanged recognition finals reuse completed translation, including an in-flight stream", async () => {
+  for (const confirmDuringGeneration of [false, true]) {
+    const result = deferred<void>(); const calls: TranscriptRevision[] = []; const captions: CaptionRevision[] = [];
+    const queue = createTranslationQueue(identity, pair, {
+      streaming: true,
+      async *translate(input, languages) {
+        calls.push(input); await result.promise;
+        yield { identity, utteranceId: input.utteranceId, sourceRevision: input.sourceRevision,
+          translationRevision: calls.length, languages, text: "내일 만나요", final: true };
+      }, async cancel() {}, async close() {},
+    }, 2, 300, caption => captions.push(caption), reason => assert.fail(reason));
+    queue.accept(source());
+    if (!confirmDuringGeneration) { result.resolve(); await queue.whenIdle(); }
+    queue.accept({ ...source("one", 2, true), text: source().text });
+    result.resolve(); await queue.whenIdle();
+    assert.equal(calls.length, 1, "Final confirmation must not run the model again for identical text");
+    const completed = captions.at(-1); assert.equal(completed?.source.final, true);
+    assert.equal(completed?.source.sourceRevision, 2);
+    assert.equal(completed?.translation.state === "paired" ? completed.translation.revision.sourceRevision : undefined, 2);
+    assert.equal(completed?.translation.state === "paired" ? completed.translation.revision.final : undefined, true);
+    queue.accept(source("one", 3, true)); await queue.whenIdle();
+    assert.equal(calls.length, 2, "A text correction still requires new inference");
+    await queue.cancel();
+  }
+});
+
+test("streaming translation stays paired while growing ASR drafts queue behind it", async () => {
+  const chunks: ReturnType<typeof deferred<string>>[] = [];
+  const calls: TranscriptRevision[] = [];
+  const captions: CaptionRevision[] = [];
+  let revision = 0;
+  const translator: TextTranslator & { streaming: boolean } = {
+    streaming: true,
+    async *translate(input, languages) {
+      calls.push(input);
+      for (let index = 0; index < 2; index++) {
+        const chunk = deferred<string>(); chunks.push(chunk);
+        yield { identity, utteranceId: input.utteranceId, sourceRevision: input.sourceRevision,
+          translationRevision: ++revision, languages, text: await chunk.promise, final: index === 1 && input.final };
+      }
+    }, async cancel() {}, async close() {},
+  };
+  const queue = createTranslationQueue(identity, pair, translator, 2, 300, caption => captions.push(caption), reason => assert.fail(reason));
+  queue.accept(source());
+  queue.accept(source("one", 2)); queue.accept(source("one", 3));
+  chunks[0].resolve("먼저 "); await tick();
+  const first = captions.find(caption => caption.translation.state === "paired");
+  assert.equal(first?.source.sourceRevision, 1, "The pinned source must receive Korean while speech continues");
+  assert.equal(first?.source.final, false);
+  chunks[1].resolve("먼저 번역"); await tick();
+  assert.equal(calls[1].sourceRevision, 3, "Coalesce incoming recognition corrections without starving the active stream");
+  assert.equal(queue.accept(source("one", 2)), false, "Queued source revisions cannot go backwards");
+  queue.accept(source("one", 4, true));
+  chunks[2].resolve("교정 중 "); await tick();
+  chunks[3].resolve("교정 중 번역"); await tick();
+  assert.equal(calls[2].sourceRevision, 4);
+  chunks[4].resolve("최종 "); await tick(); chunks[5].resolve("최종 번역");
+  await queue.whenIdle();
+  assert.equal(captions.at(-1)?.source.sourceRevision, 4);
+  assert.ok(captions.every(caption => caption.translation.state !== "paired" || caption.source.sourceRevision === caption.translation.revision.sourceRevision));
+});
+
+test("streaming language corrections bypass Korean immediately and reject the old language", async () => {
+  const chunks: ReturnType<typeof deferred<string>>[] = [];
+  const calls: TranscriptRevision[] = [];
+  const captions: CaptionRevision[] = [];
+  let revision = 10;
+  const translator: TextTranslator = { streaming: true, async *translate(input, languages) {
+    calls.push(input);
+    for (let index = 0; index < 2; index++) {
+      const chunk = deferred<string>(); chunks.push(chunk);
+      yield { identity, utteranceId: input.utteranceId, sourceRevision: input.sourceRevision,
+        translationRevision: ++revision, languages, text: await chunk.promise, final: input.final && index === 1 };
+    }
+  }, async cancel() {}, async close() {} };
+  const queue = createTranslationQueue(identity, { source: "auto", target: "ko" }, translator, 2, 300,
+    caption => captions.push(caption), reason => assert.fail(reason));
+  queue.accept(source()); chunks[0].resolve("일본어 번역"); await tick();
+  queue.accept({ ...source("one", 2), language: "ko", text: "한국어 교정" });
+  const korean = captions.at(-1);
+  assert.equal(korean?.translation.state === "paired" ? korean.translation.revision.text : undefined, "한국어 교정");
+  queue.accept(source("one", 3, true));
+  const corrected = captions.at(-1);
+  assert.equal(corrected?.source.sourceRevision, 3, "Returning to Japanese must retire the previously pinned language");
+  chunks[1].resolve("폐기할 일본어"); await tick();
+  assert.equal(captions.at(-1), corrected);
+  chunks[2].resolve("다시 번역 중"); await tick(); chunks[3].resolve("다시 번역 완료");
+  await queue.whenIdle();
+  assert.deepEqual(calls.map(input => input.language), ["ja", "ja"]);
+  const last = captions.at(-1);
+  assert.equal(last?.translation.state === "paired" ? last.translation.revision.text : undefined, "다시 번역 완료");
+});
 
 test("translation queue skips filler-only speech but preserves meaningful short and mixed speech", async () => {
   const f = queued();

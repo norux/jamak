@@ -111,7 +111,7 @@ export const speakerCandidate = {
   ],
 } as const;
 
-export function registeredCandidate(model: ModelIdentity, dtype: "q8" | "fp16" | "fp32" = "q8") {
+export function registeredCandidate(model: ModelIdentity, dtype: "q8" | "fp16" | "fp32" | "q4f16" = "q8") {
   const candidate = [...Object.values(asrCandidates), ...Object.values(translationCandidates), vadCandidate, speakerCandidate].find(value => value.model.id === model.id && value.model.version === model.version && value.dtype === dtype);
   if (!candidate) throw new Error("Unregistered model/version");
   return {

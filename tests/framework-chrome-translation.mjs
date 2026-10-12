@@ -133,7 +133,7 @@ try {
     }
     run.checks.push("Real native pair creation from trusted document activation");
     await page.evaluate(text => { submit(text, 1, false); submit(text, 2, true); }, fixture.text);
-    await page.waitForFunction(() => captions.some(c => c.source.sourceRevision === 2 && c.translation.state === 'paired') || failures.length, undefined, { timeout: 30000 });
+    await page.waitForFunction(() => captions.some(c => c.source.sourceRevision === 2 && c.translation.state === 'paired' && c.translation.revision.final) || failures.length, undefined, { timeout: 30000 });
     run.captions = await page.evaluate(() => captions); run.failures = await page.evaluate(() => failures);
     assert.deepEqual(run.failures, []);
     assert.equal(run.captions[0].translation.state, "pending");

@@ -1,7 +1,7 @@
 import type { ModelIdentity, ModelRepository, ModelStatus, ReasonCode } from "../contracts";
 import { preparationModel, registeredCandidate } from "./model";
 
-export function createModelRepository(load: (cache: Cache) => Promise<{ dispose(): Promise<void> }>, selected: ModelIdentity = preparationModel, dtype: "q8" | "fp16" | "fp32" = "q8"): ModelRepository {
+export function createModelRepository(load: (cache: Cache) => Promise<{ dispose(): Promise<void> }>, selected: ModelIdentity = preparationModel, dtype: "q8" | "fp16" | "fp32" | "q4f16" = "q8"): ModelRepository {
   const { model: registeredModel, cacheName: modelCacheName, files: modelFiles, url: modelUrl, requiredBytes } = registeredCandidate(selected, dtype);
   let controller: AbortController | undefined;
   let resident: { dispose(): Promise<void> } | undefined;

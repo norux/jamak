@@ -3,6 +3,7 @@ import { sameIdentity } from "../core/identity";
 
 interface NativeTranslator {
   translate(text: string, options: { signal: AbortSignal }): Promise<string>;
+  translateStreaming?(text: string, options: { signal: AbortSignal }): ReadableStream<string>;
   destroy(): void;
 }
 
@@ -51,7 +52,7 @@ export function createDocumentTranslator(document: Document, languages: Language
       if (!source.text || source.text.length > 16384 || !Number.isSafeInteger(source.sourceRevision) || source.sourceRevision <= 0) throw new Error("Invalid translation source");
       if (active) throw new Error("overloaded");
       const identity = { ...source.identity };
-      const utteranceId = source.utteranceId; const sourceRevision = source.sourceRevision; const final = source.final;
+      const utteranceId = source.utteranceId; const sourceRevision = source.sourceRevision;
       const operation = { identity, controller: new AbortController() };
       active = operation;
       try {
@@ -66,6 +67,31 @@ export function createDocumentTranslator(document: Document, languages: Language
         let text = "";
         for (const phrase of phrases) {
           operation.controller.signal.throwIfAborted();
+          if (native.translateStreaming) {
+            const prefix = text ? `${text} ` : "";
+            let part = "";
+            const reader = native.translateStreaming(phrase, { signal: operation.controller.signal }).getReader();
+            const abort = () => { void reader.cancel().catch(() => {}); };
+            operation.controller.signal.addEventListener("abort", abort, { once: true });
+            try {
+              for (;;) {
+                const chunk = await reader.read();
+                operation.controller.signal.throwIfAborted();
+                if (chunk.done) break;
+                if (typeof chunk.value !== "string") throw new Error("Invalid translation result");
+                part += chunk.value;
+                text = prefix + part;
+                if (text.length > 16384) throw new Error("Invalid translation result");
+                if (chunk.value && text.trim()) yield { identity, utteranceId, sourceRevision, translationRevision: ++translationRevision,
+                  languages: { ...requested }, text, final: false };
+              }
+              if (!part.trim()) throw new Error("Invalid translation result");
+            } finally {
+              operation.controller.signal.removeEventListener("abort", abort);
+              await reader.cancel().catch(() => {}); reader.releaseLock();
+            }
+            continue;
+          }
           const part = await native.translate(phrase, { signal: operation.controller.signal });
           operation.controller.signal.throwIfAborted();
           if (typeof part !== "string" || !part.trim() || part.length > 16384) throw new Error("Invalid translation result");
@@ -75,7 +101,7 @@ export function createDocumentTranslator(document: Document, languages: Language
         if (!eligible()) throw new Error("execution-context-unavailable");
         if (typeof text !== "string" || !text.trim() || text.length > 16384) throw new Error("Invalid translation result");
         yield { identity, utteranceId, sourceRevision, translationRevision: ++translationRevision,
-          languages: { ...requested }, text, final };
+          languages: { ...requested }, text, final: true };
       } finally { if (active === operation) active = undefined; }
     },
     async cancel(identity) {
@@ -93,6 +119,7 @@ export function createDocumentTranslator(document: Document, languages: Language
 
   return {
     ...port,
+    get streaming() { return translators.size > 0 && [...translators.values()].every(translator => typeof translator.translateStreaming === "function"); },
     async probe(): Promise<Capability> {
       if (!eligible() || !api()) return { state: "unavailable", reason: "execution-context-unavailable", message: "Translator requires an eligible visible secure document" };
       if (!supported()) return { state: "unavailable", reason: "language-pair-unsupported", message: "Only Japanese/English to Korean is supported by this adapter" };
