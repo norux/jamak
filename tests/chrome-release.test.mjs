@@ -13,8 +13,11 @@ const endpoint = "https://chromewebstore.googleapis.com/v2/publishers/publisher-
 const uploadUrl = `${endpoint.replace("/v2/", "/upload/v2/")}:upload`;
 const oauth = { url: "https://oauth2.googleapis.com/token", method: "POST", response: { access_token: "access-test" } };
 const publish = { url: `${endpoint}:publish`, method: "POST", response: { state: "PENDING_REVIEW" } };
+const storeStatus = { url: `${endpoint}:fetchStatus`, response: { publishedItemRevisionStatus: {
+  state: "PUBLISHED", distributionChannels: [{ crxVersion: "0.1.0", deployPercentage: 100 }],
+} } };
 
-async function runRelease(t, { args = [], responses = [], env = credentials, verifyExit = 0, envFile = false, version = "0.1.0" } = {}) {
+async function runRelease(t, { args = [], responses = [oauth, storeStatus], env = credentials, verifyExit = 0, envFile = false, version = "0.1.0" } = {}) {
   const root = await mkdtemp(join(tmpdir(), "jamak-release-"));
   t.after(() => rm(root, { recursive: true, force: true }));
   const dist = join(root, "apps/chrome/dist");
@@ -49,6 +52,7 @@ async function runRelease(t, { args = [], responses = [], env = credentials, ver
         assert.equal(options.headers.Authorization, "Bearer access-test");
       }
       if (url.endsWith(":upload")) {
+        assert.equal(readFileSync(new URL("./commands.log", import.meta.url), "utf8"), "run verify\\n");
         assert.equal(options.headers["Content-Type"], "application/zip");
         assert.equal(options.body.subarray(0, 2).toString(), "PK");
       }
@@ -70,11 +74,11 @@ async function runRelease(t, { args = [], responses = [], env = credentials, ver
   return { ...result, requests, commands, root, version: manifest.version, output: result.stdout + result.stderr };
 }
 
-test("dry run packages only dist with a root manifest and never authenticates", async t => {
-  const result = await runRelease(t, { args: ["--dry-run"], env: {} });
+test("dry run packages the remote next version without uploading or saving it", async t => {
+  const result = await runRelease(t, { args: ["--dry-run"] });
   assert.equal(result.status, 0, result.output);
   assert.equal(result.commands, "run verify\n");
-  assert.equal(result.requests, "");
+  assert.equal(result.requests, `${oauth.url}\n${storeStatus.url}\n`);
   assert.equal(result.version, "0.1.0", "Dry runs do not save the version increase");
   const archive = join(result.root, ".ralph/releases/jamak-0.1.1.zip");
   const entries = execFileSync("unzip", ["-Z1", archive], { encoding: "utf8" }).trim().split("\n").sort();
@@ -84,7 +88,7 @@ test("dry run packages only dist with a root manifest and never authenticates", 
 
 test("release defaults to patch and accepts patch, minor and major", async t => {
   for (const [args, version] of [[[], "1.2.4"], [["patch"], "1.2.4"], [["minor"], "1.3.0"], [["major"], "2.0.0"]]) {
-    const result = await runRelease(t, { args, version: "1.2.3", responses: [oauth,
+    const result = await runRelease(t, { args, version: "9.9.9", responses: [oauth, { ...storeStatus, response: { publishedItemRevisionStatus: { distributionChannels: [{ crxVersion: "1.2.3" }] } } },
       { url: uploadUrl, method: "POST", response: { uploadState: "SUCCEEDED" } }, publish] });
     assert.equal(result.status, 0, result.output);
     assert.equal(result.version, version);
@@ -94,12 +98,36 @@ test("release defaults to patch and accepts patch, minor and major", async t => 
   }
 });
 
+test("the published remote version overrides a higher local version", async t => {
+  const result = await runRelease(t, { version: "0.3.0", responses: [oauth, storeStatus,
+    { url: uploadUrl, method: "POST", response: { uploadState: "SUCCEEDED" } }, publish] });
+  assert.equal(result.status, 0, result.output);
+  assert.equal(result.version, "0.1.1");
+  assert.match(result.output, /Uploading Jamak 0\.1\.1/);
+});
+
+test("failed review submission restores the local version and explains the dashboard requirement", async t => {
+  let localVersion = "0.3.0";
+  for (let attempt = 0; attempt < 2; attempt++) {
+    const result = await runRelease(t, { version: localVersion, responses: [oauth, storeStatus,
+      { url: uploadUrl, method: "POST", response: { uploadState: "SUCCEEDED" } },
+      { ...publish, status: 400, response: { error: { message: "Your submission does not meet the requirements to be published in the store. Check the Developer Dashboard for steps to resolve." } } }] });
+    assert.equal(result.status, 1, result.output);
+    assert.equal(result.version, "0.3.0");
+    assert.match(result.output, /Uploading Jamak 0\.1\.1/);
+    assert.match(result.output, /package was uploaded/i);
+    assert.match(result.output, /Developer Dashboard/);
+    assert.match(result.output, /permission justifications/i);
+    localVersion = result.version;
+  }
+});
+
 test("dry run previews minor and major in either argument order", async t => {
   for (const [args, version] of [[["minor", "--dry-run"], "1.3.0"], [["--dry-run", "major"], "2.0.0"]]) {
-    const result = await runRelease(t, { args, version: "1.2.3", env: {} });
+    const result = await runRelease(t, { args, version: "9.9.9", responses: [oauth, { ...storeStatus, response: { publishedItemRevisionStatus: { distributionChannels: [{ crxVersion: "1.2.3" }] } } }] });
     assert.equal(result.status, 0, result.output);
-    assert.equal(result.version, "1.2.3");
-    assert.equal(result.requests, "");
+    assert.equal(result.version, "9.9.9");
+    assert.equal(result.requests, `${oauth.url}\n${storeStatus.url}\n`);
     const archive = join(result.root, `.ralph/releases/jamak-${version}.zip`);
     assert.equal(JSON.parse(execFileSync("unzip", ["-p", archive, "manifest.json"], { encoding: "utf8" })).version, version);
   }
@@ -118,12 +146,13 @@ test("invalid release arguments stop before changing versions or verifying", asy
 
 test("invalid or overflowing Chrome versions stop before verification", async t => {
   for (const version of ["1.2", "1.2.3.4", "01.2.3", "1.2.3-beta", "1.2.65535", "65536.0.0"]) {
-    const result = await runRelease(t, { version, args: ["--dry-run"], env: {} });
+    const result = await runRelease(t, { args: ["--dry-run"], responses: [oauth, { ...storeStatus,
+      response: { publishedItemRevisionStatus: { distributionChannels: [{ crxVersion: version }] } } }] });
     assert.equal(result.status, 1);
     assert.match(result.output, /version/i);
-    assert.equal(result.version, version);
+    assert.equal(result.version, "0.1.0");
     assert.equal(result.commands, "");
-    assert.equal(result.requests, "");
+    assert.equal(result.requests, `${oauth.url}\n${storeStatus.url}\n`);
   }
 });
 
@@ -136,30 +165,69 @@ test("credentials are checked before verification or network requests", async t 
   assert.equal(result.version, "0.1.0");
 });
 
-test("failed verification prevents authentication and upload", async t => {
+test("failed verification allows only authentication/status reads and restores the version", async t => {
   for (const args of [[], ["--dry-run"]]) {
     const result = await runRelease(t, { args, verifyExit: 1 });
     assert.equal(result.status, 1);
-    assert.equal(result.requests, "");
+    assert.equal(result.requests, `${oauth.url}\n${storeStatus.url}\n`);
     assert.equal(result.version, "0.1.0", "Failed verification restores the original version");
   }
 });
 
+test("the highest published version is compared numerically and rejected submissions are ignored", async t => {
+  const result = await runRelease(t, { args: ["--dry-run"], version: "9.9.9", responses: [oauth, {
+    ...storeStatus, response: {
+      publishedItemRevisionStatus: { distributionChannels: [{ crxVersion: "1.9.9" }, { crxVersion: "1.10.0" }] },
+      submittedItemRevisionStatus: { state: "REJECTED", distributionChannels: [{ crxVersion: "9.9.9" }] },
+    },
+  }] });
+  assert.equal(result.status, 0, result.output);
+  assert.equal(result.version, "9.9.9");
+  const archive = join(result.root, ".ralph/releases/jamak-1.10.1.zip");
+  assert.equal(JSON.parse(execFileSync("unzip", ["-p", archive, "manifest.json"], { encoding: "utf8" })).version, "1.10.1");
+});
+
+test("unpublished items and pending/staged submissions stop without a local fallback", async t => {
+  for (const response of [{}, { publishedItemRevisionStatus: { distributionChannels: [] } },
+    ...["PENDING_REVIEW", "STAGED"].map(state => ({ ...storeStatus.response, submittedItemRevisionStatus: { state } }))]) {
+    const result = await runRelease(t, { args: ["--dry-run"], version: "9.9.9", responses: [oauth, { ...storeStatus, response }] });
+    assert.equal(result.status, 1, result.output);
+    assert.equal(result.version, "9.9.9");
+    assert.equal(result.commands, "");
+    assert.equal(result.requests, `${oauth.url}\n${storeStatus.url}\n`);
+    assert.match(result.output, /Developer Dashboard/);
+  }
+});
+
+test("authentication/status failure stops before verification or version mutation and redacts credentials", async t => {
+  for (const responses of [
+    [{ ...oauth, status: 400, response: { error_description: "secret-test refresh-test rejected" } }],
+    [oauth, { ...storeStatus, status: 503, response: { error: { message: "secret-test refresh-test access-test unavailable" } } }],
+  ]) {
+    const result = await runRelease(t, { args: ["--dry-run"], version: "9.9.9", responses });
+    assert.equal(result.status, 1, result.output);
+    assert.equal(result.version, "9.9.9");
+    assert.equal(result.commands, "");
+    assert.ok(!result.requests.includes(uploadUrl));
+    for (const secret of ["secret-test", "refresh-test", "access-test"]) assert.ok(!result.output.includes(secret));
+  }
+});
+
 test("local env setup uploads the ZIP and submits for review", async t => {
-  const result = await runRelease(t, { env: {}, envFile: true, responses: [oauth,
+  const result = await runRelease(t, { env: {}, envFile: true, responses: [oauth, storeStatus,
     { url: uploadUrl, method: "POST", response: { uploadState: "SUCCEEDED" } }, publish] });
   assert.equal(result.status, 0, result.output);
-  assert.equal(result.requests, `${oauth.url}\n${uploadUrl}\n${publish.url}\n`);
+  assert.equal(result.requests, `${oauth.url}\n${storeStatus.url}\n${uploadUrl}\n${publish.url}\n`);
   assert.match(result.output, /Review submission accepted \(PENDING_REVIEW\)/);
   for (const secret of ["secret-test", "refresh-test", "access-test"]) assert.ok(!result.output.includes(secret));
 });
 
 test("asynchronous upload must finish before review submission", async t => {
-  const result = await runRelease(t, { responses: [oauth,
+  const result = await runRelease(t, { responses: [oauth, storeStatus,
     { url: uploadUrl, method: "POST", response: { uploadState: "IN_PROGRESS" } },
     { url: `${endpoint}:fetchStatus`, response: { lastAsyncUploadState: "SUCCEEDED" } }, publish] });
   assert.equal(result.status, 0, result.output);
-  assert.equal(result.requests, `${oauth.url}\n${uploadUrl}\n${endpoint}:fetchStatus\n${publish.url}\n`);
+  assert.equal(result.requests, `${oauth.url}\n${storeStatus.url}\n${uploadUrl}\n${endpoint}:fetchStatus\n${publish.url}\n`);
 });
 
 test("failed upload and HTTP errors never submit or print credentials", async t => {
@@ -167,10 +235,10 @@ test("failed upload and HTTP errors never submit or print credentials", async t 
     { response: { uploadState: "FAILED" } },
     { status: 400, response: { error: { message: "secret-test refresh-test access-test rejected" } } },
   ]) {
-    const result = await runRelease(t, { responses: [oauth, { url: uploadUrl, method: "POST", ...uploadResponse }] });
+    const result = await runRelease(t, { responses: [oauth, storeStatus, { url: uploadUrl, method: "POST", ...uploadResponse }] });
     assert.equal(result.status, 1, result.output);
-    assert.equal(result.requests, `${oauth.url}\n${uploadUrl}\n`);
-    assert.equal(result.version, "0.1.1", "An upload attempt keeps its version even after failure");
+    assert.equal(result.requests, `${oauth.url}\n${storeStatus.url}\n${uploadUrl}\n`);
+    assert.equal(result.version, "0.1.0", "An upload failure restores the original version");
     for (const secret of ["secret-test", "refresh-test", "access-test"]) assert.ok(!result.output.includes(secret));
   }
 });
