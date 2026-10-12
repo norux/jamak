@@ -37,6 +37,7 @@ test("Advanced preparation emits one completion event after readiness, never aft
   const settle = () => new Promise<void>(resolve => setTimeout(resolve, 0));
   try {
     await import("../apps/chrome/offscreen");
+    assert.equal((await command({ type: "snapshot" })).source, "en", "A fresh background defaults to manual English");
     await command({ type: "models", source: "ja", options }); await settle();
     assert.equal((await command({ type: "snapshot" })).state, "ready");
     assert.equal(completions(), 1, "Ready models notify even without an Advanced page listener");

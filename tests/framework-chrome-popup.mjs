@@ -29,7 +29,7 @@ try {
     globalThis.listeners = []; globalThis.delaySnapshot = false; globalThis.rejectModels = false;
     globalThis.packs = fresh ? [] : ["ja-JP", "en-US", "ko-KR"];
     globalThis.translationReady = !fresh;
-    globalThis.saved = { state: "idle", source: params.has("auto") ? "auto" : "ja", message: "初期", captions: [] };
+    globalThis.saved = { state: "idle", source: params.has("auto") ? "auto" : params.get("source") ?? "en", message: "初期", captions: [] };
     if (params.has("downloading")) saved = { ...saved, state: "preparing", tabId: 10, message: "백그라운드 다운로드 중…" };
     class Speech {
       processLocally = false;
@@ -68,7 +68,9 @@ try {
   await page.waitForFunction(() => !document.querySelector("#start").disabled, undefined, { timeout: 3000 });
   assert.deepEqual(await page.evaluate(() => installs), [], "Cached models must not reinstall");
   assert.equal(await page.locator("#auto-detect").isChecked(), false);
-  assert.equal(await page.locator("#language").inputValue(), "ja");
+  assert.equal(await page.locator("#language").inputValue(), "en");
+  assert.equal(await page.locator("#language").evaluate(select => [...select.options].find(option => option.defaultSelected)?.value ?? select.options[0].value), "en", "The popup HTML defaults to English before the background responds");
+  assert.equal(await page.evaluate(() => commands.find(command => command.type === "prepare").source), "en");
   await page.locator("#model-details summary").click();
   assert.match(await page.locator("#model-list").innerText(), /Chrome SODA/);
   await page.locator("#model-details summary").click();
@@ -87,6 +89,9 @@ try {
   await page.getByRole("button", { name: "중지", exact: true }).click();
   await page.waitForFunction(() => !document.querySelector("#start").disabled);
   assert.equal(await page.evaluate(() => commands.filter(command => command.type === "prepare").length), 2);
+  await page.goto(`${url}?source=ja`);
+  await page.waitForFunction(() => !document.querySelector("#start").disabled);
+  assert.equal(await page.locator("#language").inputValue(), "ja", "Reopening restores the selected Japanese source");
   await page.locator("#language").selectOption("en");
   await page.waitForFunction(() => saved.source === "en" && !document.querySelector("#start").disabled);
   assert.deepEqual(await page.evaluate(() => installs), []);
@@ -111,7 +116,7 @@ try {
   assert.deepEqual(await page.evaluate(() => commands.filter(command => command.type === "prepare" || command.type === "start")), []);
   await page.getByRole("button", { name: "모델 다운로드", exact: true }).click();
   await page.waitForFunction(() => !document.querySelector("#start").disabled);
-  assert.deepEqual(await page.evaluate(() => installs), [["ja-JP", "en-US", "ko-KR"]]);
+  assert.deepEqual(await page.evaluate(() => installs), [["en-US", "ko-KR"]]);
   assert.equal(await page.locator("#model-setup").isVisible(), false);
   assert.equal(await page.locator("#start").isVisible(), true);
   await page.goto(`${url}?fresh&whisper`);
@@ -157,12 +162,12 @@ try {
   await page.getByRole("button", { name: "모델 다운로드", exact: true }).click();
   await page.waitForFunction(() => saved.source === "en" && !document.querySelector("#start").disabled);
   assert.equal(await page.locator("#diagnostic").count(), 0);
-  await page.goto(`${url}?gpu`);
+  await page.goto(`${url}?gpu&source=ja`);
   await page.waitForFunction(() => !document.querySelector("#start").disabled, undefined, {timeout:3000});
   assert.match(await page.locator("#model-description").textContent(), /Chrome SODA/u);
   assert.deepEqual(await page.evaluate(() => installs), [], "Cached Japanese speech packs must work on WebGPU without a Whisper download");
   assert.equal(await page.evaluate(() => commands.find(command => command.type === "prepare").source), "ja");
-  await page.goto(`${url}?fresh&gpu`);
+  await page.goto(`${url}?fresh&gpu&source=ja`);
   await page.waitForFunction(() => !document.querySelector("#prepare").disabled);
   assert.match(await page.locator("#model-description").textContent(), /Chrome SODA/u);
   assert.equal(await page.locator("#start").isVisible(), false);
@@ -172,7 +177,7 @@ try {
   await page.locator("#language").selectOption("en");
   await page.waitForFunction(() => saved.source === "en" && !document.querySelector("#start").disabled);
   assert.match(await page.locator("#model-description").textContent(), /Chrome SODA/u);
-  await page.goto(`${url}?downloading`);
+  await page.goto(`${url}?downloading&source=ja`);
   await page.getByText("백그라운드 다운로드 중…", { exact: true }).waitFor();
   assert.equal(await page.locator("#start").isVisible(), false);
   assert.equal(await page.locator("#prepare").isVisible(), true);
@@ -323,6 +328,11 @@ try {
   await page.waitForFunction(() => document.querySelector("#model-list").textContent.includes("Whisper Base"));
   await page.locator("#model-details summary").click();
   assert.doesNotMatch(await page.locator("#model-list").innerText(), /Chrome SODA/);
+  await page.goto(new URL("advanced.html", url).href);
+  await page.waitForFunction(() => document.querySelector("#recognition").options.length === 6);
+  await page.locator("#retry").click();
+  await page.waitForFunction(() => commands.some(command => command.type === "models"));
+  assert.equal(await page.evaluate(() => commands.find(command => command.type === "models").source), "en", "Advanced opened directly defaults to English");
   console.log(JSON.stringify({ passed: true, scope: "Popup DOM and browser API mocks; cached models auto-ready on open/Stop, missing packs require a download gesture, readiness never starts capture" }));
 } finally {
   await browser?.close(); await new Promise(done => server.close(done));

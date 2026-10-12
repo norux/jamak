@@ -9,7 +9,7 @@
 ## Features
 
 - Optionally detects English, Japanese and Korean per speech turn. English/Japanese → Korean subtitles; Korean speech keeps its original text.
-- Select English, Japanese or Korean manually to disable automatic detection. Manual Japanese is the default.
+- Select English, Japanese or Korean manually to disable automatic detection. Manual English is the default.
 - Captures the selected tab's audio, including videos, iframes and Web Audio. Playback remains audible.
 - Updates captions as speech arrives and keeps each caption in place until recognition and its matching translation are final, even when newer captions arrive. Whisper also shows provisional text while speaking, then confirms stable sentences. Hypotheses removed by recognition corrections are withdrawn from the overlay and history so they cannot block later captions.
 - Streams Korean translation as it is generated with Chrome TranslateKit or the optional Hy-MT2 WebGPU model; source corrections update the same caption, keeping the previous sentence while its replacement regenerates and patching the changed text without replaying the read prefix.
@@ -35,7 +35,7 @@ npm run build
 
 1. Open `chrome://extensions`, enable **Developer mode**, and choose **Load unpacked**.
 2. Select `apps/chrome/dist`.
-3. Open a page with audio, click Jamak, and choose English, Japanese or Korean manually (Japanese by default), or enable the **자동 감지** checkbox for multilingual speech. Selecting a source language turns automatic detection off. Manual Korean uses Whisper and displays the original without translation.
+3. Open a page with audio, click Jamak, and choose English, Japanese or Korean manually (English by default), or enable the **자동 감지** checkbox for multilingual speech. Selecting a source language turns automatic detection off. Manual Korean uses Whisper and displays the original without translation.
 4. Use Chrome defaults, or open **Advanced · 모델 선택** to choose recognition and translation separately. Selecting an option stops the current session and prepares the new models immediately; closing the window does not stop downloads. Each selector shows whether its model still needs downloading or is stored locally; completed downloads can still be loading. A Chrome desktop notification announces readiness. Allow Chrome notifications in your OS settings to receive it. **양쪽 모두 Chrome 기본값** restores both defaults. Then return to the original tab.
 5. Prepare the models once; the popup shows a progress bar for the current download/preparation stage, including when reopened. **모델 정보** opens a compact table of the selected recognition, translation, voice-activity and speaker models. Then click **번역 시작**. Click **중지** to stop.
 

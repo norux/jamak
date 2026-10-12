@@ -12,7 +12,7 @@ const reset = document.querySelector("#reset") as HTMLButtonElement;
 const stop = document.querySelector("#stop") as HTMLButtonElement;
 const params = new URL(location.href).searchParams;
 const tabId = Number(params.get("tabId")) || undefined;
-let source: BackgroundSnapshot["source"] = "ja";
+let source: BackgroundSnapshot["source"] = "en";
 const selectedSource = params.get("source");
 if (selectedSource === "ja" || selectedSource === "en" || selectedSource === "ko" || selectedSource === "auto") source = selectedSource;
 let disposed = false;

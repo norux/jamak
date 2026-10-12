@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Jamak \u2014 Live Subtitles",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "On-device live Korean subtitles with automatic English, Japanese and Korean speech detection, translation and speaker colors.",
   "minimum_chrome_version": "138",
   "permissions": [

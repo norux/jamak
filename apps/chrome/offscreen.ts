@@ -5,7 +5,7 @@ import { createChromeEngine } from "./engine";
 import { createChromeTabInput } from "./tab-input";
 import { defaultModelOptions, validModelOptions } from "./model-options";
 
-let snapshot: BackgroundSnapshot = { state: "idle", source: "ja", message: "음성 언어를 선택하고 모델을 준비하세요.", captions: [] };
+let snapshot: BackgroundSnapshot = { state: "idle", source: "en", message: "음성 언어를 선택하고 모델을 준비하세요.", captions: [] };
 let engine: ReturnType<typeof createChromeEngine> | undefined;
 let capture: ReturnType<typeof createChromeTabInput> | undefined;
 let controller: ReturnType<typeof createSessionController> | undefined;

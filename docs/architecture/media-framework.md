@@ -4,7 +4,7 @@ Jamak ships one Manifest V3 desktop Chrome extension from `apps/chrome`. The for
 
 ## Runtime and data flow
 
-1. The popup defaults to manual Japanese, allows English/Japanese/Korean selection and offers an optional automatic-detection checkbox. Selecting a source language disables detection. Manual Korean uses fixed-language Whisper and skips translation. It prepares models and starts/stops capture for its original tab.
+1. The popup defaults to manual English, allows English/Japanese/Korean selection and offers an optional automatic-detection checkbox. Selecting a source language disables detection. Manual Korean uses fixed-language Whisper and skips translation. It prepares models and starts/stops capture for its original tab.
 2. The service worker coordinates session state and action-granted tab access. It owns the control channel, not inference.
 3. An offscreen document keeps tab capture, audible playback and inference alive after the popup closes.
 4. `packages/media-web` and the audio worklet provide ordered PCM with capture-relative timing. Tab capture includes iframe and Web Audio output; it does not isolate one video or capture microphones/system audio.
