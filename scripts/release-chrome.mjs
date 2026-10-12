@@ -1,6 +1,6 @@
 import { execFileSync } from "node:child_process";
 import { existsSync } from "node:fs";
-import { mkdir, readFile, rm } from "node:fs/promises";
+import { mkdir, readFile, rm, writeFile } from "node:fs/promises";
 import { loadEnvFile } from "node:process";
 import { setTimeout } from "node:timers/promises";
 import { fileURLToPath } from "node:url";
@@ -17,9 +17,11 @@ async function request(url, options, label) {
 
 async function release() {
   const args = process.argv.slice(2);
-  if (args.length > 1 || args.some(arg => arg !== "--dry-run")) {
-    throw new Error("Usage: npm run release:chrome [-- --dry-run]");
+  const bumps = args.filter(arg => arg !== "--dry-run");
+  if (bumps.length > 1 || bumps.some(arg => !["patch", "minor", "major"].includes(arg)) || new Set(args).size !== args.length) {
+    throw new Error("Usage: npm run release:chrome [-- [patch|minor|major] [--dry-run]]");
   }
+  const bump = bumps[0] ?? "patch";
   const dryRun = args.includes("--dry-run");
   const envFile = `${root}.env.chrome-store`;
   if (!dryRun && existsSync(envFile)) loadEnvFile(envFile);
@@ -33,8 +35,29 @@ async function release() {
     }
   }
 
-  console.log("Verifying and building Jamak...");
-  execFileSync("npm", ["run", "verify"], { cwd: root, stdio: "inherit" });
+  const manifestPath = `${root}apps/chrome/public/manifest.json`;
+  const original = await readFile(manifestPath, "utf8");
+  const current = JSON.parse(original).version;
+  if (typeof current !== "string" || !/^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/.test(current)) {
+    throw new Error("Extension version must use major.minor.patch integers.");
+  }
+  const parts = current.split(".").map(Number);
+  if (parts.some(part => part > 65535)) throw new Error("Chrome version components must not exceed 65535.");
+  const index = bump === "major" ? 0 : bump === "minor" ? 1 : 2;
+  parts[index]++;
+  for (let lower = index + 1; lower < parts.length; lower++) parts[lower] = 0;
+  if (parts[index] > 65535) throw new Error(`Cannot increase ${bump}: Chrome version components must not exceed 65535.`);
+  const next = parts.join(".");
+  console.log(`Extension version: ${current} → ${next} (${bump}${dryRun ? ", dry run" : ""})`);
+  let verified = false;
+  try {
+    await writeFile(manifestPath, original.replace(/("version"\s*:\s*")[^"]*(")/, (_match, prefix, suffix) => `${prefix}${next}${suffix}`));
+    console.log("Verifying and building Jamak...");
+    execFileSync("npm", ["run", "verify"], { cwd: root, stdio: "inherit" });
+    verified = true;
+  } finally {
+    if (dryRun || !verified) await writeFile(manifestPath, original);
+  }
   const dist = `${root}apps/chrome/dist`;
   const manifest = JSON.parse(await readFile(`${dist}/manifest.json`, "utf8"));
   const directory = `${root}.ralph/releases`;

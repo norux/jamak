@@ -6,7 +6,7 @@ After one-time store/OAuth setup, run:
 npm run release:chrome
 ```
 
-This runs `npm run verify` (including the production build), creates `.ralph/releases/jamak-<manifest-version>.zip`, refreshes an OAuth access token, uploads to the existing Chrome Web Store item through API V2, waits for upload processing, and submits for review. Approval publishes automatically with the item's existing visibility/distribution settings. A successful command means submission was accepted, not that review passed or the extension is already public. The command does not change store descriptions, images, privacy declarations or visibility.
+This increases the extension manifest patch version, runs `npm run verify` (including the production build), creates `.ralph/releases/jamak-<manifest-version>.zip`, refreshes an OAuth access token, uploads to the existing Chrome Web Store item through API V2, waits for upload processing, and submits for review. Approval publishes automatically with the item's existing visibility/distribution settings. A successful command means submission was accepted, not that review passed or the extension is already public. The command does not change store descriptions, images, privacy declarations or visibility.
 
 Requirements: Node.js 22.12+, installed npm dependencies and Playwright Chromium as described in [Testing](testing.md), and the `zip` utility on PATH. macOS includes `zip`; Linux typically provides it through its package manager.
 
@@ -40,7 +40,16 @@ Existing workspaces are not updated by adding the setting. Copies keep the value
 
 ## Each release
 
-Increase `version` in `apps/chrome/public/manifest.json` before uploading a new version. `npm version` only updates the npm package and does not update the extension manifest. Then run `npm run release:chrome`. Verification must pass before any API calls. Upload failure or missing/unknown upload state stops submission; an asynchronous upload is polled every five seconds for up to five minutes. HTTP requests have a two-minute timeout. No upload or submission is retried automatically. If a network error/timeout leaves the outcome uncertain, inspect the developer dashboard before rerunning.
+The release command increases `version` in `apps/chrome/public/manifest.json` before verification/build. It accepts one optional positional argument and defaults to `patch`:
+
+```sh
+npm run release:chrome             # patch: 1.2.3 → 1.2.4
+npm run release:chrome -- patch    # same explicit choice
+npm run release:chrome -- minor    # 1.2.3 → 1.3.0
+npm run release:chrome -- major    # 1.2.3 → 2.0.0
+```
+
+Only the extension manifest version changes; npm package/lockfile versions, Git commits and tags are untouched. The source must use three numeric `major.minor.patch` components within [Chrome's version limits](https://developer.chrome.com/docs/extensions/reference/manifest/version). Invalid arguments/versions and missing credentials stop before changing the manifest. Failed verification restores its original contents. Once verification passes, a real release keeps the increased version even if packaging, authentication, upload or submission fails. Each real rerun increases the version again; inspect the dashboard first after an uncertain store outcome. Commit the resulting manifest version with the release changes. Verification must pass before any API calls. Upload failure or missing/unknown upload state stops submission; an asynchronous upload is polled every five seconds for up to five minutes. HTTP requests have a two-minute timeout. No upload or submission is retried automatically. If a network error/timeout leaves the outcome uncertain, inspect the developer dashboard before rerunning.
 
 When changing store visibility, publish with the new visibility through the dashboard once before resuming API releases, as required by Google's [API guide](https://developer.chrome.com/docs/webstore/using-api).
 
@@ -48,9 +57,10 @@ To verify/package without credentials or store requests:
 
 ```sh
 npm run release:chrome -- --dry-run
+npm run release:chrome -- minor --dry-run
 ```
 
-This still runs verification and produces the actual ZIP. It does not verify OAuth credentials, server-side package acceptance or review eligibility. `verify` does not prove real audio/model availability; test a fresh ordinary Chrome profile before release as described in [Testing](testing.md).
+This runs verification and produces the actual ZIP for the next selected version, restoring the source manifest afterward even on verification failure. The bump argument and `--dry-run` may appear in either order. The following real release from the same source version therefore uses the same version as the preview. It does not verify OAuth credentials, server-side package acceptance or review eligibility. `verify` does not prove real audio/model availability; test a fresh ordinary Chrome profile before release as described in [Testing](testing.md).
 
 ## Release-script verification
 
@@ -58,4 +68,4 @@ This still runs verification and produces the actual ZIP. It does not verify OAu
 npm run test:release:chrome
 ```
 
-These subprocess tests use a stubbed npm verification command and mocked HTTP responses, with all real network requests disabled. They exercise real ZIP creation, root manifest placement, exclusion of OS metadata, missing credentials, verification failure, OAuth refresh, local environment-file loading, upload-before-submission, asynchronous upload completion, upload/API failures and credential redaction. They do not upload or publish an extension. Use the real dry run above to verify the complete local pipeline.
+These subprocess tests use a stubbed npm verification command and mocked HTTP responses, with all real network requests disabled. They exercise default/explicit patch, minor and major increments, dry-run previews/restoration, invalid arguments/version limits, verification rollback, retaining the version after upload failure, real ZIP creation, root manifest placement, exclusion of OS metadata, missing credentials, verification failure, OAuth refresh, local environment-file loading, upload-before-submission, asynchronous upload completion, upload/API failures and credential redaction. They do not upload or publish an extension. Use the real dry run above to verify the complete local pipeline.

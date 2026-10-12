@@ -69,7 +69,7 @@ See [Architecture](docs/architecture/media-framework.md), [Coding conventions](d
 
 ## Publishing to Chrome Web Store
 
-After [one-time developer account and OAuth setup](docs/releasing.md), run `npm run release:chrome` to verify, build, ZIP, upload and submit for review. Approval publishes automatically with the store item's existing distribution settings. Run `npm run release:chrome -- --dry-run` to verify and create the ZIP without store requests. Update the extension manifest version before each new upload; store metadata and privacy declarations are configured in the developer dashboard.
+After [one-time developer account and OAuth setup](docs/releasing.md), run `npm run release:chrome` to increase the extension patch version, verify, build, ZIP, upload and submit for review. Use `npm run release:chrome -- minor` or `npm run release:chrome -- major` for larger version changes. Approval publishes automatically with the store item's existing distribution settings. Run `npm run release:chrome -- --dry-run` to verify and create a ZIP for the next version without saving the version increase or making store requests. Failed verification restores the original version; after verification passes, a real release retains its new version even if a store request fails. The command changes only the extension manifest version and does not commit or tag it; store metadata and privacy declarations are configured in the developer dashboard.
 
 For Orca workspaces, keep credentials in the main checkout and configure `.env.chrome-store` as a [worktree shared path](docs/releasing.md#orca-workspaces) so newly created workspaces receive the private file.
 
