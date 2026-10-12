@@ -55,6 +55,8 @@ Advanced download labels must inspect the selected model's complete cache invent
 
 ## Verification and delivery
 
+Language/model selectors use the local `jamak-select` CSS component and Chrome's native customizable select/picker. Preserve select IDs, labels, descriptions, values, change events and disabled states; do not replace them with a scripted dropdown. Keep the component's Norux semantic roles mapped to Jamak's existing theme/font rather than migrating unrelated UI. Verify open pickers, keyboard selection/Escape/Tab, both themes, 320px reflow and 200% zoom through the popup browser check.
+
 For streaming translators, validate every incoming recognition revision but keep the active source published until its translation stream finishes; coalesce newer same-language corrections for the next job so ongoing ASR cannot starve Korean display. Language corrections and Korean bypass invalidate the old published source immediately. Keep exact source pairing and a shared published translation revision sequence across model chunks and Korean bypass. Verify multiple visible Korean changes within the same caption before the fixture's first spoken turn ends; a worker stream or a delayed published final alone is insufficient.
 
 Run `npm run verify` for broad changes. For a scoped change, run the checks listed in `docs/testing.md` that demonstrate its behavior. Distinguish mocked display tests from real audio/model/browser verification. Report commands, failures and environment limitations honestly.

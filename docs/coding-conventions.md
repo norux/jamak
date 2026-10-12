@@ -17,5 +17,6 @@
 - Explicitly withdraw provisional hypotheses removed by recognition corrections. Carry a newer final empty `retracted` revision through the existing source channel, remove it from overlay/history, and fence late replies. Do not invent final text or age out an active correction to unblock the stack.
 - Add regression checks for bugs before fixing them. Test behavior rather than private implementation details; do not export helpers solely for tests.
 - Keep feature changes scoped. Do not rename compatibility keys or reformat unrelated files as a side effect.
+- Language/model select controls share `apps/chrome/select.css`. Use Norux semantic roles mapped to existing Jamak theme variables; retaining the purple accent and system font is an intentional product override. Style the native `base-select` picker, options and selected/checkmark/focus states without adding selection JavaScript or new dependencies. Keep 44px targets and native labels, keyboard behavior, change events and disabled states.
 - Follow [AGENTS.md](../AGENTS.md)'s required README/AGENTS/docs review whenever behavior changes. Update support tables only when a platform is actually supported.
 - Use Conventional Commits, with one intent per commit. Record verification and any meaningful limitations.

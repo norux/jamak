@@ -11,7 +11,7 @@ const server = createServer(async (request, response) => {
   const file = resolve(output, `.${new URL(request.url, "http://localhost").pathname}`);
   if (!file.startsWith(output + sep)) { response.writeHead(403); response.end(); return; }
   try {
-    response.setHeader("Content-Type", file.endsWith(".js") ? "text/javascript" : file.endsWith(".css") ? "text/css" : "text/html");
+    response.setHeader("Content-Type", file.endsWith(".js") ? "text/javascript" : file.endsWith(".css") ? "text/css" : file.endsWith(".svg") ? "image/svg+xml" : "text/html");
     response.end(await readFile(file));
   } catch { response.writeHead(404); response.end(); }
 });
@@ -219,11 +219,47 @@ try {
   await page.waitForFunction(() => document.querySelector("#recognition").options.length === 6);
   assert.equal(await page.locator("#recognition").inputValue(), "chrome");
   assert.equal(await page.locator("#translation").inputValue(), "chrome");
+  assert.equal(await page.locator("#recognition").evaluate(select => select.getBoundingClientRect().height >= 44), true, "Model controls must have 44px targets");
+  await page.locator("#translation").evaluate(select => { select.disabled = true; });
+  assert.equal(await page.locator("#translation").evaluate(select => getComputedStyle(select).opacity), "0.5");
+  await page.locator("#translation").evaluate(select => { select.disabled = false; });
   await page.getByText("다운로드 완료 · Chrome 언어 팩", { exact: true }).first().waitFor({ timeout: 3000 });
   assert.equal(await page.locator("#recognition-download").textContent(), "다운로드 완료 · Chrome 언어 팩");
   assert.equal(await page.locator("#translation-download").textContent(), "다운로드 완료 · Chrome 언어 팩");
   assert.equal(await page.locator("#stop").isDisabled(), true, "Download Stop is enabled only during preparation");
-  await page.locator("#recognition").selectOption("tiny");
+  assert.equal(await page.locator("#recognition").evaluate(select => getComputedStyle(select).appearance), "base-select");
+  await page.setViewportSize({ width: 640, height: 740 });
+  await page.getByLabel("받아쓰기 모델", { exact: true }).focus();
+  await page.keyboard.press("Space");
+  assert.equal(await page.locator("#recognition").evaluate(select => select.matches(":open")), true);
+  await page.screenshot({ path: ".ralph/advanced-select-light.png" });
+  await page.keyboard.press("Escape");
+  assert.equal(await page.locator("#recognition").inputValue(), "chrome", "Escape leaves the selected model unchanged");
+  assert.equal(await page.evaluate(() => commands.some(command => command.type === "models")), false, "Opening and dismissing a picker cannot download a model");
+  await page.keyboard.press("Tab");
+  assert.equal(await page.locator("#translation").evaluate(select => document.activeElement === select), true, "Tab leaves the picker for the next field");
+  await page.emulateMedia({ colorScheme: "dark" });
+  await page.locator("#recognition").click();
+  await page.screenshot({ path: ".ralph/advanced-select-dark.png" });
+  await page.keyboard.press("Escape");
+  await page.setViewportSize({ width: 640, height: 960 });
+  await page.evaluate(() => { document.documentElement.style.zoom = "2"; });
+  await page.locator("#translation").click();
+  await page.screenshot({ path: ".ralph/advanced-select-zoom.png" });
+  assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true, "Advanced must reflow at 200% zoom");
+  await page.keyboard.press("Escape");
+  await page.evaluate(() => { document.documentElement.style.zoom = ""; });
+  await page.setViewportSize({ width: 320, height: 720 });
+  await page.locator("#recognition").click();
+  await page.screenshot({ path: ".ralph/advanced-select-narrow.png" });
+  assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true, "Select must fit a narrow viewport");
+  await page.keyboard.press("Escape");
+  await page.setViewportSize({ width: 640, height: 740 });
+  await page.emulateMedia({ colorScheme: "light" });
+  await page.getByLabel("받아쓰기 모델", { exact: true }).focus();
+  await page.keyboard.press("Space");
+  await page.keyboard.press("ArrowDown");
+  await page.keyboard.press("Enter");
   await page.getByText("선택한 모델 다운로드 중…", { exact:true }).waitFor();
   await page.getByText("다운로드 필요", { exact: true }).waitFor();
   assert.equal(await page.locator("#download-progress").isVisible(), true);
@@ -254,6 +290,20 @@ try {
   await page.screenshot({path:".ralph/advanced-model-options.png"});
   await page.goto(url);
   await page.waitForFunction(() => !document.querySelector("#start").disabled);
+  await page.setViewportSize({ width: 320, height: 720 });
+  await page.getByLabel("음성 언어", { exact: true }).focus();
+  await page.keyboard.press("Space");
+  await page.screenshot({ path: ".ralph/popup-select-narrow.png" });
+  assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true, "Popup select must fit a narrow viewport");
+  await page.keyboard.press("Escape");
+  await page.setViewportSize({ width: 640, height: 960 });
+  await page.evaluate(() => { document.documentElement.style.zoom = "2"; });
+  await page.getByLabel("음성 언어", { exact: true }).click();
+  await page.screenshot({ path: ".ralph/popup-select-zoom.png" });
+  assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true, "Popup must reflow at 200% zoom");
+  await page.keyboard.press("Escape");
+  await page.evaluate(() => { document.documentElement.style.zoom = ""; });
+  await page.setViewportSize({ width: 640, height: 740 });
   await page.locator("#model-details summary").click();
   await page.evaluate(() => {
     localStorage.setItem("jamak-model-options-v1", JSON.stringify({ recognition: "tiny", translation: "m2m100" }));

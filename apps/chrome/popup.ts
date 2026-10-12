@@ -115,7 +115,7 @@ async function ensureReady() {
     const sources = source === "auto" ? ["en", "ja"] : source === "ko" ? [] : [source];
     const translations = options.translation === "chrome" ? await Promise.all(sources.map(sourceLanguage => view.Translator?.availability({ sourceLanguage, targetLanguage: "ko" }))) : [];
     let cached = translations.every(state => state === "available");
-    const selectedModels = options.translation !== "chrome" && source !== "ko" ? [registeredCandidate(translationCandidates[options.translation].model, "q8")] : [];
+    const selectedModels = options.translation !== "chrome" && source !== "ko" ? [registeredCandidate(translationCandidates[options.translation].model, translationCandidates[options.translation].dtype)] : [];
     if (cached && usingLocalSpeech()) {
       cached = await speech?.available?.({ langs: localSpeechLanguages(source as "ja" | "en"), processLocally: true }) === "available";
     } else if (cached) {

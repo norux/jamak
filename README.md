@@ -18,6 +18,7 @@
 - Keeps captions visible over fullscreen videos and players, including fullscreen videos inside embedded frames. Playback controls remain clickable.
 - Opens a separate original/translation history window.
 - Offers a separate **Advanced · 모델 선택** window with independent recognition/translation selectors. Selecting a model starts its download/preparation; saved choices and downloaded files are reused.
+- Uses matching light/dark selection controls and dropdowns for language and models, with keyboard navigation and visible selected/focus states.
 - Shows each selected model's download status in Advanced, including partial cached files and completed Chrome packs, plus current preparation progress. Advanced preparation sends a desktop Chrome notification once models are ready, even after the window closes.
 - Runs speech recognition, translation and speaker analysis locally. No API key or companion app required.
 

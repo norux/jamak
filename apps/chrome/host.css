@@ -1,9 +1,12 @@
+@import "./select.css";
+
 :root {
   color-scheme: light dark;
   font: 14px/1.55 system-ui, sans-serif;
-  color: #242936;
+  color: var(--foreground);
   background: #f5f6f9;
   --surface: #fff;
+  --foreground: #242936;
   --border: #e2e5ec;
   --muted: #6c7383;
   --accent: #4b56c6;
@@ -64,10 +67,10 @@ details p { overflow-wrap: anywhere; }
   .interpretation-controls > button { padding: 0 12px; font-size: 12px; }
 }
 @media (prefers-color-scheme: dark) {
-  :root { color: #e7e9f0; background: #17191f; --surface: #22252e; --border: #363b49; --muted: #a3abba; --accent: #5967cb; }
+  :root { --foreground: #e7e9f0; background: #17191f; --surface: #22252e; --border: #363b49; --muted: #a3abba; --accent: #5967cb; }
 }
 
-body.popup { width: 360px; padding: 20px; }
+body.popup { width: 360px; max-width: 100%; padding: 20px; }
 .popup .header { margin-bottom: 16px; }
 .popup .setup { flex-direction: column; align-items: stretch; gap: 10px; }
 .popup .setup label { width: 100%; }

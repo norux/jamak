@@ -63,7 +63,7 @@ async function checkDownloads() {
   const candidate = asrCandidates[options.recognition === "chrome" ? "turboFp16" : options.recognition];
   const recognitionCheck = native && speech?.available ? speech.available({ langs: localSpeechLanguages(source as "ja" | "en"), processLocally: true }).then(state => nativeDownload([state])) : storedModel(registeredCandidate(candidate.model, candidate.dtype));
   const sources = source === "auto" ? ["en", "ja"] : [source];
-  const translationCheck = source === "ko" ? Promise.resolve("현재 언어에서는 번역을 사용하지 않음") : options.translation !== "chrome" ? storedModel(registeredCandidate(translationCandidates[options.translation].model)) : Promise.all(sources.map(sourceLanguage => view.Translator?.availability({ sourceLanguage, targetLanguage: "ko" }))).then(nativeDownload);
+  const translationCheck = source === "ko" ? Promise.resolve("현재 언어에서는 번역을 사용하지 않음") : options.translation !== "chrome" ? storedModel(registeredCandidate(translationCandidates[options.translation].model, translationCandidates[options.translation].dtype)) : Promise.all(sources.map(sourceLanguage => view.Translator?.availability({ sourceLanguage, targetLanguage: "ko" }))).then(nativeDownload);
   const results = await Promise.allSettled([recognitionCheck, translationCheck]);
   if (disposed || current !== downloadRevision) return;
   for (const [index, id] of ["recognition-download", "translation-download"].entries()) {

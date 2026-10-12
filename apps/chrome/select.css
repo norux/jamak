@@ -1,0 +1,71 @@
+select.jamak-select {
+  --norux-color-background-surface: var(--surface);
+  --norux-color-foreground-primary: var(--foreground);
+  --norux-color-foreground-muted: var(--muted);
+  --norux-color-border-subtle: var(--border);
+  --norux-color-border-strong: var(--muted);
+  --norux-color-action-primary: var(--accent);
+  --norux-color-action-soft: color-mix(in srgb, var(--accent) 12%, var(--surface));
+  --norux-color-focus-ring: var(--accent);
+  min-width: 0;
+  min-height: 44px;
+  padding: 10px 12px;
+  border: 1px solid var(--norux-color-border-strong);
+  border-radius: 8px;
+  color: var(--norux-color-foreground-primary);
+  background: var(--norux-color-background-surface);
+  font: inherit;
+  font-size: 14px;
+  line-height: 1.5;
+  cursor: pointer;
+}
+select.jamak-select:hover:enabled { border-color: var(--norux-color-action-primary); }
+select.jamak-select:focus-visible { outline: 3px solid var(--norux-color-focus-ring); outline-offset: 3px; }
+select.jamak-select:disabled { opacity: .5; cursor: default; }
+
+@supports (appearance: base-select) {
+  select.jamak-select, select.jamak-select::picker(select) { appearance: base-select; }
+  select.jamak-select { display: flex; align-items: center; gap: 12px; white-space: normal; }
+  select.jamak-select:open { border-color: var(--norux-color-action-primary); }
+  select.jamak-select::picker-icon {
+    content: "";
+    width: 8px;
+    height: 8px;
+    flex: none;
+    margin: -4px 4px 0 auto;
+    border-right: 2px solid var(--norux-color-foreground-muted);
+    border-bottom: 2px solid var(--norux-color-foreground-muted);
+    transform: rotate(45deg);
+  }
+  select.jamak-select:open::picker-icon { transform: translateY(4px) rotate(225deg); }
+  select.jamak-select::picker(select) {
+    width: anchor-size(width);
+    max-width: calc(100vw - 32px);
+    max-height: min(320px, 50dvh);
+    margin-block: 8px;
+    padding: 4px;
+    border: 1px solid var(--norux-color-border-subtle);
+    border-radius: 12px;
+    color: var(--norux-color-foreground-primary);
+    background: var(--norux-color-background-surface);
+    box-shadow: 0 8px 24px color-mix(in srgb, var(--norux-color-foreground-primary) 14%, transparent);
+  }
+  select.jamak-select option {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-height: 44px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    overflow-wrap: anywhere;
+    white-space: normal;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+  select.jamak-select option:hover, select.jamak-select option:focus-visible, select.jamak-select option:checked {
+    color: var(--norux-color-foreground-primary);
+    background: var(--norux-color-action-soft);
+  }
+  select.jamak-select option:focus-visible { outline: 2px solid var(--norux-color-focus-ring); outline-offset: -2px; }
+  select.jamak-select option::checkmark { order: 1; margin-left: auto; color: var(--norux-color-action-primary); }
+}
