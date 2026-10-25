@@ -12,7 +12,7 @@ await build({ configFile: "vite.chrome.config.ts", logLevel: "warn", build: { ou
 await build({ configFile: false, logLevel: "warn", build: { outDir: output, emptyOutDir: false,
   rollupOptions: { input: { "overlay-channel": resolve("apps/chrome/overlay-channel.ts"), channel: resolve("apps/chrome/channel.ts"), overlay: resolve("apps/chrome/overlay.ts") }, preserveEntrySignatures: "strict", output: { entryFileNames: "[name].js" } } } });
 const manifest = JSON.parse(await readFile(`${output}/manifest.json`, "utf8"));
-assert.deepEqual(manifest.permissions, ["activeTab", "scripting", "tabCapture", "offscreen", "notifications"]); assert.equal(manifest.host_permissions, undefined);
+assert.deepEqual(manifest.permissions, ["activeTab", "scripting", "tabCapture", "offscreen", "notifications"]); assert.deepEqual(manifest.host_permissions, ["https://paddle-model-ecology.bj.bcebos.com/*"]);
 const server = createServer(async (request, response) => {
   try {
     const path = new URL(request.url, "http://localhost").pathname;
