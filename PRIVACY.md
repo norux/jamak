@@ -1,31 +1,31 @@
 # Jamak 개인정보처리방침 / Privacy Policy
 
-최종 갱신 / Last updated: 2026-10-10
+최종 갱신 / Last updated: 2026-10-25
 
 이 방침은 norux가 제공하는 데스크톱 Chrome 확장 프로그램 Jamak에 적용됩니다.
 This policy applies to the Jamak desktop Chrome extension maintained by norux.
 
 ## 처리하는 정보 / Information processed
 
-Jamak은 사용자가 번역을 시작한 탭의 오디오, 인식한 문장, 한국어 번역, 자막 시간 정보와 일시적인 화자 특징을 처리합니다. 탭 식별 정보는 선택한 탭에 연결하고 자막을 표시하는 데 사용합니다. 마이크나 시스템 전체 오디오는 수집하지 않습니다.
+Jamak은 사용자가 번역을 시작한 탭의 오디오, 인식한 문장, 선택한 언어의 번역, 자막 시간 정보와 일시적인 화자 특징을 처리합니다. 탭 식별 정보는 선택한 탭에 연결하고 자막을 표시하는 데 사용합니다. 마이크나 시스템 전체 오디오는 수집하지 않습니다.
 
-Jamak processes audio from the tab where you start subtitles, recognized text, Korean translations, caption timing and temporary speaker features. Tab identifiers are used to connect to the selected tab and display captions. Jamak does not capture microphone or system-wide audio.
+Jamak processes audio from the tab where you start subtitles, recognized text, translations in the selected language, caption timing and temporary speaker features. Tab identifiers are used to connect to the selected tab and display captions. Jamak does not capture microphone or system-wide audio.
 
 ## 처리 목적과 위치 / Purpose and processing location
 
-이 정보는 음성 인식, 한국어 자막, 화자별 배경색과 원문·번역 기록을 제공하는 데만 사용합니다. 음성 인식·번역·화자 분석은 기기 안에서 실행됩니다. 확장 프로그램은 오디오, 인식 문장, 번역 또는 화자 특징을 개발자나 외부 추론 서버에 전송하지 않습니다. 화자 구분은 세션 내 익명 구분이며 실제 신원을 식별하거나 세션 사이에 음성 프로필을 유지하지 않습니다.
+이 정보는 음성 인식, 선택한 언어의 자막, 화자별 배경색과 원문·번역 기록을 제공하는 데만 사용합니다. 음성 인식·언어 감지·번역·화자 분석은 기기 안에서 실행됩니다. 확장 프로그램은 오디오, 인식 문장, 번역 또는 화자 특징을 개발자나 외부 추론 서버에 전송하지 않습니다. 화자 구분은 세션 내 익명 구분이며 실제 신원을 식별하거나 세션 사이에 음성 프로필을 유지하지 않습니다.
 
-This information is used only for speech recognition, Korean captions, speaker colors and original/translation history. Recognition, translation and speaker analysis run on your device. The extension does not transmit audio, transcripts, translations or speaker features to the developer or an external inference server. Speaker grouping is anonymous within a session; it does not identify people or retain voice profiles across sessions.
+This information is used only for speech recognition, captions in the selected language, speaker colors and original/translation history. Recognition, language detection, translation and speaker analysis run on your device. The extension does not transmit audio, transcripts, translations or speaker features to the developer or an external inference server. Speaker grouping is anonymous within a session; it does not identify people or retain voice profiles across sessions.
 
 ## 보관 및 삭제 / Retention and deletion
 
 오디오 버퍼와 화자 특징은 실행 중 메모리에서 처리하며 녹음 파일로 저장하지 않습니다. 자막 기록은 최대 300개 발화로 제한된 메모리 기록이며 디스크에 영구 저장하지 않습니다. 중지 후에도 백그라운드 실행 문서나 열린 기록 창에 문장이 남을 수 있습니다. 새 모델 준비는 백그라운드 기록을 초기화합니다. 기록 창을 닫고 확장 프로그램을 다시 로드하거나 사용 중지하면 해당 실행의 메모리 기록을 해제할 수 있습니다.
 
-다운로드한 모델 파일은 이후 준비에 재사용할 수 있도록 기기에 캐시됩니다. 이 파일은 사용자 오디오나 자막 기록이 아닙니다. 확장 프로그램의 모델 캐시와 Chrome이 관리하는 언어팩은 별개이며, Chrome은 자체 언어팩의 다운로드와 보관을 관리합니다.
+선택한 모델 설정과 자막 언어는 확장 프로그램의 localStorage에 저장됩니다. 다운로드한 모델 파일은 이후 준비에 재사용할 수 있도록 기기에 캐시됩니다. 이 파일은 사용자 오디오나 자막 기록이 아닙니다. 확장 프로그램의 모델 캐시와 Chrome이 관리하는 언어팩은 별개이며, Chrome은 자체 언어팩의 다운로드와 보관을 관리합니다.
 
 Audio buffers and speaker features are processed in memory and are not saved as recordings. Caption history is limited to 300 utterances in memory and is not persistently stored on disk. Text may remain after Stop in the background runtime or an open history window. Preparing a new model session resets background history. Close history windows and reload or disable the extension to release that runtime's in-memory history.
 
-Downloaded model files are cached on your device for reuse. They are not your audio or caption history. The extension's model cache is separate from browser-managed language packs; Chrome manages its own language-pack downloads and retention.
+The selected model options and subtitle language are saved in extension-origin localStorage. Downloaded model files are cached on your device for reuse. They are not your audio or caption history. The extension's model cache is separate from browser-managed language packs; Chrome manages its own language-pack downloads and retention.
 
 ## 외부 연결 / External connections
 

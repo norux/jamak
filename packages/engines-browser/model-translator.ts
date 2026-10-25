@@ -6,6 +6,7 @@ import { translationCandidates } from "./translation-model";
 
 export function createModelTranslator(document: Document, languages: LanguagePair, candidate: keyof typeof translationCandidates,
   receive: (status: ModelStatus) => void, execution: "foreground" | "offscreen" = "foreground") {
+  languages = { ...languages };
   const selected = registeredCandidate(translationCandidates[candidate].model, translationCandidates[candidate].dtype);
   let worker: Worker | undefined;
   let requestId = 0;
@@ -43,7 +44,7 @@ export function createModelTranslator(document: Document, languages: LanguagePai
     const current = ++requestId;
     return new Promise<string | undefined>((resolve, reject) => {
       pending = { resolve, reject, chunk };
-      worker?.postMessage({ requestId: current, type, candidate, text, language });
+      worker?.postMessage({ requestId: current, type, candidate, text, language, targetLanguage: languages.target });
     });
   }
   const suspend = () => { if (execution === "foreground" && document.visibilityState !== "visible") stop(); };
@@ -53,7 +54,7 @@ export function createModelTranslator(document: Document, languages: LanguagePai
     streaming: candidate === "hyMt2",
     async *translate(source, pair) {
       if (!source.text || source.text.length > 16384 || !Number.isSafeInteger(source.sourceRevision) || source.sourceRevision <= 0) throw new Error("Invalid translation source");
-      if ((languages.source !== "auto" && languages.source !== pair.source) || pair.target !== "ko" || source.language !== pair.source || (pair.source !== "en" && pair.source !== "ja")) throw new Error("language-pair-unsupported");
+      if ((languages.source !== "auto" && languages.source !== pair.source) || pair.target !== languages.target || source.language !== pair.source || !["ko", "en", "ja"].includes(pair.source) || !["ko", "en", "ja"].includes(pair.target)) throw new Error("language-pair-unsupported");
       if (active) throw new Error("overloaded");
       const identity = { ...source.identity }; active = identity;
       let latest: string | undefined;
@@ -94,9 +95,11 @@ export function createModelTranslator(document: Document, languages: LanguagePai
       const status = await repository.status(selected.model);
       return status.state === "cached" || ready ? { state: "available" } : { state: "download-required", reason: "download-required", message: "Select this model to download it" };
     },
-    async prepare() {
+    async prepare(pair: LanguagePair = languages) {
       if (execution === "foreground" && !document.defaultView?.navigator.userActivation.isActive) throw new Error("Press Prepare in this document to start");
-      if (ready) throw new Error("Stop before preparing another translator");
+      if (active || pending || disposed) throw new Error("Stop before preparing another translator");
+      languages = { ...pair };
+      if (ready) return;
       await request("prepare");
     },
     stop,

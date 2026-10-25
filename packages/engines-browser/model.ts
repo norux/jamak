@@ -111,13 +111,22 @@ export const speakerCandidate = {
   ],
 } as const;
 
+// One-pass VoxLingua107 ECAPA-TDNN audio classifier, Apache-2.0.
+export const languageCandidate = {
+  dtype: "fp32",
+  model: { id: "christopherthompson81/voxlingua107-lid-onnx", version: "e02e1da805ae49635fe1aa7913c3f1e7f5f5fde6" },
+  files: [{ path: "voxlingua107.onnx", bytes: 86657056,
+    sha256: "e2c3c3da39b99e3f9196d15fceef6a65f702320038bbc08813a4f21280255ce8" },
+    { path: "lang_map.json", bytes: 5798, sha256: "d593825e7e8ce82c8b50c0810a371a3e69cd0293b52751ddf515f6ee2c592182" }],
+} as const;
+
 export function registeredCandidate(model: ModelIdentity, dtype: "q8" | "fp16" | "fp32" | "q4f16" = "q8") {
-  const candidate = [...Object.values(asrCandidates), ...Object.values(translationCandidates), vadCandidate, speakerCandidate].find(value => value.model.id === model.id && value.model.version === model.version && value.dtype === dtype);
+  const candidate = [...Object.values(asrCandidates), ...Object.values(translationCandidates), vadCandidate, speakerCandidate, languageCandidate].find(value => value.model.id === model.id && value.model.version === model.version && value.dtype === dtype);
   if (!candidate) throw new Error("Unregistered model/version");
   return {
     ...candidate,
     requiredBytes: candidate.files.reduce((sum, file) => sum + file.bytes, 0),
-    cacheName: `interpreter-${candidate === vadCandidate ? "vad" : candidate === speakerCandidate ? "speaker" : Object.values(translationCandidates).some(value => value === candidate) ? "translation" : "asr"}-${candidate.model.version}-${candidate.dtype}`,
+    cacheName: `interpreter-${candidate === languageCandidate ? "language" : candidate === vadCandidate ? "vad" : candidate === speakerCandidate ? "speaker" : Object.values(translationCandidates).some(value => value === candidate) ? "translation" : "asr"}-${candidate.model.version}-${candidate.dtype}`,
     url: (path: string) => `https://huggingface.co/${candidate.model.id}/resolve/${candidate.model.version}/${path}`,
   };
 }

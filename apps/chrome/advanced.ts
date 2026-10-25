@@ -1,11 +1,13 @@
 import { controlChannel, eventChannel, type BackgroundSnapshot } from "./background-protocol";
-import { defaultModelOptions, modelOptionsKey, readModelOptions, recognitionChoices, translationChoices, validModelOptions } from "./model-options";
+import { defaultModelOptions, modelOptionsKey, readModelOptions, recognitionChoices, translationChoices, validModelOptions, detectionChoices, speakerChoices, sameModelOptions } from "./model-options";
 import { localSpeechLanguages } from "../../packages/engines-browser/local-speech";
-import { asrCandidates, registeredCandidate } from "../../packages/engines-browser/model";
+import { asrCandidates, registeredCandidate, languageCandidate, speakerCandidate } from "../../packages/engines-browser/model";
 import { translationCandidates } from "../../packages/engines-browser/translation-model";
 
 const recognition = document.querySelector("#recognition") as HTMLSelectElement;
 const translation = document.querySelector("#translation") as HTMLSelectElement;
+const detection = document.querySelector("#language-detection") as HTMLSelectElement;
+const speaker = document.querySelector("#speaker") as HTMLSelectElement;
 const status = document.querySelector("#status") as HTMLElement;
 const retry = document.querySelector("#retry") as HTMLButtonElement;
 const reset = document.querySelector("#reset") as HTMLButtonElement;
@@ -18,15 +20,21 @@ if (selectedSource === "ja" || selectedSource === "en" || selectedSource === "ko
 let disposed = false;
 let revision = 0;
 let downloadRevision = 0;
-for (const [select, choices] of [[recognition, recognitionChoices], [translation, translationChoices]] as const) {
+for (const [select, choices] of [[recognition, recognitionChoices], [translation, translationChoices], [detection, detectionChoices], [speaker, speakerChoices]] as const) {
   for (const choice of choices) select.add(new Option(choice.name, choice.id));
 }
+function selectedOptions() {
+  return { ...readModelOptions(), recognition: recognition.value, translation: translation.value, languageDetection: detection.value, speaker: speaker.value };
+}
 function describe() {
+  (document.querySelector("#language-detection-detail") as HTMLElement).textContent = `${detectionChoices.find(choice => choice.id === detection.value)?.detail ?? ""}${source === "auto" ? "" : " 자동 감지를 켜면 적용됩니다."}`;
+  (document.querySelector("#speaker-detail") as HTMLElement).textContent = speakerChoices.find(choice => choice.id === speaker.value)?.detail ?? "";
   (document.querySelector("#recognition-detail") as HTMLElement).textContent = recognitionChoices.find(choice => choice.id === recognition.value)?.detail ?? "";
   (document.querySelector("#translation-detail") as HTMLElement).textContent = translationChoices.find(choice => choice.id === translation.value)?.detail ?? "";
 }
 function render(snapshot: BackgroundSnapshot) {
-  const matches = snapshot.source === source && (snapshot.options ? snapshot.options.recognition === recognition.value && snapshot.options.translation === translation.value : recognition.value === "chrome" && translation.value === "chrome");
+  const options = selectedOptions();
+  const matches = snapshot.source === source && validModelOptions(options) && sameModelOptions(snapshot.options, options);
   const preparing = matches && snapshot.state === "preparing";
   status.textContent = matches && ["ready", "starting", "running"].includes(snapshot.state) ? "다운로드 완료 · 모델 사용 준비 완료" : snapshot.message;
   stop.disabled = snapshot.state !== "preparing";
@@ -54,7 +62,7 @@ function nativeDownload(states: (string | undefined)[]) {
 }
 async function checkDownloads() {
   const current = ++downloadRevision;
-  const options = { recognition: recognition.value, translation: translation.value };
+  const options = selectedOptions();
   if (!validModelOptions(options)) return;
   type SpeechApi = { new(): { processLocally?: boolean }; install?: unknown; available?: (options: { langs: string[]; processLocally: true }) => Promise<string> };
   const view = window as Window & { SpeechRecognition?: SpeechApi; webkitSpeechRecognition?: SpeechApi; Translator?: { availability(options: { sourceLanguage: string; targetLanguage: string }): Promise<string> } };
@@ -62,23 +70,26 @@ async function checkDownloads() {
   const native = options.recognition === "chrome" && (source === "ja" || source === "en") && !!speech?.available && !!speech.install && "processLocally" in new speech();
   const candidate = asrCandidates[options.recognition === "chrome" ? "turboFp16" : options.recognition];
   const recognitionCheck = native && speech?.available ? speech.available({ langs: localSpeechLanguages(source as "ja" | "en"), processLocally: true }).then(state => nativeDownload([state])) : storedModel(registeredCandidate(candidate.model, candidate.dtype));
-  const sources = source === "auto" ? ["en", "ja"] : [source];
-  const translationCheck = source === "ko" ? Promise.resolve("현재 언어에서는 번역을 사용하지 않음") : options.translation !== "chrome" ? storedModel(registeredCandidate(translationCandidates[options.translation].model, translationCandidates[options.translation].dtype)) : Promise.all(sources.map(sourceLanguage => view.Translator?.availability({ sourceLanguage, targetLanguage: "ko" }))).then(nativeDownload);
-  const results = await Promise.allSettled([recognitionCheck, translationCheck]);
+  const target = options.targetLanguage ?? "ko";
+  const sources = (source === "auto" ? ["en", "ja", "ko"] : [source]).filter(language => language !== target);
+  const translationCheck = source === target ? Promise.resolve("현재 언어에서는 번역을 사용하지 않음") : options.translation !== "chrome" ? storedModel(registeredCandidate(translationCandidates[options.translation].model, translationCandidates[options.translation].dtype)) : Promise.all(sources.map(sourceLanguage => view.Translator?.availability({ sourceLanguage, targetLanguage: source === "auto" && target === "ja" && sourceLanguage === "ko" ? "en" : target }))).then(nativeDownload);
+  const detectionCheck = source !== "auto" ? Promise.resolve("자동 감지에서 사용") : options.languageDetection === "voxlingua" ? storedModel(registeredCandidate(languageCandidate.model, "fp32")) : Promise.resolve("받아쓰기 모델의 언어 감지 사용");
+  const speakerCheck = options.speaker === "off" ? Promise.resolve("화자 구분 꺼짐") : storedModel(registeredCandidate(speakerCandidate.model, "q8"));
+  const results = await Promise.allSettled([recognitionCheck, translationCheck, detectionCheck, speakerCheck]);
   if (disposed || current !== downloadRevision) return;
-  for (const [index, id] of ["recognition-download", "translation-download"].entries()) {
+  for (const [index, id] of ["recognition-download", "translation-download", "language-detection-download", "speaker-download"].entries()) {
     const result = results[index];
     (document.querySelector(`#${id}`) as HTMLElement).textContent = result.status === "fulfilled" ? result.value : "다운로드 상태 확인 실패 · 다시 준비해 주세요.";
   }
 }
-const initial = readModelOptions(); recognition.value = initial.recognition; translation.value = initial.translation; describe();
+const initial = readModelOptions(); recognition.value = initial.recognition; translation.value = initial.translation; detection.value = initial.languageDetection ?? "whisper"; speaker.value = initial.speaker ?? "wespeaker"; describe();
 async function apply() {
-  const options = { recognition: recognition.value, translation: translation.value };
+  const options = selectedOptions();
   if (!validModelOptions(options)) return;
   const current = ++revision;
   localStorage.setItem(modelOptionsKey, JSON.stringify(options));
   describe(); void checkDownloads(); status.textContent = "선택한 모델을 준비하는 중…";
-  retry.disabled = reset.disabled = recognition.disabled = translation.disabled = true;
+  retry.disabled = reset.disabled = recognition.disabled = translation.disabled = detection.disabled = speaker.disabled = true;
   try {
     const speech = (window as Window & { SpeechRecognition?: { install?: (options: { langs: string[]; processLocally: true }) => Promise<boolean> }; webkitSpeechRecognition?: { install?: (options: { langs: string[]; processLocally: true }) => Promise<boolean> } });
     const api = speech.SpeechRecognition ?? speech.webkitSpeechRecognition;
@@ -88,12 +99,12 @@ async function apply() {
     if (result?.error) throw new Error(result.error);
     if (result?.snapshot) render(result.snapshot);
   } catch (error) { if (!disposed && current === revision) status.textContent = `모델 준비 실패: ${(error as Error).message}`; }
-  finally { if (current === revision) retry.disabled = reset.disabled = recognition.disabled = translation.disabled = false; }
+  finally { if (current === revision) retry.disabled = reset.disabled = recognition.disabled = translation.disabled = detection.disabled = speaker.disabled = false; }
 }
-recognition.onchange = translation.onchange = () => { void apply(); };
+recognition.onchange = translation.onchange = detection.onchange = speaker.onchange = () => { void apply(); };
 retry.onclick = () => { void apply(); };
-reset.onclick = () => { recognition.value = defaultModelOptions.recognition; translation.value = defaultModelOptions.translation; void apply(); };
-stop.onclick = () => { revision++; void chrome.runtime.sendMessage({ channel: controlChannel, command: { type: "stop" } }).then(result => { if (!disposed) { if (result?.error) status.textContent = result.error; else if (result?.snapshot) render(result.snapshot); retry.disabled = reset.disabled = recognition.disabled = translation.disabled = false; } }).catch(error => { if (!disposed) status.textContent = error.message; }); };
+reset.onclick = () => { recognition.value = defaultModelOptions.recognition; translation.value = defaultModelOptions.translation; detection.value = "whisper"; speaker.value = "wespeaker"; void apply(); };
+stop.onclick = () => { revision++; void chrome.runtime.sendMessage({ channel: controlChannel, command: { type: "stop" } }).then(result => { if (!disposed) { if (result?.error) status.textContent = result.error; else if (result?.snapshot) render(result.snapshot); retry.disabled = reset.disabled = recognition.disabled = translation.disabled = detection.disabled = speaker.disabled = false; } }).catch(error => { if (!disposed) status.textContent = error.message; }); };
 async function refresh() {
   const result = await chrome.runtime.sendMessage({ channel: controlChannel, command: { type: "snapshot" } });
   if (!disposed && result?.snapshot) render(result.snapshot);

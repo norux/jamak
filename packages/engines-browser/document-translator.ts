@@ -17,9 +17,12 @@ interface TranslatorApi {
 
 export function createDocumentTranslator(document: Document, languages: LanguagePair,
   receive: (status: { state: "preparing" | "ready" | "stopped" | "failed"; progress?: number; reason?: ReasonCode }) => void, execution: "foreground" | "offscreen" = "foreground") {
-  const pair = { ...languages };
+  let pair = { ...languages };
   const translators = new Map<string, NativeTranslator>();
-  const sources = pair.source === "auto" ? ["en", "ja"] : [pair.source];
+  let sources = (pair.source === "auto" ? ["en", "ja", "ko"] : [pair.source]).filter(source => source !== pair.target);
+  let englishBridge = pair.source === "auto" && pair.target === "ja";
+  function target(source: string) { return englishBridge && source === "ko" ? "en" : pair.target; }
+  function key(source: string) { return `${source}:${target(source)}`; }
   let preparing: AbortController | undefined;
   let active: { identity: SessionIdentity; controller: AbortController } | undefined;
   let disposed = false;
@@ -31,7 +34,7 @@ export function createDocumentTranslator(document: Document, languages: Language
   function eligible(visible = true) {
     return !disposed && document.defaultView?.isSecureContext && (execution === "offscreen" || !visible || document.visibilityState === "visible");
   }
-  function supported() { return (pair.source === "auto" || pair.source === "ja" || pair.source === "en") && pair.target === "ko"; }
+  function supported() { return ["auto", "ja", "en", "ko"].includes(pair.source) && ["ko", "en", "ja"].includes(pair.target); }
   function stop() {
     preparing?.abort(); preparing = undefined;
     active?.controller.abort(); active = undefined;
@@ -46,9 +49,9 @@ export function createDocumentTranslator(document: Document, languages: Language
   const port: TextTranslator = {
     async *translate(source, requested) {
       if (!eligible()) throw new Error("execution-context-unavailable");
-      const translator = translators.get(source.language);
-      if (!translator) throw new Error("model-load-failed");
       if (!supported() || !sources.includes(requested.source) || requested.target !== pair.target || source.language !== requested.source) throw new Error("language-pair-unsupported");
+      const translator = translators.get(key(source.language));
+      if (!translator) throw new Error("model-load-failed");
       if (!source.text || source.text.length > 16384 || !Number.isSafeInteger(source.sourceRevision) || source.sourceRevision <= 0) throw new Error("Invalid translation source");
       if (active) throw new Error("overloaded");
       const identity = { ...source.identity };
@@ -63,14 +66,20 @@ export function createDocumentTranslator(document: Document, languages: Language
         const phrases = source.language === "ja" ? source.text.split(
           /(?<=[。！？!?])\s*|(?<=ませんでした|ません|ました|ます|でした|です|ましょう|ください)\s*(?=[\p{Script=Han}\p{Script=Katakana}])|(?<=ですか|でしたか|ますか|ましたか|ませんか|大丈夫|(?:ませんでした|ません|ました|でした|ください|る|た|だ|ない|ます|です|て|で|く|いい)[よね]|んだ|んだけど|かな|しよう)\s*(?=[\p{Script=Han}\p{Script=Katakana}]|ところで|それから|まだ|でも|じゃあ|もちろん|ありがとう|まったく|ちょうど)/u,
         ).map(phrase => phrase.trim()).filter(Boolean) : [source.text];
-        const native = translator;
+        // Chrome can consume activation per unpreferred language pair. Share
+        // en-to-ja in automatic mode so preparation needs only one such create.
+        const native = englishBridge && source.language === "ko" ? translators.get(key("en")) : translator;
+        if (!native) throw new Error("model-load-failed");
         let text = "";
         for (const phrase of phrases) {
           operation.controller.signal.throwIfAborted();
+          const input = englishBridge && source.language === "ko" ? await translator.translate(phrase, { signal: operation.controller.signal }) : phrase;
+          operation.controller.signal.throwIfAborted();
+          if (typeof input !== "string" || !input.trim() || input.length > 16384) throw new Error("Invalid translation result");
           if (native.translateStreaming) {
             const prefix = text ? `${text} ` : "";
             let part = "";
-            const reader = native.translateStreaming(phrase, { signal: operation.controller.signal }).getReader();
+            const reader = native.translateStreaming(input, { signal: operation.controller.signal }).getReader();
             const abort = () => { void reader.cancel().catch(() => {}); };
             operation.controller.signal.addEventListener("abort", abort, { once: true });
             try {
@@ -92,7 +101,7 @@ export function createDocumentTranslator(document: Document, languages: Language
             }
             continue;
           }
-          const part = await native.translate(phrase, { signal: operation.controller.signal });
+          const part = await native.translate(input, { signal: operation.controller.signal });
           operation.controller.signal.throwIfAborted();
           if (typeof part !== "string" || !part.trim() || part.length > 16384) throw new Error("Invalid translation result");
           text += `${text ? " " : ""}${part}`;
@@ -119,31 +128,36 @@ export function createDocumentTranslator(document: Document, languages: Language
 
   return {
     ...port,
-    get streaming() { return translators.size > 0 && [...translators.values()].every(translator => typeof translator.translateStreaming === "function"); },
+    get streaming() { return sources.length > 0 && sources.every(source => typeof translators.get(key(source))?.translateStreaming === "function"); },
     async probe(): Promise<Capability> {
       if (!eligible() || !api()) return { state: "unavailable", reason: "execution-context-unavailable", message: "Translator requires an eligible visible secure document" };
-      if (!supported()) return { state: "unavailable", reason: "language-pair-unsupported", message: "Only Japanese/English to Korean is supported by this adapter" };
+      if (!supported()) return { state: "unavailable", reason: "language-pair-unsupported", message: "Select English, Japanese or Korean for speech and subtitles" };
       try {
-        const states = await Promise.all(sources.map(sourceLanguage => api()?.availability({ sourceLanguage, targetLanguage: pair.target })));
+        const states = await Promise.all(sources.map(sourceLanguage => api()?.availability({ sourceLanguage, targetLanguage: target(sourceLanguage) })));
         if (!eligible()) return { state: "unavailable", reason: "execution-context-unavailable", message: "Document suspended during probe" };
         if (states.every(state => state === "available")) return { state: "available" };
         if (states.every(state => state === "available" || state === "downloadable" || state === "downloading")) return { state: "download-required", reason: "download-required", message: "Press Prepare to download or finish loading this language pair" };
         return { state: "unavailable", reason: "language-pair-unsupported", message: "Browser cannot translate this language pair" };
       } catch { return { state: "unavailable", reason: "execution-context-unavailable", message: "Translator capability probe failed" }; }
     },
-    async prepare(): Promise<void> {
+    async prepare(languages: LanguagePair = pair): Promise<void> {
       const native = api();
       if (!eligible() || !native) throw new Error("execution-context-unavailable");
+      if (preparing || active) throw new Error("Stop before preparing another translator");
+      pair = { ...languages };
+      sources = (pair.source === "auto" ? ["en", "ja", "ko"] : [pair.source]).filter(source => source !== pair.target);
+      englishBridge = pair.source === "auto" && pair.target === "ja";
       if (!supported()) throw new Error("language-pair-unsupported");
       if (execution === "foreground" && !document.defaultView?.navigator.userActivation.isActive) throw new Error("Press Prepare in this document to start");
-      if (preparing || translators.size) throw new Error("Stop before preparing another translator");
       const operation = new AbortController(); preparing = operation;
       receive({ state: "preparing" });
       try {
         // Call create before any await: a capability probe must not consume the
         // activation needed to begin the browser-owned language-pack download.
         await Promise.all(sources.map(async sourceLanguage => {
-          const loaded = await native.create({ sourceLanguage, targetLanguage: pair.target, signal: operation.signal,
+          const id = key(sourceLanguage);
+          if (translators.has(id)) return;
+          const loaded = await native.create({ sourceLanguage, targetLanguage: target(sourceLanguage), signal: operation.signal,
             monitor(monitor) {
               monitor.addEventListener("downloadprogress", event => {
                 if (preparing === operation && !operation.signal.aborted && Number.isFinite(event.loaded) && event.loaded >= 0 && event.loaded <= 1) receive({ state: "preparing", progress: event.loaded });
@@ -151,7 +165,7 @@ export function createDocumentTranslator(document: Document, languages: Language
             },
           });
           if (operation.signal.aborted || !eligible(false)) { loaded.destroy(); throw new DOMException("Translation preparation stopped", "AbortError"); }
-          translators.set(sourceLanguage, loaded);
+          translators.set(id, loaded);
         }));
         receive({ state: "ready" });
       } catch (error) {

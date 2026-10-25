@@ -75,3 +75,7 @@ shipping 탭 경로를 검사하면서 service worker의 동적 import 제한과
 각 행은 최신 원문과 그 revision에 맞는 번역이 모두 확정될 때까지 유지한다. 번역 교정 대기 중 이전 확정 pair를 표시하는 경우도 퇴장하지 않는다. 늦은 교정은 같은 DOM 행과 원래 위치에서 갱신하며, 교정된 확정 pair가 도착하면 표시 문구가 같아도 최소 4초의 확정 읽기 시간을 준다. 긴 임시 문장의 두 줄 단위 진행, 뒤 행의 동시 읽기 및 오래된 행부터 퇴장하는 순서는 유지한다.
 
 `npm run verify`의 린트, 두 종류 타입 검사, Chrome 빌드, 191개 단위·fixture 검사와 자막 안정성 검사를 통과했다. 안정성 검사의 기존 좁은 화면 관측이 한 번 실패해, 브라우저 시계를 명시적으로 정지하고 `runFor`로만 진행하도록 변경한 뒤 통과했다. `npm run test:framework:chrome:overlay`도 실제 Chrome 153.0.8010.12 / macOS arm64에서 일반·비디오·iframe 전체화면, 교정, 순차 퇴장 및 Stop 검사를 통과했다. 입력은 합성 caption revision이며 실제 오디오·모델 정확도의 새 검증은 아니다. README·AGENTS·아키텍처·코딩 규약·검사 지침을 동기화했고, 문서 색인은 기존 자막 검증 링크가 유효해 수정하지 않았다.
+
+## Advanced speaker selection (2026-10-25)
+
+Advanced exposes the existing WeSpeaker model and a disabled option. Disabled skips preparation, downloads and embedding jobs; speech recognition and captions still run. No additional speaker model or identity storage is introduced. Explicit WeSpeaker preparation failure remains visible, while old implicit settings preserve their prior optional-speaker behavior. Mocked worker tests verify disabled speaker execution and disposal; the earlier real conversation speaker measurements continue to describe the unchanged embedding/clustering algorithm. See the [model audit](../model-quality-20261025.md) for current checks and independent audio language detection.

@@ -27,7 +27,7 @@ test("Advanced distinguishes partial downloads, cached files and loaded models a
   try {
     const page = await browser.newPage();
     await page.addInitScript(() => {
-      localStorage.setItem("jamak-model-options-v1", JSON.stringify({ recognition: "tiny", translation: "m2m100" }));
+      localStorage.setItem("jamak-model-options-v1", JSON.stringify({ recognition: "smallFp16", translation: "hyMt2" }));
       const listeners: ((message: object, sender: object) => void)[] = [];
       const fixture: Fixture = { saved: { state: "idle", source: "ja", message: "중지됨", captions: [] }, commands: [],
         changed() { for (const listener of listeners) listener({ channel: "interpreter-event-v1" }, { id: "fixture" }); } };
@@ -43,7 +43,7 @@ test("Advanced distinguishes partial downloads, cached files and loaded models a
     await page.goto(`http://127.0.0.1:${address.port}/advanced.html?source=ja`);
     await page.getByText("다운로드 필요", { exact: true }).first().waitFor();
     assert.equal(await page.locator("#translation-download").textContent(), "다운로드 필요");
-    const selected = [registeredCandidate(asrCandidates.tiny.model), registeredCandidate(translationCandidates.m2m100.model)].map(candidate => ({
+    const selected = [registeredCandidate(asrCandidates.smallFp16.model, "fp16"), registeredCandidate(translationCandidates.hyMt2.model, "q4f16")].map(candidate => ({
       cacheName: candidate.cacheName, files: candidate.files.map(file => ({ url: candidate.url(file.path), bytes: file.bytes })),
     }));
     await page.evaluate(async candidates => {
@@ -62,7 +62,7 @@ test("Advanced distinguishes partial downloads, cached files and loaded models a
         for (const file of candidate.files) await cache.put(file.url, new Response("", { headers: { "Content-Length": String(file.bytes) } }));
       }
       const fixture = window as unknown as Fixture;
-      fixture.saved = { ...fixture.saved, state: "preparing", options: { recognition: "tiny", translation: "m2m100" }, message: "모델을 불러오는 중…" };
+      fixture.saved = { ...fixture.saved, state: "preparing", options: { recognition: "smallFp16", translation: "hyMt2" }, message: "모델을 불러오는 중…" };
       fixture.changed();
     }, selected);
     await page.getByText("다운로드 완료 · 기기에 저장됨", { exact: true }).first().waitFor();

@@ -11,7 +11,9 @@ import { resolve } from "node:path";
 import { chromium } from "playwright";
 import { build } from "vite";
 
+const voxlingua = process.argv.includes("--voxlingua");
 const autoLanguage = process.argv.includes("--auto-language");
+if (voxlingua && !autoLanguage) throw new Error("--voxlingua requires --auto-language");
 const japaneseConversation = process.argv.includes("--japanese-conversation");
 const hyMt2 = process.argv.includes("--hy-mt2");
 const conversation = process.argv.includes("--conversation") || japaneseConversation;
@@ -72,7 +74,7 @@ assert.equal(manifest.host_permissions, undefined);
 assert.equal(manifest.action.default_popup, "popup.html");
 const observations = { scope: latency ? "Six isolated synthetic sentences: estimated last audible PCM sample to complete Korean meaning in actual page DOM, <=1000 ms; no public-video/ten-minute acceptance"
   : "Production popup/offscreen ownership, real local streaming or turbo WebGPU/native Korean/page/reference lifetime and source retirement; no strict sentence-end latency/public-video/ten-minute acceptance",
-  pageErrors: [], checks: [], runs: [], qualityFailures: [], companionEndpoints: [], speechMode: localSpeech ? "Production preference: Japanese / English Chrome on-device streaming" : "Whisper snapshots", modelProvisioning: modelDirectory ? "Two SHA-256 verified official ONNX files seeded into extension cache; actual remaining model downloads and real inference" : "Official pinned model downloads and browser-managed SODA components", translatorProvisioning: hyMt2 ? "Advanced-selected pinned Hy-MT2 q4f16 WebGPU; actual downloads and streaming inference" : "Chrome-managed TranslateKit and ja/en/ko language components; no substituted translations" };
+  playbackGain: 0.005, pageErrors: [], checks: [], runs: [], qualityFailures: [], companionEndpoints: [], speechMode: localSpeech ? "Production preference: Japanese / English Chrome on-device streaming" : "Whisper snapshots", modelProvisioning: modelDirectory ? "Two SHA-256 verified official ONNX files seeded into extension cache; actual remaining model downloads and real inference" : "Official pinned model downloads and browser-managed SODA components", translatorProvisioning: hyMt2 ? "Advanced-selected pinned Hy-MT2 q4f16 WebGPU; actual downloads and streaming inference" : "Chrome-managed TranslateKit and ja/en/ko language components; no substituted translations" };
 function serve(request, response) {
   const url = new URL(request.url, "http://localhost");
   const model = modelDirectory && modelFiles.find(([, filename]) => url.pathname === `/${filename}`);
@@ -128,7 +130,7 @@ try {
     observations.companionEndpoints.push({ port, result });
     assert.equal(result, "ECONNREFUSED", "Companion/Ollama must be absent; never stop user apps");
   }
-  profile = hyMt2 ? resolve(".ralph/media-framework/hy-mt2-conversation-profile") : await mkdtemp(resolve(".ralph/media-framework/chrome-tab-engine-profile-"));
+  profile = voxlingua ? resolve(".ralph/media-framework/voxlingua-conversation-profile") : hyMt2 ? resolve(".ralph/media-framework/hy-mt2-conversation-profile") : await mkdtemp(resolve(".ralph/media-framework/chrome-tab-engine-profile-"));
   await mkdir(profile, { recursive: true });
   // Existing explicitly prepared CfT native components, in this disposable test
   // profile only. Chrome downloads/verifies them; no Translator results are injected.
@@ -270,10 +272,6 @@ try {
     await page.goto(`${origin}/?language=${scenario.language}&mode=${scenario.mode}`);
     const source=scenario.mode==='iframe'?page.frameLocator('iframe'):page;
     let popup=await openPopup();
-    if (autoLanguage) {
-      while (await popup.evaluate("document.querySelector('#auto-detect').disabled")) await new Promise(done=>setTimeout(done,100));
-      await popup.click("#auto-detect");
-    }
     if (!autoLanguage) await popup.evaluate(`document.querySelector('#language').value=${JSON.stringify(scenario.language)};document.querySelector('#language').dispatchEvent(new Event('change'))`);
     if (!runtime) {
       const targets=(await cdp.send('Target.getTargets')).targetInfos;
@@ -286,6 +284,15 @@ try {
       assert.equal((await worker.evaluate(()=>chrome.runtime.getContexts({contextTypes:[chrome.runtime.ContextType.OFFSCREEN_DOCUMENT]}))).length,1);
       assert.equal(await runtime.evaluate("typeof Translator"),'function');
       await runtime.evaluate(`(()=>{
+        globalThis.jamakTestPlaybackGain=0.005;
+        const connect=AudioNode.prototype.connect;
+        AudioNode.prototype.connect=function(destination,...args){
+          if(this instanceof MediaStreamAudioSourceNode && destination instanceof AudioDestinationNode){
+            const gain=this.context.createGain();gain.gain.value=jamakTestPlaybackGain;
+            connect.call(this,gain);connect.call(gain,destination);return destination;
+          }
+          return connect.call(this,destination,...args);
+        };
         globalThis.runtimeObservations=[];globalThis.translationCalls=[];globalThis.localSpeechEvents=[];globalThis.captionRevisions=[];
         const sendMessage=chrome.runtime.sendMessage.bind(chrome.runtime);
         chrome.runtime.sendMessage=function(message,...args){
@@ -305,7 +312,7 @@ try {
           constructor(...args){super(...args);this.observedId=++next;let state;
             this.addEventListener('message',({data})=>{
               if(data.type==='status'){if(state===data.status.state)return;state=data.status.state;}
-              if(data.type==='result'&&typeof data.text!=='string')return;
+              if(data.type==='result'&&typeof data.text!=='string'&&typeof data.language!=='string')return;
               runtimeObservations.push({worker:this.observedId,at:performance.now(),...data});
               if(runtimeObservations.length>300)runtimeObservations.shift();
             });}
@@ -348,6 +355,10 @@ try {
       // Recreate after attaching observation hooks to the persistent runtime.
       await popup.click('#stop');await waitState(value=>value?.state==='ready');
     }
+    if (autoLanguage) {
+      while (await popup.evaluate("document.querySelector('#auto-detect').disabled")) await new Promise(done=>setTimeout(done,100));
+      await popup.click("#auto-detect");
+    }
     if(!localSpeech) await popup.evaluate('(globalThis.SpeechRecognition??globalThis.webkitSpeechRecognition).install=undefined');
     if(download){
       const before=await popup.evaluate(`(globalThis.SpeechRecognition??globalThis.webkitSpeechRecognition).available({langs:[${JSON.stringify(scenario.language==='ja'?'ja-JP':'en-US')}],processLocally:true})`);
@@ -355,8 +366,15 @@ try {
       observations.checks.push(`Fresh ${scenario.language} voice pack before Prepare: ${before}`);
     }
     if (download || !localSpeech) {
-      await popup.click('#prepare');
-      await waitState(value=>value?.state==='preparing' || value?.state==='ready');
+      const preparingDeadline = performance.now() + 30000;
+      for (;;) {
+        const current = await state();
+        if (current?.source === scenario.language && ['preparing','ready'].includes(current.state)) break;
+        if (await popup.evaluate("!document.querySelector('#prepare').hidden && !document.querySelector('#prepare').disabled")) { await popup.click('#prepare'); break; }
+        if (performance.now() > preparingDeadline) throw new Error("Selected language preparation did not start");
+        await new Promise(done=>setTimeout(done,100));
+      }
+      await waitState(value=>value?.source===scenario.language && (value.state==='preparing' || value.state==='ready'));
     } else {
       await waitState(value=>value?.state==='ready' && value.source===scenario.language);
       assert.equal(await popup.evaluate("document.querySelector('#prepare').hidden"),true);
@@ -396,6 +414,18 @@ try {
       await advanced.screenshot({ path: resolve(".ralph/media-framework/advanced-hy-mt2-real.png") });
       await advanced.close();
       observations.checks.push("Actual Advanced selection, pinned Hy-MT2 download/preparation and independent Chrome recognition");
+    }
+
+    if (voxlingua && scenario === scenarios[0]) {
+      popup = await openPopup();
+      const opened = context.waitForEvent("page", { predicate: p => p.url().includes("advanced.html") });
+      await popup.click("#advanced");
+      const advanced = await opened; await advanced.waitForLoadState();
+      if (await advanced.locator("#language-detection").inputValue() !== "voxlingua") await advanced.locator("#language-detection").selectOption("voxlingua");
+      const selected = await waitState(value => value?.state === "ready" && value.options?.languageDetection === "voxlingua", 600000);
+      assert.ok(selected.models.some(model => model.name.includes("VoxLingua107")));
+      await advanced.close();
+      observations.checks.push("Actual Advanced VoxLingua107 setting, pinned model preparation and language decisions before Whisper");
     }
 
     popup=await openPopup();await popup.click('#start');
@@ -455,7 +485,7 @@ try {
       const result = { state: completed.state, captions: completed.captions, frames,
         workers: await runtime.evaluate("runtimeObservations"), translations: await runtime.evaluate("translationCalls") };
       await mkdir(".ralph/auto-language", {recursive:true});
-      await writeFile(".ralph/auto-language/live.json", JSON.stringify(result,null,2));
+      await writeFile(`.ralph/auto-language/live${voxlingua ? "-voxlingua" : ""}.json`, JSON.stringify(result,null,2));
       const starts = [/hello/i, /こんにちは/, /안녕하세요/, /please/i, /予約/, /예약/];
       for (const [index, turn] of meeting.turns.entries()) {
         const captions = turnCaptions(completed.captions, turn);
@@ -479,9 +509,14 @@ try {
       for (const caption of completed.captions.filter(caption => caption.source.language === "ko")) {
         assert.equal(result.translations.some(call => call.source === caption.source.text),false,"Korean must bypass native translation");
       }
-      assert.ok(result.workers.some(event => event.type === "asr-job" && event.language === "auto"));
+      if (voxlingua) {
+        const decisions = result.workers.filter(event => event.type === "result" && typeof event.language === "string" && typeof event.text !== "string");
+        for (const language of ["en", "ja", "ko"]) assert.ok(decisions.some(decision => decision.language === language), `Missing ${language} audio decision`);
+        const jobs = result.workers.filter(event => event.type === "asr-job");
+        assert.ok(jobs.length && jobs.every(job => ["en", "ja", "ko"].includes(job.language)), "Independent decisions must direct fixed-language ASR");
+      } else assert.ok(result.workers.some(event => event.type === "asr-job" && event.language === "auto"));
       observations.runs.push({...scenario,...result});
-      console.log(JSON.stringify({phase:"auto-language",captions:completed.captions.length,report:".ralph/auto-language/live.json"}));
+      console.log(JSON.stringify({phase:"auto-language",captions:completed.captions.length,report:`.ralph/auto-language/live${voxlingua ? "-voxlingua" : ""}.json`}));
       popup=await openPopup();await popup.click('#stop');await waitState(value=>value?.state==='ready');await popup.close();
       await page.locator('[data-interpreter-overlay]').waitFor({state:'detached'});
       const retained = await state();
@@ -718,4 +753,4 @@ try {
   assert.deepEqual(observations.qualityFailures, [], "Conversation recognition/translation quality failed; flow checks are reported separately");
   console.log(JSON.stringify({passed:true,...observations}));
 } catch(error) {console.error(JSON.stringify({passed:false,...observations,error:error.stack}));process.exitCode=1}
-finally {await browser?.close();browserProcess?.kill();await browserExit;await new Promise(done=>server.close(done));if(profile && !hyMt2) await rm(profile,{recursive:true,force:true});if(latencyDirectory)await rm(latencyDirectory,{recursive:true,force:true})}
+finally {await browser?.close();browserProcess?.kill();await browserExit;await new Promise(done=>server.close(done));if(profile && !hyMt2 && !voxlingua) await rm(profile,{recursive:true,force:true});if(latencyDirectory)await rm(latencyDirectory,{recursive:true,force:true})}

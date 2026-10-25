@@ -1,10 +1,10 @@
 <!doctype html>
 <html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Jamak</title><link rel="stylesheet" href="./host.css"></head>
 <body class="popup">
-<header class="header"><img class="mark" src="./icons/jamak.svg" alt="" width="40" height="40"><div><h1>Jamak</h1><p class="subtitle">탭의 음성을 한국어 자막으로</p></div></header>
-<section class="setup"><label><span id="language-label">음성 언어</span><select class="jamak-select" id="language" aria-labelledby="language-label"><option value="en">English · 영어</option><option value="ja">日本語 · 일본어</option><option value="ko">한국어</option></select></label><label class="auto-detect"><input type="checkbox" id="auto-detect">자동 감지 · 영어 / 일본어 / 한국어</label></section>
+<header class="header"><img class="mark" src="./icons/jamak.svg" alt="" width="40" height="40"><div><h1>Jamak</h1><p class="subtitle">탭의 음성을 원하는 언어의 자막으로</p></div></header>
+<section class="setup"><label><span id="language-label">음성 언어</span><select class="jamak-select" id="language" aria-labelledby="language-label"><option value="en">English · 영어</option><option value="ja">日本語 · 일본어</option><option value="ko">한국어</option></select></label><label class="auto-detect"><input type="checkbox" id="auto-detect">자동 감지 · 영어 / 일본어 / 한국어</label><label><span id="target-language-label">자막 언어</span><select class="jamak-select" id="target-language" aria-labelledby="target-language-label"><option value="ko">한국어</option><option value="en">English · 영어</option><option value="ja">日本語 · 일본어</option></select></label></section>
 <main class="interpretation-controls">
-<section id="model-setup"><p id="model-description"></p><button type="button" id="prepare" disabled>모델 다운로드</button><div id="download-progress" hidden><div class="download-label"><span>모델 준비</span><span id="download-percent"></span></div><progress id="model-progress" max="1" aria-label="모델 다운로드 진행률"></progress></div></section>
+<section id="model-setup"><p id="model-description"></p><button type="button" id="prepare" disabled>모델 준비</button><div id="download-progress" hidden><div class="download-label"><span>모델 준비</span><span id="download-percent"></span></div><progress id="model-progress" max="1" aria-label="모델 준비 진행률"></progress></div></section>
 <section id="translation-controls" hidden><button type="button" id="start" disabled>번역 시작</button><button type="button" id="stop" disabled>중지</button><button type="button" id="reference">원문 · 번역 기록 열기</button></section>
 <button id="advanced" type="button">Advanced · 모델 선택</button>
 <p id="status" class="preparation-status" role="status">연결 중…</p>

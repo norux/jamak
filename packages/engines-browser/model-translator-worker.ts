@@ -22,7 +22,7 @@ let resident: Awaited<ReturnType<typeof pipeline<"translation">>> | undefined;
 let generator: Awaited<ReturnType<typeof pipeline<"text-generation">>> | undefined;
 let candidate: keyof typeof translationCandidates | undefined;
 let busy = false;
-globalThis.onmessage = async (event: MessageEvent<{ requestId: number; type: string; candidate?: keyof typeof translationCandidates; text?: string; language?: "en" | "ja" }>) => {
+globalThis.onmessage = async (event: MessageEvent<{ requestId: number; type: string; candidate?: keyof typeof translationCandidates; text?: string; language?: "en" | "ja" | "ko"; targetLanguage?: "en" | "ja" | "ko" }>) => {
   const value = event.data;
   if (!value || !Number.isSafeInteger(value.requestId)) return;
   const send = (message: object) => globalThis.postMessage({ requestId: value.requestId, ...message });
@@ -73,11 +73,11 @@ globalThis.onmessage = async (event: MessageEvent<{ requestId: number; type: str
         if (status.state === "failed") throw new Error(status.reason);
       }
       send({ type: "ready" });
-    } else if (value.type === "translate" && (resident || generator) && candidate && typeof value.text === "string" && value.text.length > 0 && value.text.length <= 16384 && (value.language === "ja" || value.language === "en")) {
+    } else if (value.type === "translate" && (resident || generator) && candidate && typeof value.text === "string" && value.text.length > 0 && value.text.length <= 16384 && (value.language === "ja" || value.language === "en" || value.language === "ko") && (value.targetLanguage === "ja" || value.targetLanguage === "en" || value.targetLanguage === "ko")) {
       let text: string | undefined;
       if (generator) {
         let streamed = "";
-        const output = await generator([{ role: "user", content: `Translate the following text from ${value.language === "ja" ? "Japanese" : "English"} into Korean. Note that you should only output the translated result without any additional explanation:\n${value.text}` }], {
+        const output = await generator([{ role: "user", content: `Translate the following text from ${({ ja: "Japanese", en: "English", ko: "Korean" })[value.language]} into ${({ ja: "Japanese", en: "English", ko: "Korean" })[value.targetLanguage]}. Note that you should only output the translated result without any additional explanation:\n${value.text}` }], {
           max_new_tokens: 256, do_sample: false,
           streamer: new TextStreamer(generator.tokenizer, { skip_prompt: true, callback_function(part) {
             streamed += part;
@@ -90,7 +90,7 @@ globalThis.onmessage = async (event: MessageEvent<{ requestId: number; type: str
         text = typeof content === "string" ? content : undefined;
       } else if (resident) {
         const codes = candidate === "nllb" ? { en: "eng_Latn", ja: "jpn_Jpan", ko: "kor_Hang" } : { en: "en", ja: "ja", ko: "ko" };
-        const output = await resident(value.text, { src_lang: codes[value.language], tgt_lang: codes.ko, max_new_tokens: 256 });
+        const output = await resident(value.text, { src_lang: codes[value.language], tgt_lang: codes[value.targetLanguage], max_new_tokens: 256 });
         text = output[0]?.translation_text;
       }
       if (typeof text !== "string" || !text.trim() || text.length > 16384) throw new Error("Invalid translation result");
