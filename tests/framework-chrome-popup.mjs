@@ -44,10 +44,14 @@ try {
     Object.defineProperty(window, "chrome", { configurable: true, value: {
       windows: { create: async options => { windows.push(options); } },
       tabs: { query: async () => [{ id: 10, url: "http://fixture.test" }] },
-      runtime: { id: "fixture", getURL: path => new URL(path, location.href).href, onMessage: { addListener(listener) { listeners.push(listener); }, removeListener() {} }, async sendMessage({ command }) {
+      runtime: { id: "fixture", getURL: path => new URL(path, location.href).href, onMessage: { addListener(listener) { listeners.push(listener); }, removeListener() {} }, async sendMessage(message) {
+        const { channel, command } = message;
+        if (channel === "jamak-image") {
+          return { snapshot: { state: "idle", message: "이미지 분석 대기 중", total: 0, completed: 0, failed: 0 } };
+        }
         commands.push(command);
         if (command.type === "models" && rejectModels) throw new Error("테스트 모델 준비 실패");
-        if (command.type === "models") saved = { state: "preparing", source: command.source, tabId: command.tabId, options: command.options, message: "선택한 모델 다운로드 중…", captions: [] };
+        if (command.type === "models") saved = { state: "preparing", source: command.source, tabId: command.tabId, options: command.options, imageOptions: command.imageOptions, message: "선택한 모델 다운로드 중…", captions: [] };
         if (command.type === "prepare") saved = { state: "ready", source: command.source, tabId: command.tabId, options: command.options, message: "준비 완료", captions: [] };
         if (command.type === "start") saved = { ...saved, state: "starting", message: "탭 오디오에 연결 중…" };
         if (command.type === "stop") {
@@ -276,7 +280,7 @@ try {
   });
   await page.waitForFunction(() => document.querySelector("#model-progress").value === 0.42);
   assert.equal(await page.locator("#download-percent").textContent(), "42%");
-  assert.deepEqual(await page.evaluate(() => commands.find(c => c.type === "models")), {type:"models",tabId:10,source:"ja",options:{recognition:"smallFp16",translation:"chrome",languageDetection:"whisper",speaker:"wespeaker"}});
+  assert.deepEqual(await page.evaluate(() => commands.find(c => c.type === "models")), {type:"models",tabId:10,source:"ja",options:{recognition:"smallFp16",translation:"chrome",languageDetection:"whisper",speaker:"wespeaker"},imageOptions:{ocr:"mobile",fontScale:1}});
   assert.deepEqual(await page.evaluate(() => installs), [], "Explicit Whisper never installs SODA");
   await page.locator("#translation").selectOption("hyMt2");
   await page.waitForFunction(() => JSON.parse(localStorage.getItem("jamak-model-options-v1")).translation === "hyMt2");
@@ -295,6 +299,24 @@ try {
   await page.waitForFunction(() => JSON.parse(localStorage.getItem("jamak-model-options-v1")).recognition === "chrome");
   assert.deepEqual(await page.evaluate(() => JSON.parse(localStorage.getItem("jamak-model-options-v1"))), {recognition:"chrome",translation:"chrome",languageDetection:"whisper",speaker:"wespeaker"});
   assert.deepEqual(await page.evaluate(() => installs), [["ja-JP","en-US","ko-KR"]]);
+  assert.deepEqual(await page.locator('.model-choice:has(#translation) .scope-badge').allTextContents(), ["오디오", "이미지"]);
+  assert.deepEqual(await page.locator('.model-choice:has(#recognition) .scope-badge').allTextContents(), ["오디오"]);
+  assert.deepEqual(await page.locator('.model-choice:has(#image-ocr) .scope-badge').allTextContents(), ["이미지"]);
+  await page.locator("#image-ocr").selectOption("v6Small");
+  await page.waitForFunction(() => JSON.parse(localStorage.getItem("jamak-image-options-v1")).ocr === "v6Small");
+  assert.equal(await page.locator("#ocr-progress, #ocr-prepare, #ocr-stop").count(), 0, "Settings owns only one preparation surface");
+  await page.waitForFunction(() => commands.at(-1)?.type === "models" && commands.at(-1)?.imageOptions?.ocr === "v6Small");
+  assert.equal(await page.locator("#download-progress").isVisible(), true);
+  assert.equal(await page.locator("progress").count(), 1);
+  await page.locator("#stop").click();
+  await page.getByText("중지됨", { exact: true }).waitFor();
+  await page.locator("#retry").click();
+  await page.waitForFunction(() => commands.at(-1)?.imageOptions?.ocr === "v6Small");
+  const audioModelCount = await page.evaluate(() => commands.filter(command => command.type === "models").length);
+  await page.reload();
+  assert.equal(await page.locator("#image-ocr").inputValue(), "v6Small");
+  assert.equal(await page.evaluate(() => commands.filter(command => command.type === "models").length), 0, "Reopening settings observes the unified preparation without restarting it");
+  assert.ok(audioModelCount >= 1);
   await page.screenshot({path:".ralph/advanced-model-options.png"});
   await page.goto(url);
   await page.waitForFunction(() => !document.querySelector("#start").disabled);
@@ -364,6 +386,39 @@ try {
   assert.equal(await page.locator("#language-detection").inputValue(), "voxlingua");
   assert.equal(await page.locator("#speaker").inputValue(), "off");
   assert.equal(await page.locator("#speaker-download").textContent(), "화자 구분 꺼짐");
+  await page.goto(url);
+  await page.waitForFunction(() => !document.querySelector("#start").disabled);
+  await page.getByRole("tab", { name: "오디오", exact: true }).focus();
+  await page.keyboard.press("ArrowRight");
+  assert.equal(await page.getByRole("tab", { name: "이미지", exact: true }).getAttribute("aria-selected"), "true");
+  assert.equal(await page.locator("#audio-panel").isVisible(), false);
+  assert.equal(await page.getByRole("button", { name: "탭의 모든 이미지 번역", exact: true }).isVisible(), true);
+  assert.equal(await page.locator("#image-font-size select").count(), 0);
+  const sizes = page.getByRole("group", { name: "글자 크기", exact: true });
+  assert.equal(await sizes.getByRole("radio").count(), 5);
+  await sizes.getByRole("radio", { name: "크게", exact: true }).check();
+  assert.equal(await sizes.getByRole("radio", { name: "크게", exact: true }).isChecked(), true);
+  await page.keyboard.press("ArrowRight");
+  assert.equal(await sizes.getByRole("radio", { name: "아주 크게", exact: true }).isChecked(), true);
+  await sizes.getByRole("radio", { name: "크게", exact: true }).check();
+  assert.equal(await page.evaluate(() => JSON.parse(localStorage.getItem("jamak-image-options-v1")).fontScale), 1.25);
+  await page.locator("#image-target").selectOption("ja");
+  await page.reload();
+  await page.waitForFunction(() => document.querySelector("#image-tab").getAttribute("aria-selected") === "true");
+  assert.equal(await page.locator("#image-target").inputValue(), "ja");
+  assert.equal(await page.evaluate(() => commands.some(command => command.type === "prepare")), false, "Opening the image tab must not prepare audio");
+  for (const colorScheme of ["light", "dark"]) {
+    await page.emulateMedia({ colorScheme }); await page.setViewportSize({ width: 320, height: 900 });
+    assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true);
+    await page.locator("#image-target").focus(); await page.keyboard.press("Space"); await page.keyboard.press("Escape"); await page.keyboard.press("Tab");
+    assert.equal(await page.getByRole("radio", { name: "크게", exact: true }).evaluate(node => node === document.activeElement), true);
+    await page.screenshot({ path: resolve(`.ralph/image-popup-${colorScheme}.png`) });
+    await page.evaluate(() => { document.body.style.zoom = "2"; });
+    assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true);
+    await page.evaluate(() => { document.body.style.zoom = ""; });
+  }
+  await page.getByRole("tab", { name: "이미지", exact: true }).focus(); await page.keyboard.press("Home");
+  assert.equal(await page.getByRole("tab", { name: "오디오", exact: true }).getAttribute("aria-selected"), "true");
   console.log(JSON.stringify({ passed: true, scope: "Popup DOM and browser API mocks; cached models auto-ready on open/Stop, missing packs require a download gesture, readiness never starts capture" }));
 } finally {
   await browser?.close(); await new Promise(done => server.close(done));

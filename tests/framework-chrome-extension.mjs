@@ -40,7 +40,7 @@ await build({ configFile: false, logLevel: "warn", build: { outDir: output, empt
   rollupOptions: { input: { "service-worker": resolve("tests/fixtures/selected-action.ts") }, output: { entryFileNames: "[name].js" } } } });
 const manifest = JSON.parse(await readFile(`${output}/manifest.json`, "utf8"));
 assert.deepEqual(manifest.permissions, ["activeTab", "scripting", "tabCapture", "offscreen", "notifications"]);
-assert.equal(manifest.host_permissions, undefined);
+assert.deepEqual(manifest.host_permissions, ["https://paddle-model-ecology.bj.bcebos.com/*"]);
 assert.equal(manifest.action.default_popup, "popup.html");
 delete manifest.action.default_popup;
 await writeFile(`${output}/manifest.json`, JSON.stringify(manifest));

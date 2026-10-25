@@ -1,0 +1,137 @@
+:host {
+  --norux-color-background-surface: #fff;
+  --norux-color-background-sunken: #f5f6f9;
+  --norux-color-foreground-primary: #242936;
+  --norux-color-foreground-muted: #646c7c;
+  --norux-color-border-subtle: #e2e5ec;
+  --norux-color-border-strong: #7e879a;
+  --norux-color-action-primary: #4b56c6;
+  --norux-color-action-soft: #eff0fc;
+  --norux-color-focus-ring: #4b56c6;
+  --norux-color-feedback-negative: #af3340;
+  --surface: var(--norux-color-background-surface);
+  --foreground: var(--norux-color-foreground-primary);
+  --muted: var(--norux-color-foreground-muted);
+  --border: var(--norux-color-border-subtle);
+  --accent: var(--norux-color-action-primary);
+  color-scheme: light dark;
+  font: 13px/1.5 system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :host {
+    --norux-color-background-surface: #22252e;
+    --norux-color-background-sunken: #1a1d25;
+    --norux-color-foreground-primary: #e7e9f0;
+    --norux-color-foreground-muted: #adb4c5;
+    --norux-color-border-subtle: #3a4050;
+    --norux-color-border-strong: #7c8599;
+    --norux-color-action-primary: #b7bdff;
+    --norux-color-action-soft: #343854;
+    --norux-color-focus-ring: #a2aaff;
+    --norux-color-feedback-negative: #ffabb4;
+  }
+}
+*, *::before, *::after { box-sizing: border-box; }
+button, textarea, select { font: inherit; }
+button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 44px;
+  padding: 8px 10px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--norux-color-foreground-primary);
+  font-weight: 600;
+  cursor: pointer;
+}
+button:hover:enabled, button[aria-expanded="true"], button[aria-pressed="true"] { color: var(--norux-color-action-primary); background: var(--norux-color-action-soft); }
+button:disabled { opacity: .45; cursor: default; }
+button svg { width: 16px; height: 16px; flex: none; }
+.icon-button { width: 44px; min-width: 44px; padding: 10px; color: var(--norux-color-foreground-muted); }
+.icon-button svg { width: 20px; height: 20px; }
+button:focus-visible, textarea:focus-visible, select:focus-visible { outline: 3px solid var(--norux-color-focus-ring); outline-offset: 3px; }
+.dock, .caption-actions, .editor {
+  pointer-events: auto;
+  border: 1px solid var(--norux-color-border-subtle);
+  border-radius: 12px;
+  color: var(--norux-color-foreground-primary);
+  background: var(--norux-color-background-surface);
+  box-shadow: 0 4px 20px #10172824;
+}
+.dock { position: absolute; display: flex; gap: 2px; padding: 4px; touch-action: none; user-select: none; cursor: grab; }
+.dock button { cursor: grab; }
+.dock::before { content: ""; align-self: center; width: 4px; height: 16px; margin-left: 2px; border-inline: 1px solid var(--norux-color-border-strong); }
+.dock .visibility:not([aria-pressed="true"]) .slash { display: none; }
+.labels { position: absolute; inset: 0; pointer-events: none; z-index: 0; }
+.dock { z-index: 1; }
+.caption { position: absolute; pointer-events: none; }
+.caption.is-positioned { z-index: 1; }
+.caption:focus-within { z-index: 2; }
+.label {
+  position: relative;
+  pointer-events: auto;
+  touch-action: none;
+  cursor: grab;
+  white-space: pre;
+  background: rgba(20, 23, 33, .88);
+  color: white;
+  font-family: system-ui, sans-serif;
+  font-weight: 600;
+  user-select: none;
+}
+.label:active { cursor: grabbing; }
+.caption-actions { position: absolute; top: 0; left: calc(100% + 4px); display: flex; padding: 2px; width: max-content; }
+.caption:not(.is-positioned) .caption-reset, :host(.captions-hidden) .labels { display: none; }
+.editor {
+  position: fixed;
+  inset: auto;
+  width: 400px;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  font: 13px/1.5 system-ui, sans-serif;
+  box-shadow: 0 12px 40px #10172833;
+}
+.editor:popover-open { display: grid; grid-template-rows: auto minmax(0, 1fr); }
+.editor:not(:popover-open) { display: none; }
+.editor-header { display: flex; align-items: start; gap: 8px; padding: 12px; border-bottom: 1px solid var(--norux-color-border-subtle); touch-action: none; user-select: none; cursor: grab; }
+.editor-heading { flex: 1; min-width: 0; }
+.drag-handle { cursor: grab; }
+.drag-handle svg { stroke-width: 3; }
+.is-dragging, .is-dragging button { cursor: grabbing; }
+.editor h2 { margin: 2px 0 4px; font-size: 16px; line-height: 1.5; font-weight: 700; letter-spacing: -.3px; }
+.editor-header p { margin: 0; color: var(--norux-color-foreground-muted); font-size: 12px; }
+.editor-body { min-height: 0; overflow: auto; overscroll-behavior: contain; padding: 16px; scrollbar-gutter: stable; }
+.editor fieldset { min-width: 0; margin: 0 0 16px; padding: 12px; border: 1px solid var(--norux-color-border-subtle); border-radius: 8px; background: var(--norux-color-background-sunken); }
+.editor fieldset:last-child { margin-bottom: 0; }
+.editor legend { padding: 0 6px; font-size: 12px; font-weight: 650; color: var(--norux-color-foreground-muted); }
+.editor label { display: grid; gap: 6px; margin: 0 0 12px; font-size: 12px; font-weight: 600; }
+.editor textarea, .editor select {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  min-height: 44px;
+  padding: 10px 12px;
+  border: 1px solid var(--norux-color-border-strong);
+  border-radius: 8px;
+  color: var(--norux-color-foreground-primary);
+  background: var(--norux-color-background-surface);
+  font-size: 13px;
+  line-height: 1.6;
+  font-weight: 400;
+}
+.editor textarea { resize: vertical; min-height: 76px; max-height: 200px; }
+.editor-actions { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.editor-actions button { flex: none; background: var(--norux-color-action-soft); color: var(--norux-color-action-primary); }
+.editor-feedback { color: var(--norux-color-foreground-muted); font-size: 12px; overflow-wrap: anywhere; }
+.editor-feedback.error { color: var(--norux-color-feedback-negative); }
+.editor-empty { margin: 0; color: var(--norux-color-foreground-muted); }
+@media (max-width: 360px) {
+  .editor-header { padding-left: 16px; }
+  .editor-body { padding: 12px; }
+}
+
+.label:focus, .label:focus-visible { outline: none; }

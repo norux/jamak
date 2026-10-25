@@ -9,6 +9,7 @@
 - [Brand assets](branding/README.md): extension icons and README mark.
 - [Model quality audit and research](verification/model-quality-20261025.md): measured model screening, subtitle targets and fast audio language decisions.
 - [Model selection verification](verification/model-options.md): Advanced settings, independent local model choices and real inference checks.
+- [Image translation research and verification](verification/image-translation.md): background OCR/automatic text-language detection, Audio/Image tabs, handwriting limits, Korean/English/Japanese output, inline labels/export, pencil-only correction popups, Aa image-popup font-size presets, unified background model preparation with shared progress/Stop/retry, Advanced model scopes, selectable PP-OCRv5/v6, independent caption visibility, movable download/visibility pairs and editors, original-position reset, viewport-safe editing and real browser checks.
 - [Chrome transition verification](verification/jamak-chrome.md): build, tests and branding checks.
 - [Automatic language verification](verification/asr/automatic-language.md): per-turn English/Japanese/Korean routing, real synthetic meeting and latency limits.
 - [Speaker and caption verification](verification/captions/conversation-speakers.md): model choice, attribution and conversation regression evidence.

@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Jamak \u2014 Live Subtitles",
   "version": "0.1.1",
-  "description": "On-device live Korean subtitles with automatic English, Japanese and Korean speech detection, translation and speaker colors.",
+  "description": "On-device audio captions and image translation in Korean, English or Japanese, with movable overlays and PNG export.",
   "minimum_chrome_version": "138",
   "permissions": [
     "activeTab",
@@ -11,11 +11,13 @@
     "offscreen",
     "notifications"
   ],
+  "host_permissions": ["https://paddle-model-ecology.bj.bcebos.com/*"],
   "background": {
     "service_worker": "service-worker.js",
     "type": "module"
   },
   "options_ui": { "page": "advanced.html", "open_in_tab": true },
+  "sandbox": { "pages": ["image-sandbox.html"] },
   "action": {
     "default_title": "Jamak \u00b7 \uc2e4\uc2dc\uac04 \uc790\ub9c9",
     "default_popup": "popup.html",
@@ -27,7 +29,8 @@
     }
   },
   "content_security_policy": {
-    "extension_pages": "script-src 'self' 'wasm-unsafe-eval'; object-src 'self'; connect-src 'self' https://huggingface.co https://*.huggingface.co https://*.hf.co"
+    "extension_pages": "script-src 'self' 'wasm-unsafe-eval'; object-src 'self'; connect-src 'self' https://huggingface.co https://*.huggingface.co https://*.hf.co https://paddle-model-ecology.bj.bcebos.com",
+    "sandbox": "sandbox allow-scripts; script-src 'self' 'unsafe-eval'; child-src 'none'; connect-src 'self' data:; object-src 'none'"
   },
   "web_accessible_resources": [
     {

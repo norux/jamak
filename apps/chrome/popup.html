@@ -1,13 +1,19 @@
 <!doctype html>
 <html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Jamak</title><link rel="stylesheet" href="./host.css"></head>
 <body class="popup">
-<header class="header"><img class="mark" src="./icons/jamak.svg" alt="" width="40" height="40"><div><h1>Jamak</h1><p class="subtitle">탭의 음성을 원하는 언어의 자막으로</p></div></header>
+<header class="header"><img class="mark" src="./icons/jamak.svg" alt="" width="40" height="40"><div><h1>Jamak</h1><p class="subtitle">오디오 자막과 이미지 번역을 기기 안에서</p></div></header>
+<div class="mode-tabs" role="tablist" aria-label="분석 대상"><button id="audio-tab" type="button" role="tab" aria-selected="true" aria-controls="audio-panel">오디오</button><button id="image-tab" type="button" role="tab" aria-selected="false" aria-controls="image-panel" tabindex="-1">이미지</button></div>
+<section id="audio-panel" role="tabpanel" aria-labelledby="audio-tab">
 <section class="setup"><label><span id="language-label">음성 언어</span><select class="jamak-select" id="language" aria-labelledby="language-label"><option value="en">English · 영어</option><option value="ja">日本語 · 일본어</option><option value="ko">한국어</option></select></label><label class="auto-detect"><input type="checkbox" id="auto-detect">자동 감지 · 영어 / 일본어 / 한국어</label><label><span id="target-language-label">자막 언어</span><select class="jamak-select" id="target-language" aria-labelledby="target-language-label"><option value="ko">한국어</option><option value="en">English · 영어</option><option value="ja">日本語 · 일본어</option></select></label></section>
 <main class="interpretation-controls">
 <section id="model-setup"><p id="model-description"></p><button type="button" id="prepare" disabled>모델 준비</button><div id="download-progress" hidden><div class="download-label"><span>모델 준비</span><span id="download-percent"></span></div><progress id="model-progress" max="1" aria-label="모델 준비 진행률"></progress></div></section>
 <section id="translation-controls" hidden><button type="button" id="start" disabled>번역 시작</button><button type="button" id="stop" disabled>중지</button><button type="button" id="reference">원문 · 번역 기록 열기</button></section>
-<button id="advanced" type="button">Advanced · 모델 선택</button>
 <p id="status" class="preparation-status" role="status">연결 중…</p>
 <details id="model-details"><summary>모델 정보</summary><table class="model-table"><thead><tr><th scope="col">역할</th><th scope="col">모델</th></tr></thead><tbody id="model-list"></tbody></table></details>
-</main>
+</main></section>
+<section id="image-panel" role="tabpanel" aria-labelledby="image-tab" hidden>
+<div class="setup"><label for="image-target">번역 언어<select class="jamak-select" id="image-target"><option value="ko">한국어</option><option value="en">English · 영어</option><option value="ja">日本語 · 일본어</option></select></label><fieldset id="image-font-size" aria-describedby="image-font-detail"><legend id="image-font-title">글자 크기</legend><div class="font-choices"></div></fieldset><p id="image-font-detail" class="subtitle">현재 탭의 이미지 자막과 PNG 저장에 적용합니다.</p></div>
+<div class="interpretation-controls image-controls"><p>원문 언어는 자동으로 판별합니다. 팝업을 닫아도 분석하며 원래 이미지 위에 번역을 띄웁니다.</p><button id="image-automatic" type="button">탭의 모든 이미지 번역</button><button id="image-translation" type="button">이미지 선택해서 번역</button><button id="image-stop" type="button" disabled>이미지 분석 중지</button><p id="image-status" role="status" class="preparation-status">번역할 이미지를 선택하세요.</p><p class="subtitle">번역 상자를 드래그하고 이미지 위의 PNG 저장을 누르세요. 짧거나 불명확한 문구는 원문 수정에서 보완할 수 있습니다.</p></div>
+</section>
+<button id="advanced" type="button">Advanced · 모델 선택</button>
 <script type="module" src="./popup.ts"></script></body></html>

@@ -9,7 +9,7 @@ import { asrCandidates, registeredCandidate } from "../packages/engines-browser/
 import { translationCandidates } from "../packages/engines-browser/translation-model";
 import type { BackgroundSnapshot } from "../apps/chrome/background-protocol";
 
-type Fixture = { saved: BackgroundSnapshot; changed(): void; commands: { type: string }[] };
+type Fixture = { saved: BackgroundSnapshot; changed(): void; commands: { type: string }[]; inventoryReads: number; holdInventory: boolean; inventoryWaiters: (() => void)[] };
 
 test("Advanced distinguishes partial downloads, cached files and loaded models across reopening", async () => {
   const output = resolve(".ralph/media-framework/advanced-download-build");
@@ -29,12 +29,19 @@ test("Advanced distinguishes partial downloads, cached files and loaded models a
     await page.addInitScript(() => {
       localStorage.setItem("jamak-model-options-v1", JSON.stringify({ recognition: "smallFp16", translation: "hyMt2" }));
       const listeners: ((message: object, sender: object) => void)[] = [];
-      const fixture: Fixture = { saved: { state: "idle", source: "ja", message: "중지됨", captions: [] }, commands: [],
+      const fixture: Fixture = { saved: { state: "idle", source: "ja", message: "중지됨", captions: [] }, commands: [], inventoryReads: 0, holdInventory: false, inventoryWaiters: [],
         changed() { for (const listener of listeners) listener({ channel: "interpreter-event-v1" }, { id: "fixture" }); } };
       Object.assign(window, fixture);
+      const has = caches.has.bind(caches);
+      caches.has = async name => {
+        const state = window as unknown as Fixture; state.inventoryReads++;
+        if (state.holdInventory) await new Promise<void>(resolve => state.inventoryWaiters.push(resolve));
+        return has(name);
+      };
       Object.defineProperty(window, "chrome", { configurable: true, value: { runtime: { id: "fixture", onMessage: {
         addListener(listener: typeof listeners[number]) { listeners.push(listener); }, removeListener() {},
-      }, async sendMessage({ command }: { command: { type: string } }) {
+      }, async sendMessage({ command }: { command?: { type: string } }) {
+        if (!command) return { ocrPreparation: { state: "idle", message: "" } };
         (window as unknown as Fixture).commands.push(command);
         return { snapshot: (window as unknown as Fixture).saved };
       } } } });
@@ -69,6 +76,19 @@ test("Advanced distinguishes partial downloads, cached files and loaded models a
     assert.equal(await page.locator("#translation-download").textContent(), "다운로드 완료 · 기기에 저장됨");
     assert.equal(await page.locator("#status").textContent(), "모델을 불러오는 중…", "Downloaded files do not imply loaded models");
     assert.equal(await page.locator("#model-progress").getAttribute("value"), null);
+    await page.evaluate(() => {
+      const fixture = window as unknown as Fixture;
+      fixture.inventoryReads = 0; fixture.holdInventory = true;
+      for (let i = 0; i < 50; i++) {
+        fixture.saved = { ...fixture.saved, downloadProgress: i / 100 }; fixture.changed();
+      }
+    });
+    await page.waitForFunction(() => (document.querySelector("#model-progress") as HTMLProgressElement).value === 0.49);
+    assert.ok(await page.evaluate(() => (window as unknown as Fixture).inventoryReads <= 4), "Progress bursts must not create overlapping full inventory scans");
+    await page.evaluate(() => {
+      const fixture = window as unknown as Fixture; fixture.holdInventory = false;
+      for (const release of fixture.inventoryWaiters.splice(0)) release();
+    });
     await page.evaluate(() => {
       const fixture = window as unknown as Fixture;
       fixture.saved = { ...fixture.saved, state: "ready", message: "준비 완료" }; fixture.changed();
