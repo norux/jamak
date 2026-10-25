@@ -256,7 +256,7 @@ test("document Translator reports missing API, unsupported pair and unavailable 
     f.document.defaultView.Translator.availability = async () => "unavailable";
     assert.deepEqual(await f.host.probe(), { state: "unavailable", reason: "language-pair-unsupported", message: "Browser cannot translate this language pair" });
     const other = createDocumentTranslator(f.document as unknown as Document, { source: "fr", target: "ko" }, () => {});
-    assert.deepEqual(await other.probe(), { state: "unavailable", reason: "language-pair-unsupported", message: "Only Japanese/English to Korean is supported by this adapter" }); await assert.rejects(other.prepare(), /language-pair-unsupported/); await other.close();
+    assert.deepEqual(await other.probe(), { state: "unavailable", reason: "language-pair-unsupported", message: "Select English, Japanese or Korean for speech and subtitles" }); await assert.rejects(other.prepare(), /language-pair-unsupported/); await other.close();
     Reflect.deleteProperty(f.document.defaultView, "Translator");
     assert.deepEqual(await f.host.probe(), { state: "unavailable", reason: "execution-context-unavailable", message: "Translator requires an eligible visible secure document" }); await assert.rejects(f.host.prepare(), /execution-context-unavailable/);
     assert.equal(f.loads.length, 0);

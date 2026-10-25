@@ -1,4 +1,4 @@
-import { access, mkdir, writeFile } from "node:fs/promises";
+import { access, mkdir, readFile, writeFile } from "node:fs/promises";
 import { resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { chromium } from "playwright";
@@ -42,6 +42,17 @@ try {
       }
     });
   });
+  await mkdir(profile, { recursive: true });
+  const statePath = resolve(profile, "Local State");
+  const state = await readFile(statePath, "utf8").then(JSON.parse).catch(error => {
+    if (error.code === "ENOENT") return {};
+    throw error;
+  });
+  state.on_device_translation = { ...state.on_device_translation, translate_kit_registered: true,
+    translate_kit_packages: { ...state.on_device_translation?.translate_kit_packages, en_ja_registered: true, en_ko_registered: true } };
+  state.accessibility = { ...state.accessibility, captions: { ...state.accessibility?.captions,
+    soda_registered_language_packs: [...new Set([...(state.accessibility?.captions?.soda_registered_language_packs ?? []), "ja-JP", "en-US", "ko-KR"])] } };
+  await writeFile(statePath, JSON.stringify(state));
   await writeFile(configuration, JSON.stringify({
     requiredComponents: ["Chrome TranslateKit", "Chrome TranslateKit en-ja", "Chrome TranslateKit en-ko",
       "SODA Library", "SODA ja-JP Models", "SODA en-US Models", "SODA ko-KR Models"],
@@ -59,7 +70,7 @@ try {
   // Custom launch arguments skip Playwright's startup-page wait. Creating a
   // page here races Chrome's own first window and leaves an extra blank one.
   const page = browser.pages().find(page => page.url() === "about:blank")
-    ?? await browser.waitForEvent("page", { predicate: page => page.url() === "about:blank", timeout: 15000 });
+    ?? await browser.waitForEvent("page", { predicate: page => page.url() === "about:blank", timeout: 180000 });
   await page.waitForLoadState();
   await page.goto(`${origin}/?language=ja`);
   await Promise.all(browser.pages().filter(other => other !== page).map(other => other.close()));

@@ -1,0 +1,4158 @@
+{
+  "date": "2026-10-25",
+  "scope": "Actual browser inference on checked-in synthetic fixtures; not an exhaustive or human semantic evaluation",
+  "recognition": {
+    "mode": "asr",
+    "date": "2026-10-25T01:12:34.435Z",
+    "scope": "Actual browser inference on synthetic checked-in turns; not live overlay latency or human evaluation",
+    "runs": [
+      {
+        "candidate": "tiny",
+        "results": [
+          {
+            "id": "meeting-0",
+            "language": "en",
+            "reference": "Hello everyone. We will meet tomorrow at the station.",
+            "text": " Hello everyone, we will meet tomorrow at the station.",
+            "inferenceMs": 1133.5,
+            "rtf": 0.37736163129421557,
+            "edits": 0,
+            "units": 43,
+            "cer": 0
+          },
+          {
+            "id": "meeting-1",
+            "language": "ja",
+            "reference": "こんにちは。明日の午後三時に駅で会いましょう。",
+            "text": "こんにちは、あすのごごさんじに 出来てあいましょう",
+            "inferenceMs": 1026.3999998569489,
+            "rtf": 0.2921667348238037,
+            "edits": 11,
+            "units": 21,
+            "cer": 0.5238095238095238
+          },
+          {
+            "id": "meeting-2",
+            "language": "ko",
+            "reference": "안녕하세요. 내일 오후 세 시에 역에서 만나겠습니다.",
+            "text": " 안녕하세요. 내일 오후 3시 여기서 만났겠습니다.",
+            "inferenceMs": 1015,
+            "rtf": 0.28052235196572933,
+            "edits": 5,
+            "units": 21,
+            "cer": 0.23809523809523808
+          },
+          {
+            "id": "meeting-3",
+            "language": "en",
+            "reference": "Please keep the reservation. Thank you for joining the meeting.",
+            "text": " Please keep the reservation. Thank you for joining the meeting.",
+            "inferenceMs": 971.0999999046326,
+            "rtf": 0.29678528448177044,
+            "edits": 0,
+            "units": 52,
+            "cer": 0
+          },
+          {
+            "id": "meeting-4",
+            "language": "ja",
+            "reference": "予約は取り消さないでください。会議に参加してくれてありがとうございます。",
+            "text": "予約は取り消さないでください。会議に参加してくれてありがとうございます。",
+            "inferenceMs": 1256.2000000476837,
+            "rtf": 0.2251355347547262,
+            "edits": 0,
+            "units": 34,
+            "cer": 0
+          },
+          {
+            "id": "meeting-5",
+            "language": "ko",
+            "reference": "예약을 취소하지 마세요. 회의에 참석해 주셔서 감사합니다.",
+            "text": " 예약을 추이소하지 마세요.",
+            "inferenceMs": 1050,
+            "rtf": 0.24892207849935552,
+            "edits": 16,
+            "units": 24,
+            "cer": 0.6666666666666666
+          },
+          {
+            "id": "conversation-ja-0",
+            "language": "ja",
+            "reference": "ねえ、駅の近くにできたカフェ、もう行った？土曜日に一緒にお昼を食べようと思ってるんだけど。",
+            "text": "え、えきの近くに出来たか?もう行った。どうよびに一緒にお昼を食べようと思っているんだけど",
+            "inferenceMs": 1383.7000000476837,
+            "rtf": 0.18749640069075474,
+            "edits": 12,
+            "units": 41,
+            "cer": 0.2926829268292683
+          },
+          {
+            "id": "conversation-ja-1",
+            "language": "ja",
+            "reference": "まだ行ってないよ。土曜日は妹の引っ越しを手伝うから、日曜日にしない？午前中はちょっと忙しいんだ。",
+            "text": "またご覧いただきたいよ。どうよ。みは、今のひとしを手続から、日を見にしない。ご全聴はきょっと忙しいんだ。",
+            "inferenceMs": 1334.0999999046326,
+            "rtf": 0.13582254799930082,
+            "edits": 24,
+            "units": 44,
+            "cer": 0.5454545454545454
+          },
+          {
+            "id": "conversation-ja-2",
+            "language": "ja",
+            "reference": "じゃあ、日曜日の午後一時半はどう？駅の東口で待ち合わせて、食事のあとに川沿いを散歩しよう。",
+            "text": "では、日曜日の午後1時半はどう? 駅の日がしぐちで待ち合わせて、食事の後に、川添いを3歩しよう",
+            "inferenceMs": 1208.6000001430511,
+            "rtf": 0.14549686249283075,
+            "edits": 13,
+            "units": 41,
+            "cer": 0.3170731707317073
+          },
+          {
+            "id": "conversation-ja-3",
+            "language": "ja",
+            "reference": "一時半なら大丈夫。ところで、そのカフェには肉を使わない料理もあるかな？最近、野菜をよく食べてるんだ。",
+            "text": "それでは、よろしくお願いします。",
+            "inferenceMs": 996.8000001907349,
+            "rtf": 0.096453237341511,
+            "edits": 42,
+            "units": 45,
+            "cer": 0.9333333333333333
+          },
+          {
+            "id": "conversation-ja-4",
+            "language": "ja",
+            "reference": "きのこのサンドイッチとトマトのスープがあるよ。予約が必要か、私が確認しておくね。まだ予約は取り消さないでね。",
+            "text": "昨日の3度1ととまとのスープがあるよ4百が必要が私が確認しておくねまだ4百は取り消さないでね",
+            "inferenceMs": 1216.8000001907349,
+            "rtf": 0.12834653284598183,
+            "edits": 17,
+            "units": 50,
+            "cer": 0.34
+          },
+          {
+            "id": "conversation-ja-5",
+            "language": "ja",
+            "reference": "ありがとう。でも、雨が降ったら散歩はやめよう。カフェの向かいに本屋があるから、そこでゆっくり本を見たいな。",
+            "text": "ありがとうございます",
+            "inferenceMs": 964.3000001907349,
+            "rtf": 0.10113753066515883,
+            "edits": 42,
+            "units": 48,
+            "cer": 0.875
+          },
+          {
+            "id": "conversation-ja-6",
+            "language": "ja",
+            "reference": "いいね。それから、借りていた本も持っていくよ。帰る前に渡すから、私が忘れていたら声をかけてくれる？",
+            "text": "それでいいねそれから、カリテータ本も持っていくよ。カイル前に私から私が忘れていたら声をかけてくれる",
+            "inferenceMs": 1271.4000000953674,
+            "rtf": 0.15073431704459658,
+            "edits": 13,
+            "units": 44,
+            "cer": 0.29545454545454547
+          },
+          {
+            "id": "conversation-ja-7",
+            "language": "ja",
+            "reference": "もちろん。じゃあ、日曜日の午後一時半に東口で。時間が変わったら、出かける前にメッセージを送ってね。",
+            "text": "お気持ちで、リカンガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガガ",
+            "inferenceMs": 2632.5999999046326,
+            "rtf": 0.26628791549625197,
+            "edits": 254,
+            "units": 44,
+            "cer": 5.7727272727272725
+          }
+        ],
+        "preparationMs": 6458.527416999999,
+        "automatic": [
+          {
+            "expected": "en",
+            "detected": "en",
+            "text": " Hello everyone, we will meet tomorrow at the station.",
+            "inferenceMs": 1120.9000000953674
+          },
+          {
+            "expected": "ja",
+            "detected": "ja",
+            "text": "こんにちは、あすのごごさんじに 出来てあいましょう",
+            "inferenceMs": 1126.2000000476837
+          },
+          {
+            "expected": "ko",
+            "detected": "ko",
+            "text": " 안녕하세요. 내일 오후 3시 여기서 만났겠습니다.",
+            "inferenceMs": 1092.5999999046326
+          },
+          {
+            "expected": "en",
+            "detected": "en",
+            "text": " Please keep the reservation. Thank you for joining the meeting.",
+            "inferenceMs": 1177.2000000476837
+          },
+          {
+            "expected": "ja",
+            "detected": "ja",
+            "text": "予約は取り消さないでください。会議に参加してくれてありがとうございます。",
+            "inferenceMs": 1202
+          },
+          {
+            "expected": "ko",
+            "detected": "ko",
+            "text": " 예약을 추이소하지 마세요.",
+            "inferenceMs": 1080.4000000953674
+          }
+        ]
+      },
+      {
+        "candidate": "base",
+        "results": [
+          {
+            "id": "meeting-0",
+            "language": "en",
+            "reference": "Hello everyone. We will meet tomorrow at the station.",
+            "text": " Hello everyone, we will meet tomorrow at the station.",
+            "inferenceMs": 2481.9000000953674,
+            "rtf": 0.8262671660741964,
+            "edits": 0,
+            "units": 43,
+            "cer": 0
+          },
+          {
+            "id": "meeting-1",
+            "language": "ja",
+            "reference": "こんにちは。明日の午後三時に駅で会いましょう。",
+            "text": "こんにちは、明日の午後3時に、エキで会いましょう。",
+            "inferenceMs": 2486.2999999523163,
+            "rtf": 0.7077300787994282,
+            "edits": 3,
+            "units": 21,
+            "cer": 0.14285714285714285
+          },
+          {
+            "id": "meeting-2",
+            "language": "ko",
+            "reference": "안녕하세요. 내일 오후 세 시에 역에서 만나겠습니다.",
+            "text": " 안녕하세요? 내일 오후 3시에 여기서 만나겠습니다.",
+            "inferenceMs": 2393.5999999046326,
+            "rtf": 0.6615352725501645,
+            "edits": 3,
+            "units": 21,
+            "cer": 0.14285714285714285
+          },
+          {
+            "id": "meeting-3",
+            "language": "en",
+            "reference": "Please keep the reservation. Thank you for joining the meeting.",
+            "text": " Please keep the reservation. Thank you for joining the meeting.",
+            "inferenceMs": 2124.7999999523163,
+            "rtf": 0.6493763490007655,
+            "edits": 0,
+            "units": 52,
+            "cer": 0
+          },
+          {
+            "id": "meeting-4",
+            "language": "ja",
+            "reference": "予約は取り消さないでください。会議に参加してくれてありがとうございます。",
+            "text": "ようやくは取り消さないでください。会議に参加してくれてありがとうございます",
+            "inferenceMs": 2218.7000000476837,
+            "rtf": 0.39763430262067,
+            "edits": 4,
+            "units": 34,
+            "cer": 0.11764705882352941
+          },
+          {
+            "id": "meeting-5",
+            "language": "ko",
+            "reference": "예약을 취소하지 마세요. 회의에 참석해 주셔서 감사합니다.",
+            "text": " 예약을 취소하지 마세요. 후회에 참석해 주셔서 감사합니다.",
+            "inferenceMs": 2428.0999999046326,
+            "rtf": 0.5756263797909963,
+            "edits": 2,
+            "units": 24,
+            "cer": 0.08333333333333333
+          },
+          {
+            "id": "conversation-ja-0",
+            "language": "ja",
+            "reference": "ねえ、駅の近くにできたカフェ、もう行った？土曜日に一緒にお昼を食べようと思ってるんだけど。",
+            "text": "ねえ、駅の近くにできたカフェ、もう行った、土曜日に一緒にお昼を食べようと思っているんだけど",
+            "inferenceMs": 2601.800000190735,
+            "rtf": 0.35255339693297444,
+            "edits": 1,
+            "units": 41,
+            "cer": 0.024390243902439025
+          },
+          {
+            "id": "conversation-ja-1",
+            "language": "ja",
+            "reference": "まだ行ってないよ。土曜日は妹の引っ越しを手伝うから、日曜日にしない？午前中はちょっと忙しいんだ。",
+            "text": "まだはこうなってないよ。土曜日は、妹の日子を手伝うから、日曜日にしない。午前中はちょっと忙しいんだ。",
+            "inferenceMs": 3190.7000000476837,
+            "rtf": 0.32483996997138503,
+            "edits": 8,
+            "units": 44,
+            "cer": 0.18181818181818182
+          },
+          {
+            "id": "conversation-ja-2",
+            "language": "ja",
+            "reference": "じゃあ、日曜日の午後一時半はどう？駅の東口で待ち合わせて、食事のあとに川沿いを散歩しよう。",
+            "text": "では、日曜日の午後1時半はどう、駅の東口で待ち合わせて、食事の後に乾燥用3歩しよう",
+            "inferenceMs": 3035,
+            "rtf": 0.36536734867902954,
+            "edits": 11,
+            "units": 41,
+            "cer": 0.2682926829268293
+          },
+          {
+            "id": "conversation-ja-3",
+            "language": "ja",
+            "reference": "一時半なら大丈夫。ところで、そのカフェには肉を使わない料理もあるかな？最近、野菜をよく食べてるんだ。",
+            "text": "イチリアンなら大量文ところでそのカペには肉を使わない料理もあるかな最近野菜をよく食べてるんだ",
+            "inferenceMs": 3742.7999999523163,
+            "rtf": 0.362164101773807,
+            "edits": 9,
+            "units": 45,
+            "cer": 0.2
+          },
+          {
+            "id": "conversation-ja-4",
+            "language": "ja",
+            "reference": "きのこのサンドイッチとトマトのスープがあるよ。予約が必要か、私が確認しておくね。まだ予約は取り消さないでね。",
+            "text": "昨日の3度1時とトマトのスープがあるよ、予約が必要か、私が確認しておくね、まだ予約は取り消さないでね",
+            "inferenceMs": 3219.2000000476837,
+            "rtf": 0.3395571650880501,
+            "edits": 9,
+            "units": 50,
+            "cer": 0.18
+          },
+          {
+            "id": "conversation-ja-5",
+            "language": "ja",
+            "reference": "ありがとう。でも、雨が降ったら散歩はやめよう。カフェの向かいに本屋があるから、そこでゆっくり本を見たいな。",
+            "text": "ありがとうでも雨が降ったらさんとはやめよう カメの向かい日本があるからそこでゆっくり本語みたいな",
+            "inferenceMs": 2931.100000143051,
+            "rtf": 0.30741907714246536,
+            "edits": 9,
+            "units": 48,
+            "cer": 0.1875
+          },
+          {
+            "id": "conversation-ja-6",
+            "language": "ja",
+            "reference": "いいね。それから、借りていた本も持っていくよ。帰る前に渡すから、私が忘れていたら声をかけてくれる？",
+            "text": "いいね、それから、借りていた本も持っていくよ。帰る前に渡すから、私が忘れていたら声をかけてくれる?",
+            "inferenceMs": 3575.5,
+            "rtf": 0.4239032173608059,
+            "edits": 0,
+            "units": 44,
+            "cer": 0
+          },
+          {
+            "id": "conversation-ja-7",
+            "language": "ja",
+            "reference": "もちろん。じゃあ、日曜日の午後一時半に東口で。時間が変わったら、出かける前にメッセージを送ってね。",
+            "text": "もちろん、が、日曜日の午後1時半に東口で、時間が変わったら、でかける前にメッセージを送ってね。",
+            "inferenceMs": 3598.2999999523163,
+            "rtf": 0.3639686265867115,
+            "edits": 5,
+            "units": 44,
+            "cer": 0.11363636363636363
+          }
+        ],
+        "preparationMs": 5925.079417000001,
+        "automatic": [
+          {
+            "expected": "en",
+            "detected": "en",
+            "text": " Hello everyone, we will meet tomorrow at the station.",
+            "inferenceMs": 3821.5
+          },
+          {
+            "expected": "ja",
+            "detected": "ja",
+            "text": "こんにちは、明日の午後3時に、エキで会いましょう。",
+            "inferenceMs": 2975
+          },
+          {
+            "expected": "ko",
+            "detected": "ko",
+            "text": " 안녕하세요? 내일 오후 3시에 여기서 만나겠습니다.",
+            "inferenceMs": 2923.2000000476837
+          },
+          {
+            "expected": "en",
+            "detected": "en",
+            "text": " Please keep the reservation. Thank you for joining the meeting.",
+            "inferenceMs": 2378.5
+          },
+          {
+            "expected": "ja",
+            "detected": "ja",
+            "text": "ようやくは取り消さないでください。会議に参加してくれてありがとうございます",
+            "inferenceMs": 2608
+          },
+          {
+            "expected": "ko",
+            "detected": "ko",
+            "text": " 예약을 취소하지 마세요. 후회에 참석해 주셔서 감사합니다.",
+            "inferenceMs": 2417.0999999046326
+          }
+        ]
+      },
+      {
+        "candidate": "small",
+        "results": [
+          {
+            "id": "meeting-0",
+            "language": "en",
+            "reference": "Hello everyone. We will meet tomorrow at the station.",
+            "text": " Hello everyone, we will meet tomorrow at the station.",
+            "inferenceMs": 8231.700000047684,
+            "rtf": 2.740474407007136,
+            "edits": 0,
+            "units": 43,
+            "cer": 0
+          },
+          {
+            "id": "meeting-1",
+            "language": "ja",
+            "reference": "こんにちは。明日の午後三時に駅で会いましょう。",
+            "text": "こんにちは、明日の午後3時に、駅で会いましょう。",
+            "inferenceMs": 8026.600000143051,
+            "rtf": 2.2847871337737518,
+            "edits": 1,
+            "units": 21,
+            "cer": 0.047619047619047616
+          },
+          {
+            "id": "meeting-2",
+            "language": "ko",
+            "reference": "안녕하세요. 내일 오후 세 시에 역에서 만나겠습니다.",
+            "text": " 안녕하세요 내일 오후 3시에 여기서 만나겠습니다.",
+            "inferenceMs": 7593.600000143051,
+            "rtf": 2.098694120125213,
+            "edits": 3,
+            "units": 21,
+            "cer": 0.14285714285714285
+          },
+          {
+            "id": "meeting-3",
+            "language": "en",
+            "reference": "Please keep the reservation. Thank you for joining the meeting.",
+            "text": " Please keep the reservation. Thank you for joining the meeting.",
+            "inferenceMs": 7802.800000190735,
+            "rtf": 2.3846732757062976,
+            "edits": 0,
+            "units": 52,
+            "cer": 0
+          },
+          {
+            "id": "meeting-4",
+            "language": "ja",
+            "reference": "予約は取り消さないでください。会議に参加してくれてありがとうございます。",
+            "text": "予約は取り消さないでください。会議に参加してくれてありがとうございます。",
+            "inferenceMs": 7829,
+            "rtf": 1.4031094583090638,
+            "edits": 0,
+            "units": 34,
+            "cer": 0
+          },
+          {
+            "id": "meeting-5",
+            "language": "ko",
+            "reference": "예약을 취소하지 마세요. 회의에 참석해 주셔서 감사합니다.",
+            "text": " 예약을 취소하지 마세요. 회의에 참석해주셔서 감사합니다.",
+            "inferenceMs": 7591.299999952316,
+            "rtf": 1.7996592138097982,
+            "edits": 0,
+            "units": 24,
+            "cer": 0
+          },
+          {
+            "id": "conversation-ja-0",
+            "language": "ja",
+            "reference": "ねえ、駅の近くにできたカフェ、もう行った？土曜日に一緒にお昼を食べようと思ってるんだけど。",
+            "text": "ねえ、駅の近くにできたカフェ、もう行った?土曜日に一緒にお昼を食べようと思ってるんだけど",
+            "inferenceMs": 8164.799999952316,
+            "rtf": 1.1063602025714956,
+            "edits": 0,
+            "units": 41,
+            "cer": 0
+          },
+          {
+            "id": "conversation-ja-1",
+            "language": "ja",
+            "reference": "まだ行ってないよ。土曜日は妹の引っ越しを手伝うから、日曜日にしない？午前中はちょっと忙しいんだ。",
+            "text": "まだ行ってないよ。土曜日は、妹の引越しを手伝うから、日曜日にしない。午前中はちょっと忙しいんだ。",
+            "inferenceMs": 8651.400000095367,
+            "rtf": 0.8807849425516096,
+            "edits": 1,
+            "units": 44,
+            "cer": 0.022727272727272728
+          },
+          {
+            "id": "conversation-ja-2",
+            "language": "ja",
+            "reference": "じゃあ、日曜日の午後一時半はどう？駅の東口で待ち合わせて、食事のあとに川沿いを散歩しよう。",
+            "text": "じゃあ、日曜日の午後1時半はどう、駅の東口で待ち合わせて、食事の後に、川沿いを散歩しよう。",
+            "inferenceMs": 9191.300000190735,
+            "rtf": 1.106491239533197,
+            "edits": 3,
+            "units": 41,
+            "cer": 0.07317073170731707
+          },
+          {
+            "id": "conversation-ja-3",
+            "language": "ja",
+            "reference": "一時半なら大丈夫。ところで、そのカフェには肉を使わない料理もあるかな？最近、野菜をよく食べてるんだ。",
+            "text": "ビーチリアンなら大丈夫。ところで、そのカフェには肉を使わない料理もあるかな。最近、野菜をよく食べてるんだ。",
+            "inferenceMs": 8405.799999952316,
+            "rtf": 0.8133694043795505,
+            "edits": 6,
+            "units": 45,
+            "cer": 0.13333333333333333
+          },
+          {
+            "id": "conversation-ja-4",
+            "language": "ja",
+            "reference": "きのこのサンドイッチとトマトのスープがあるよ。予約が必要か、私が確認しておくね。まだ予約は取り消さないでね。",
+            "text": "キノコのサンドイッチとトマトのスープがあるよ、予約が必要か、私が確認しておくね、まだ予約は取り消さないでね。",
+            "inferenceMs": 8661.599999904633,
+            "rtf": 0.9136146685669444,
+            "edits": 3,
+            "units": 50,
+            "cer": 0.06
+          },
+          {
+            "id": "conversation-ja-5",
+            "language": "ja",
+            "reference": "ありがとう。でも、雨が降ったら散歩はやめよう。カフェの向かいに本屋があるから、そこでゆっくり本を見たいな。",
+            "text": "ありがとう。でも、雨が降ったら散歩はやめよう。カペの向かい日本屋があるから、そこでゆっくり本を見たいな。",
+            "inferenceMs": 8936.699999809265,
+            "rtf": 0.9372972831040747,
+            "edits": 3,
+            "units": 48,
+            "cer": 0.0625
+          },
+          {
+            "id": "conversation-ja-6",
+            "language": "ja",
+            "reference": "いいね。それから、借りていた本も持っていくよ。帰る前に渡すから、私が忘れていたら声をかけてくれる？",
+            "text": "いいね、それから、借りていた本も持っていくよ。帰る前に渡すから、私が忘れていたら声をかけてくれる?",
+            "inferenceMs": 8483.600000143051,
+            "rtf": 1.005796485767801,
+            "edits": 0,
+            "units": 44,
+            "cer": 0
+          },
+          {
+            "id": "conversation-ja-7",
+            "language": "ja",
+            "reference": "もちろん。じゃあ、日曜日の午後一時半に東口で。時間が変わったら、出かける前にメッセージを送ってね。",
+            "text": "もちろんじゃあ日曜日の午後1時半に東口で時間が変わったら出かける前にメッセージを送ってね",
+            "inferenceMs": 8135.700000047684,
+            "rtf": 0.8229273699741834,
+            "edits": 1,
+            "units": 44,
+            "cer": 0.022727272727272728
+          }
+        ],
+        "preparationMs": 12646.730666000003,
+        "automatic": [
+          {
+            "expected": "en",
+            "detected": "en",
+            "text": " Hello everyone, we will meet tomorrow at the station.",
+            "inferenceMs": 8322
+          },
+          {
+            "expected": "ja",
+            "detected": "ja",
+            "text": "こんにちは、明日の午後3時に、駅で会いましょう。",
+            "inferenceMs": 8571.900000095367
+          },
+          {
+            "expected": "ko",
+            "detected": "ko",
+            "text": " 안녕하세요 내일 오후 3시에 여기서 만나겠습니다.",
+            "inferenceMs": 8267.400000095367
+          },
+          {
+            "expected": "en",
+            "detected": "en",
+            "text": " Please keep the reservation. Thank you for joining the meeting.",
+            "inferenceMs": 8236.099999904633
+          },
+          {
+            "expected": "ja",
+            "detected": "ja",
+            "text": "予約は取り消さないでください。会議に参加してくれてありがとうございます。",
+            "inferenceMs": 8535.400000095367
+          },
+          {
+            "expected": "ko",
+            "detected": "ko",
+            "text": " 예약을 취소하지 마세요. 회의에 참석해주셔서 감사합니다.",
+            "inferenceMs": 8340.299999952316
+          }
+        ]
+      },
+      {
+        "candidate": "smallFp16",
+        "results": [
+          {
+            "id": "meeting-0",
+            "language": "en",
+            "reference": "Hello everyone. We will meet tomorrow at the station.",
+            "text": " Hello everyone. We will meet tomorrow at the station.",
+            "inferenceMs": 698.7999999523163,
+            "rtf": 0.23264253015474534,
+            "edits": 0,
+            "units": 43,
+            "cer": 0
+          },
+          {
+            "id": "meeting-1",
+            "language": "ja",
+            "reference": "こんにちは。明日の午後三時に駅で会いましょう。",
+            "text": "こんにちは、明日の午後3時に、駅で会いましょう。",
+            "inferenceMs": 549.5999999046326,
+            "rtf": 0.15644469744123043,
+            "edits": 1,
+            "units": 21,
+            "cer": 0.047619047619047616
+          },
+          {
+            "id": "meeting-2",
+            "language": "ko",
+            "reference": "안녕하세요. 내일 오후 세 시에 역에서 만나겠습니다.",
+            "text": " 안녕하세요 내일 오후 3시에 여기서 만나겠습니다.",
+            "inferenceMs": 435.7999999523163,
+            "rtf": 0.1204449664761463,
+            "edits": 3,
+            "units": 21,
+            "cer": 0.14285714285714285
+          },
+          {
+            "id": "meeting-3",
+            "language": "en",
+            "reference": "Please keep the reservation. Thank you for joining the meeting.",
+            "text": " Please keep the reservation. Thank you for joining the meeting.",
+            "inferenceMs": 430.59999990463257,
+            "rtf": 0.13159895323045717,
+            "edits": 0,
+            "units": 52,
+            "cer": 0
+          },
+          {
+            "id": "meeting-4",
+            "language": "ja",
+            "reference": "予約は取り消さないでください。会議に参加してくれてありがとうございます。",
+            "text": "予約は取り消さないでください 会議に参加してくれてありがとうございます",
+            "inferenceMs": 585.7000000476837,
+            "rtf": 0.10496886062058042,
+            "edits": 0,
+            "units": 34,
+            "cer": 0
+          },
+          {
+            "id": "meeting-5",
+            "language": "ko",
+            "reference": "예약을 취소하지 마세요. 회의에 참석해 주셔서 감사합니다.",
+            "text": " 예약을 취소하지 마세요. 회의에 참석해 주셔서 감사합니다.",
+            "inferenceMs": 540.5,
+            "rtf": 0.12813560326562062,
+            "edits": 0,
+            "units": 24,
+            "cer": 0
+          },
+          {
+            "id": "conversation-ja-0",
+            "language": "ja",
+            "reference": "ねえ、駅の近くにできたカフェ、もう行った？土曜日に一緒にお昼を食べようと思ってるんだけど。",
+            "text": "ねえ、駅の近くにできたカフェ、もう行った?土曜日に一緒にお昼を食べようと思ってるんだけど",
+            "inferenceMs": 848.5,
+            "rtf": 0.1149748471349447,
+            "edits": 0,
+            "units": 41,
+            "cer": 0
+          },
+          {
+            "id": "conversation-ja-1",
+            "language": "ja",
+            "reference": "まだ行ってないよ。土曜日は妹の引っ越しを手伝うから、日曜日にしない？午前中はちょっと忙しいんだ。",
+            "text": "まだ行ってないよ。土曜日は、妹の引越しを手伝うから、日曜日にしない?午前中はちょっと忙しいんだ。",
+            "inferenceMs": 914.4000000953674,
+            "rtf": 0.09309357462888225,
+            "edits": 1,
+            "units": 44,
+            "cer": 0.022727272727272728
+          },
+          {
+            "id": "conversation-ja-2",
+            "language": "ja",
+            "reference": "じゃあ、日曜日の午後一時半はどう？駅の東口で待ち合わせて、食事のあとに川沿いを散歩しよう。",
+            "text": "じゃあ日曜日の午後1時半はどう 駅の東口で待ち合わせて食事の後に川沿いを散歩しよう",
+            "inferenceMs": 906.8999998569489,
+            "rtf": 0.10917681992248622,
+            "edits": 3,
+            "units": 41,
+            "cer": 0.07317073170731707
+          },
+          {
+            "id": "conversation-ja-3",
+            "language": "ja",
+            "reference": "一時半なら大丈夫。ところで、そのカフェには肉を使わない料理もあるかな？最近、野菜をよく食べてるんだ。",
+            "text": "にしじはんなら大丈夫ところでそのカフェには肉を使わない料理もあるかな最近野菜をよく食べてるんだ",
+            "inferenceMs": 773.7000000476837,
+            "rtf": 0.07486543912665214,
+            "edits": 5,
+            "units": 45,
+            "cer": 0.1111111111111111
+          },
+          {
+            "id": "conversation-ja-4",
+            "language": "ja",
+            "reference": "きのこのサンドイッチとトマトのスープがあるよ。予約が必要か、私が確認しておくね。まだ予約は取り消さないでね。",
+            "text": "キノコのサンドイッチとトマトのスープがあるよ、予約が必要か、私が確認しておくね、まだ予約は取り消さないでね。",
+            "inferenceMs": 1045,
+            "rtf": 0.11022528501234978,
+            "edits": 3,
+            "units": 50,
+            "cer": 0.06
+          },
+          {
+            "id": "conversation-ja-5",
+            "language": "ja",
+            "reference": "ありがとう。でも、雨が降ったら散歩はやめよう。カフェの向かいに本屋があるから、そこでゆっくり本を見たいな。",
+            "text": "ありがとう。でも、雨が降ったら散歩はやめよう。カフェの向かい日本屋があるから、そこでゆっくり本を見たいな。",
+            "inferenceMs": 941.7000000476837,
+            "rtf": 0.09876720171457465,
+            "edits": 1,
+            "units": 48,
+            "cer": 0.020833333333333332
+          },
+          {
+            "id": "conversation-ja-6",
+            "language": "ja",
+            "reference": "いいね。それから、借りていた本も持っていくよ。帰る前に渡すから、私が忘れていたら声をかけてくれる？",
+            "text": "いいね、それから、借りていた本も持っていくよ、帰る前に渡すから、私が忘れていたら声をかけてくれる?",
+            "inferenceMs": 901.9000000953674,
+            "rtf": 0.10692723025538732,
+            "edits": 0,
+            "units": 44,
+            "cer": 0
+          },
+          {
+            "id": "conversation-ja-7",
+            "language": "ja",
+            "reference": "もちろん。じゃあ、日曜日の午後一時半に東口で。時間が変わったら、出かける前にメッセージを送ってね。",
+            "text": "もちろんじゃあ日曜日の午後1時半に東口で時間が変わったら出かける前にメッセージを送ってね",
+            "inferenceMs": 837.5,
+            "rtf": 0.08471326036473065,
+            "edits": 1,
+            "units": 44,
+            "cer": 0.022727272727272728
+          }
+        ],
+        "preparationMs": 19917.388916999975,
+        "automatic": [
+          {
+            "expected": "en",
+            "detected": "en",
+            "text": " Hello everyone. We will meet tomorrow at the station.",
+            "inferenceMs": 459.2999999523163
+          },
+          {
+            "expected": "ja",
+            "detected": "ja",
+            "text": "こんにちは、明日の午後3時に、駅で会いましょう。",
+            "inferenceMs": 584.0999999046326
+          },
+          {
+            "expected": "ko",
+            "detected": "ko",
+            "text": " 안녕하세요 내일 오후 3시에 여기서 만나겠습니다.",
+            "inferenceMs": 472.40000009536743
+          },
+          {
+            "expected": "en",
+            "detected": "en",
+            "text": " Please keep the reservation. Thank you for joining the meeting.",
+            "inferenceMs": 477.10000014305115
+          },
+          {
+            "expected": "ja",
+            "detected": "ja",
+            "text": "予約は取り消さないでください 会議に参加してくれてありがとうございます",
+            "inferenceMs": 621.7000000476837
+          },
+          {
+            "expected": "ko",
+            "detected": "ko",
+            "text": " 예약을 취소하지 마세요. 회의에 참석해 주셔서 감사합니다.",
+            "inferenceMs": 576.4000000953674
+          }
+        ]
+      },
+      {
+        "candidate": "turboFp16",
+        "results": [
+          {
+            "id": "meeting-0",
+            "language": "en",
+            "reference": "Hello everyone. We will meet tomorrow at the station.",
+            "text": " Hello everyone. We will meet tomorrow at the station.",
+            "inferenceMs": 1243.0999999046326,
+            "rtf": 0.413849354941201,
+            "edits": 0,
+            "units": 43,
+            "cer": 0
+          },
+          {
+            "id": "meeting-1",
+            "language": "ja",
+            "reference": "こんにちは。明日の午後三時に駅で会いましょう。",
+            "text": "こんにちは、明日の午後3時に駅で会いましょう。",
+            "inferenceMs": 1074.5,
+            "rtf": 0.30585849241224716,
+            "edits": 1,
+            "units": 21,
+            "cer": 0.047619047619047616
+          },
+          {
+            "id": "meeting-2",
+            "language": "ko",
+            "reference": "안녕하세요. 내일 오후 세 시에 역에서 만나겠습니다.",
+            "text": " 안녕하세요. 내일 오후 3시에 여기서 만나겠습니다.",
+            "inferenceMs": 1027.9000000953674,
+            "rtf": 0.28408761144071515,
+            "edits": 3,
+            "units": 21,
+            "cer": 0.14285714285714285
+          },
+          {
+            "id": "meeting-3",
+            "language": "en",
+            "reference": "Please keep the reservation. Thank you for joining the meeting.",
+            "text": " Please keep the reservation. Thank you for joining the meeting.",
+            "inferenceMs": 1015.2000000476837,
+            "rtf": 0.3102630221909527,
+            "edits": 0,
+            "units": 52,
+            "cer": 0
+          },
+          {
+            "id": "meeting-4",
+            "language": "ja",
+            "reference": "予約は取り消さないでください。会議に参加してくれてありがとうございます。",
+            "text": "予約は取り消さないでください。会議に参加してくれてありがとうございます。",
+            "inferenceMs": 1127.8000001907349,
+            "rtf": 0.20212375109829914,
+            "edits": 0,
+            "units": 34,
+            "cer": 0
+          },
+          {
+            "id": "meeting-5",
+            "language": "ko",
+            "reference": "예약을 취소하지 마세요. 회의에 참석해 주셔서 감사합니다.",
+            "text": " 예약을 취소하지 마세요. 회의에 참석해 주셔서 감사합니다.",
+            "inferenceMs": 1085.2000000476837,
+            "rtf": 0.25726689485654297,
+            "edits": 0,
+            "units": 24,
+            "cer": 0
+          },
+          {
+            "id": "conversation-ja-0",
+            "language": "ja",
+            "reference": "ねえ、駅の近くにできたカフェ、もう行った？土曜日に一緒にお昼を食べようと思ってるんだけど。",
+            "text": "ねえ、駅の近くにできたカフェ、もう行った?土曜日に一緒にお昼を食べようと思ってるんだけど。",
+            "inferenceMs": 1298.5,
+            "rtf": 0.1759514896932536,
+            "edits": 0,
+            "units": 41,
+            "cer": 0
+          },
+          {
+            "id": "conversation-ja-1",
+            "language": "ja",
+            "reference": "まだ行ってないよ。土曜日は妹の引っ越しを手伝うから、日曜日にしない？午前中はちょっと忙しいんだ。",
+            "text": "まだ行ってないよ。土曜日は妹の引っ越しを手伝うから、日曜日にしない。午前中はちょっと忙しいんだ。",
+            "inferenceMs": 1317.7999999523163,
+            "rtf": 0.13416307155370427,
+            "edits": 0,
+            "units": 44,
+            "cer": 0
+          },
+          {
+            "id": "conversation-ja-2",
+            "language": "ja",
+            "reference": "じゃあ、日曜日の午後一時半はどう？駅の東口で待ち合わせて、食事のあとに川沿いを散歩しよう。",
+            "text": "じゃあ、日曜日の午後1時半はどう?駅の東口で待ち合わせて、食事の後に川沿いを散歩しよう。",
+            "inferenceMs": 1369.4000000953674,
+            "rtf": 0.16485471081249004,
+            "edits": 3,
+            "units": 41,
+            "cer": 0.07317073170731707
+          },
+          {
+            "id": "conversation-ja-3",
+            "language": "ja",
+            "reference": "一時半なら大丈夫。ところで、そのカフェには肉を使わない料理もあるかな？最近、野菜をよく食べてるんだ。",
+            "text": "1時半なら大丈夫。ところで、そのカフェには肉を使わない料理もあるかな。最近、野菜をよく食べてるんだ。",
+            "inferenceMs": 1271.6000001430511,
+            "rtf": 0.12304367635814045,
+            "edits": 1,
+            "units": 45,
+            "cer": 0.022222222222222223
+          },
+          {
+            "id": "conversation-ja-4",
+            "language": "ja",
+            "reference": "きのこのサンドイッチとトマトのスープがあるよ。予約が必要か、私が確認しておくね。まだ予約は取り消さないでね。",
+            "text": "キノコのサンドイッチとトマトのスープがあるよ予約が必要か私が確認しておくねまだ予約は取り消さないでね",
+            "inferenceMs": 1383.9000000953674,
+            "rtf": 0.1459720305637347,
+            "edits": 3,
+            "units": 50,
+            "cer": 0.06
+          },
+          {
+            "id": "conversation-ja-5",
+            "language": "ja",
+            "reference": "ありがとう。でも、雨が降ったら散歩はやめよう。カフェの向かいに本屋があるから、そこでゆっくり本を見たいな。",
+            "text": "ありがとう。でも、雨が降ったら散歩はやめよう。カフェの向かいに本屋があるから、そこでゆっくり本を見たいな。",
+            "inferenceMs": 1370.2000000476837,
+            "rtf": 0.14370905786043028,
+            "edits": 0,
+            "units": 48,
+            "cer": 0
+          },
+          {
+            "id": "conversation-ja-6",
+            "language": "ja",
+            "reference": "いいね。それから、借りていた本も持っていくよ。帰る前に渡すから、私が忘れていたら声をかけてくれる？",
+            "text": "いいね、それから、借りていた本も持っていくよ。帰る前に渡すから、私が忘れていたら声をかけてくれる?",
+            "inferenceMs": 1309.2999999523163,
+            "rtf": 0.15522765556433782,
+            "edits": 0,
+            "units": 44,
+            "cer": 0
+          },
+          {
+            "id": "conversation-ja-7",
+            "language": "ja",
+            "reference": "もちろん。じゃあ、日曜日の午後一時半に東口で。時間が変わったら、出かける前にメッセージを送ってね。",
+            "text": "もちろん。じゃあ、日曜日の午後1時半に東口で。時間が変わったら、出かける前にメッセージを送ってね。",
+            "inferenceMs": 1340.9000000953674,
+            "rtf": 0.13563225173868204,
+            "edits": 1,
+            "units": 44,
+            "cer": 0.022727272727272728
+          }
+        ],
+        "preparationMs": 52623.674875000026,
+        "automatic": [
+          {
+            "expected": "en",
+            "detected": "en",
+            "text": " Hello everyone. We will meet tomorrow at the station.",
+            "inferenceMs": 1017.4000000953674
+          },
+          {
+            "expected": "ja",
+            "detected": "ja",
+            "text": "こんにちは、明日の午後3時に駅で会いましょう。",
+            "inferenceMs": 1103.5
+          },
+          {
+            "expected": "ko",
+            "detected": "ko",
+            "text": " 안녕하세요. 내일 오후 3시에 여기서 만나겠습니다.",
+            "inferenceMs": 1113.6000001430511
+          },
+          {
+            "expected": "en",
+            "detected": "en",
+            "text": " Please keep the reservation. Thank you for joining the meeting.",
+            "inferenceMs": 1076
+          },
+          {
+            "expected": "ja",
+            "detected": "ja",
+            "text": "予約は取り消さないでください。会議に参加してくれてありがとうございます。",
+            "inferenceMs": 1187.0999999046326
+          },
+          {
+            "expected": "ko",
+            "detected": "ko",
+            "text": " 예약을 취소하지 마세요. 회의에 참석해 주셔서 감사합니다.",
+            "inferenceMs": 1118.6000001430511
+          }
+        ]
+      }
+    ],
+    "browser": "153.0.8010.12"
+  },
+  "translation": {
+    "mode": "translation",
+    "date": "2026-10-25T01:22:12.971Z",
+    "scope": "Actual browser inference on synthetic checked-in turns; not live overlay latency or human evaluation",
+    "runs": [
+      {
+        "candidate": "m2m100",
+        "target": "ko",
+        "results": [
+          {
+            "id": "meeting-0",
+            "source": "Hello everyone. We will meet tomorrow at the station.",
+            "result": {
+              "identity": {
+                "sessionId": "audit",
+                "targetId": "fixture",
+                "epoch": 0
+              },
+              "utteranceId": "meeting-0",
+              "sourceRevision": 1,
+              "translationRevision": 1,
+              "languages": {
+                "source": "en",
+                "target": "ko"
+              },
+              "text": "안녕하세요 여러분 모두, 내일은 역에서 만나겠습니다.",
+              "final": true
+            },
+            "firstMs": 1448.5,
+            "totalMs": 1448.5,
+            "chunks": 1,
+            "missing": [],
+            "missingDetails": []
+          },
+          {
+            "id": "meeting-1",
+            "source": "こんにちは。明日の午後三時に駅で会いましょう。",
+            "result": {
+              "identity": {
+                "sessionId": "audit",
+                "targetId": "fixture",
+                "epoch": 0
+              },
+              "utteranceId": "meeting-1",
+              "sourceRevision": 1,
+              "translationRevision": 2,
+              "languages": {
+                "source": "ja",
+                "target": "ko"
+              },
+              "text": "안녕하세요, 내일 오후 3시에 기차역에서 만날 수 있습니다.",
+              "final": true
+            },
+            "firstMs": 1390.4000000953674,
+            "totalMs": 1390.4000000953674,
+            "chunks": 1,
+            "missing": [],
+            "missingDetails": []
+          },
+          {
+            "id": "meeting-3",
+            "source": "Please keep the reservation. Thank you for joining the meeting.",
+            "result": {
+              "identity": {
+                "sessionId": "audit",
+                "targetId": "fixture",
+                "epoch": 0
+              },
+              "utteranceId": "meeting-3",
+              "sourceRevision": 1,
+              "translationRevision": 3,
+              "languages": {
+                "source": "en",
+                "target": "ko"
+              },
+              "text": "예약을 유지하시기 바랍니다.회원에 참석해 주셔서 감사합니다.",
+              "final": true
+            },
+            "firstMs": 1108,
+            "totalMs": 1108,
+            "chunks": 1,
+            "missing": [],
+            "missingDetails": []
+          },
+          {
+            "id": "meeting-4",
+            "source": "予約は取り消さないでください。会議に参加してくれてありがとうございます。",
+            "result": {
+              "identity": {
+                "sessionId": "audit",
+                "targetId": "fixture",
+                "epoch": 0
+              },
+              "utteranceId": "meeting-4",
+              "sourceRevision": 1,
+              "translationRevision": 4,
+              "languages": {
+                "source": "ja",
+                "target": "ko"
+              },
+              "text": "예약 취소하지 마십시오.회원에 참석해 주셔서 감사합니다.",
+              "final": true
+            },
+            "firstMs": 1085.7999999523163,
+            "totalMs": 1085.7999999523163,
+            "chunks": 1,
+            "missing": [],
+            "missingDetails": []
+          },
+          {
+            "id": "conversation-ja-0",
+            "source": "ねえ、駅の近くにできたカフェ、もう行った？土曜日に一緒にお昼を食べようと思ってるんだけど。",
+            "result": {
+              "identity": {
+                "sessionId": "audit",
+                "targetId": "fixture",
+                "epoch": 0
+              },
+              "utteranceId": "conversation-ja-0",
+              "sourceRevision": 1,
+              "translationRevision": 5,
+              "languages": {
+                "source": "ja",
+                "target": "ko"
+              },
+              "text": "옆에 있는 카페, 옆에 있는 카페, 옆에 있는 카페, 옆에 있는 카페, 옆에 있는 카페, 옆에 있는 카페, 옆에 있는 카페, 옆에 있는 카페, 옆에 있는 카페, 옆에 있는 카페, 옆에 있는 카페, 옆에 있는 카페, 옆에 있는 카페, 옆에 있는 카페, 옆에 있는 카페, 옆에 있는 카페, 옆에 있는 카페, 옆에 있는 카페, 옆에 있는 카페, 옆에 있는 카페, 옆에 있는 카페, 옆에 있는 카페, 옆에 있는 카페, 옆에 있는 카페, 옆에 있는 카페, 옆에 있는 카페, 옆에 있는 카페, 옆에 있는 카페, 옆에 있는 카페, 옆에 있는 카페, 옆에 있는 카페, 옆에 있는 카페, 옆에 있는 카페, 옆에 있는 카페",
+              "final": true
+            },
+            "firstMs": 17417.099999904633,
+            "totalMs": 17417.099999904633,
+            "chunks": 1,
+            "missing": [
+              "역",
+              "토요일",
+              "점심"
+            ],
+            "missingDetails": []
+          },
+          {
+            "id": "conversation-ja-1",
+            "source": "まだ行ってないよ。土曜日は妹の引っ越しを手伝うから、日曜日にしない？午前中はちょっと忙しいんだ。",
+            "result": {
+              "identity": {
+                "sessionId": "audit",
+                "targetId": "fixture",
+                "epoch": 0
+              },
+              "utteranceId": "conversation-ja-1",
+              "sourceRevision": 1,
+              "translationRevision": 6,
+              "languages": {
+                "source": "ja",
+                "target": "ko"
+              },
+              "text": "아직 가지 않았습니다. 토요일에 자매를 옮기기 위해 도움을 줄 수 있기 때문에 일요일에 하지 않습니까?",
+              "final": true
+            },
+            "firstMs": 2401.699999809265,
+            "totalMs": 2401.699999809265,
+            "chunks": 1,
+            "missing": [
+              "이사",
+              "오전|아침"
+            ],
+            "missingDetails": [
+              "여동생|동생"
+            ]
+          },
+          {
+            "id": "conversation-ja-2",
+            "source": "じゃあ、日曜日の午後一時半はどう？駅の東口で待ち合わせて、食事のあとに川沿いを散歩しよう。",
+            "result": {
+              "identity": {
+                "sessionId": "audit",
+                "targetId": "fixture",
+                "epoch": 0
+              },
+              "utteranceId": "conversation-ja-2",
+              "sourceRevision": 1,
+              "translationRevision": 7,
+              "languages": {
+                "source": "ja",
+                "target": "ko"
+              },
+              "text": "일요일 오후 1시 30분에 어떻게 되나요? 역 동쪽에서 만나서 식사 후 강을 따라 산책하자.",
+              "final": true
+            },
+            "firstMs": 2523.800000190735,
+            "totalMs": 2523.800000190735,
+            "chunks": 1,
+            "missing": [],
+            "missingDetails": []
+          },
+          {
+            "id": "conversation-ja-3",
+            "source": "一時半なら大丈夫。ところで、そのカフェには肉を使わない料理もあるかな？最近、野菜をよく食べてるんだ。",
+            "result": {
+              "identity": {
+                "sessionId": "audit",
+                "targetId": "fixture",
+                "epoch": 0
+              },
+              "utteranceId": "conversation-ja-3",
+              "sourceRevision": 1,
+              "translationRevision": 8,
+              "languages": {
+                "source": "ja",
+                "target": "ko"
+              },
+              "text": "한 시간 반이면 괜찮습니다.그럼에도 카페에는 고기를 사용하지 않는 요리가 있습니까?나는 최근에 야채를 많이 먹고 있습니다.",
+              "final": true
+            },
+            "firstMs": 2549.4000000953674,
+            "totalMs": 2549.4000000953674,
+            "chunks": 1,
+            "missing": [
+              "1시 반|한 시 반|한시 반|1시 30분|1:30|한 시 삼십"
+            ],
+            "missingDetails": []
+          },
+          {
+            "id": "conversation-ja-4",
+            "source": "きのこのサンドイッチとトマトのスープがあるよ。予約が必要か、私が確認しておくね。まだ予約は取り消さないでね。",
+            "result": {
+              "identity": {
+                "sessionId": "audit",
+                "targetId": "fixture",
+                "epoch": 0
+              },
+              "utteranceId": "conversation-ja-4",
+              "sourceRevision": 1,
+              "translationRevision": 9,
+              "languages": {
+                "source": "ja",
+                "target": "ko"
+              },
+              "text": "어제 샌드위치와 토마토 수프가 있습니다. 예약이 필요하십니까, 나는 확인할 것입니다. 아직 예약을 취소하지 마십시오.",
+              "final": true
+            },
+            "firstMs": 2427.5,
+            "totalMs": 2427.5,
+            "chunks": 1,
+            "missing": [
+              "버섯"
+            ],
+            "missingDetails": []
+          },
+          {
+            "id": "conversation-ja-5",
+            "source": "ありがとう。でも、雨が降ったら散歩はやめよう。カフェの向かいに本屋があるから、そこでゆっくり本を見たいな。",
+            "result": {
+              "identity": {
+                "sessionId": "audit",
+                "targetId": "fixture",
+                "epoch": 0
+              },
+              "utteranceId": "conversation-ja-5",
+              "sourceRevision": 1,
+              "translationRevision": 10,
+              "languages": {
+                "source": "ja",
+                "target": "ko"
+              },
+              "text": "하지만 비가 내리면 산책을 멈추게 하겠습니다. 카페 옆에 책집이 있으므로 천천히 책을 보고 싶습니다.",
+              "final": true
+            },
+            "firstMs": 1899.0999999046326,
+            "totalMs": 1899.0999999046326,
+            "chunks": 1,
+            "missing": [
+              "서점"
+            ],
+            "missingDetails": []
+          },
+          {
+            "id": "conversation-ja-6",
+            "source": "いいね。それから、借りていた本も持っていくよ。帰る前に渡すから、私が忘れていたら声をかけてくれる？",
+            "result": {
+              "identity": {
+                "sessionId": "audit",
+                "targetId": "fixture",
+                "epoch": 0
+              },
+              "utteranceId": "conversation-ja-6",
+              "sourceRevision": 1,
+              "translationRevision": 11,
+              "languages": {
+                "source": "ja",
+                "target": "ko"
+              },
+              "text": "괜찮아, 그때 내가 빌린 책도 가져오고, 집에 가기 전에 그에게 주고, 잊어버린다면 그에게 소리를 내리겠습니까?",
+              "final": true
+            },
+            "firstMs": 2113.5,
+            "totalMs": 2113.5,
+            "chunks": 1,
+            "missing": [],
+            "missingDetails": []
+          },
+          {
+            "id": "conversation-ja-7",
+            "source": "もちろん。じゃあ、日曜日の午後一時半に東口で。時間が変わったら、出かける前にメッセージを送ってね。",
+            "result": {
+              "identity": {
+                "sessionId": "audit",
+                "targetId": "fixture",
+                "epoch": 0
+              },
+              "utteranceId": "conversation-ja-7",
+              "sourceRevision": 1,
+              "translationRevision": 12,
+              "languages": {
+                "source": "ja",
+                "target": "ko"
+              },
+              "text": "일요일 오후 1시 30분에 동쪽으로 가면 시간이 바뀌면 출발하기 전에 메시지를 보내세요.",
+              "final": true
+            },
+            "firstMs": 1490.5999999046326,
+            "totalMs": 1490.5999999046326,
+            "chunks": 1,
+            "missing": [],
+            "missingDetails": []
+          }
+        ],
+        "preparationMs": 30198.523667
+      },
+      {
+        "candidate": "m2m100",
+        "target": "en",
+        "results": [
+          {
+            "id": "meeting-1",
+            "source": "こんにちは。明日の午後三時に駅で会いましょう。",
+            "result": {
+              "identity": {
+                "sessionId": "audit",
+                "targetId": "fixture",
+                "epoch": 0
+              },
+              "utteranceId": "meeting-1",
+              "sourceRevision": 1,
+              "translationRevision": 1,
+              "languages": {
+                "source": "ja",
+                "target": "en"
+              },
+              "text": "We will meet at the station tomorrow at 3 p.m.",
+              "final": true
+            },
+            "firstMs": 1112.2999999523163,
+            "totalMs": 1112.2999999523163,
+            "chunks": 1,
+            "missing": [],
+            "missingDetails": []
+          },
+          {
+            "id": "meeting-2",
+            "source": "안녕하세요. 내일 오후 세 시에 역에서 만나겠습니다.",
+            "result": {
+              "identity": {
+                "sessionId": "audit",
+                "targetId": "fixture",
+                "epoch": 0
+              },
+              "utteranceId": "meeting-2",
+              "sourceRevision": 1,
+              "translationRevision": 2,
+              "languages": {
+                "source": "ko",
+                "target": "en"
+              },
+              "text": "I will meet at the station tomorrow at 3 p.m.",
+              "final": true
+            },
+            "firstMs": 955.8999998569489,
+            "totalMs": 955.8999998569489,
+            "chunks": 1,
+            "missing": [],
+            "missingDetails": []
+          },
+          {
+            "id": "meeting-4",
+            "source": "予約は取り消さないでください。会議に参加してくれてありがとうございます。",
+            "result": {
+              "identity": {
+                "sessionId": "audit",
+                "targetId": "fixture",
+                "epoch": 0
+              },
+              "utteranceId": "meeting-4",
+              "sourceRevision": 1,
+              "translationRevision": 3,
+              "languages": {
+                "source": "ja",
+                "target": "en"
+              },
+              "text": "Please do not cancel your appointment. thank you for participating in the meeting.",
+              "final": true
+            },
+            "firstMs": 1223.7000000476837,
+            "totalMs": 1223.7000000476837,
+            "chunks": 1,
+            "missing": [],
+            "missingDetails": []
+          },
+          {
+            "id": "meeting-5",
+            "source": "예약을 취소하지 마세요. 회의에 참석해 주셔서 감사합니다.",
+            "result": {
+              "identity": {
+                "sessionId": "audit",
+                "targetId": "fixture",
+                "epoch": 0
+              },
+              "utteranceId": "meeting-5",
+              "sourceRevision": 1,
+              "translationRevision": 4,
+              "languages": {
+                "source": "ko",
+                "target": "en"
+              },
+              "text": "Don’t cancel your reservation. thank you for attending the meeting.",
+              "final": true
+            },
+            "firstMs": 1183.3000001907349,
+            "totalMs": 1183.3000001907349,
+            "chunks": 1,
+            "missing": [],
+            "missingDetails": []
+          }
+        ],
+        "preparationMs": 1631.7693329999893
+      },
+      {
+        "candidate": "m2m100",
+        "target": "ja",
+        "results": [
+          {
+            "id": "meeting-0",
+            "source": "Hello everyone. We will meet tomorrow at the station.",
+            "result": {
+              "identity": {
+                "sessionId": "audit",
+                "targetId": "fixture",
+                "epoch": 0
+              },
+              "utteranceId": "meeting-0",
+              "sourceRevision": 1,
+              "translationRevision": 1,
+              "languages": {
+                "source": "en",
+                "target": "ja"
+              },
+              "text": "こんにちは、明日、駅で会いましょう。",
+              "final": true
+            },
+            "firstMs": 1264,
+            "totalMs": 1264,
+            "chunks": 1,
+            "missing": [],
+            "missingDetails": []
+          },
+          {
+            "id": "meeting-2",
+            "source": "안녕하세요. 내일 오후 세 시에 역에서 만나겠습니다.",
+            "result": {
+              "identity": {
+                "sessionId": "audit",
+                "targetId": "fixture",
+                "epoch": 0
+              },
+              "utteranceId": "meeting-2",
+              "sourceRevision": 1,
+              "translationRevision": 2,
+              "languages": {
+                "source": "ko",
+                "target": "ja"
+              },
+              "text": "こんにちは、明日午後3時、駅で会いましょう。",
+              "final": true
+            },
+            "firstMs": 1718.0999999046326,
+            "totalMs": 1718.1999998092651,
+            "chunks": 1,
+            "missing": [],
+            "missingDetails": []
+          },
+          {
+            "id": "meeting-3",
+            "source": "Please keep the reservation. Thank you for joining the meeting.",
+            "result": {
+              "identity": {
+                "sessionId": "audit",
+                "targetId": "fixture",
+                "epoch": 0
+              },
+              "utteranceId": "meeting-3",
+              "sourceRevision": 1,
+              "translationRevision": 3,
+              "languages": {
+                "source": "en",
+                "target": "ja"
+              },
+              "text": "予約をお願いします!会議に参加してくださった皆様、ありがとうございました。",
+              "final": true
+            },
+            "firstMs": 1100.8000001907349,
+            "totalMs": 1100.9000000953674,
+            "chunks": 1,
+            "missing": [],
+            "missingDetails": []
+          },
+          {
+            "id": "meeting-5",
+            "source": "예약을 취소하지 마세요. 회의에 참석해 주셔서 감사합니다.",
+            "result": {
+              "identity": {
+                "sessionId": "audit",
+                "targetId": "fixture",
+                "epoch": 0
+              },
+              "utteranceId": "meeting-5",
+              "sourceRevision": 1,
+              "translationRevision": 4,
+              "languages": {
+                "source": "ko",
+                "target": "ja"
+              },
+              "text": "予約をキャンセルしないで、会議に参加してくださった皆様、ありがとうございました。",
+              "final": true
+            },
+            "firstMs": 1216.5999999046326,
+            "totalMs": 1216.5999999046326,
+            "chunks": 1,
+            "missing": [],
+            "missingDetails": []
+          }
+        ],
+        "preparationMs": 1751.3050419999927
+      },
+      {
+        "candidate": "nllb",
+        "target": "ko",
+        "results": [
+          {
+            "id": "meeting-0",
+            "source": "Hello everyone. We will meet tomorrow at the station.",
+            "result": {
+              "identity": {
+                "sessionId": "audit",
+                "targetId": "fixture",
+                "epoch": 0
+              },
+              "utteranceId": "meeting-0",
+              "sourceRevision": 1,
+              "translationRevision": 1,
+              "languages": {
+                "source": "en",
+                "target": "ko"
+              },
+              "text": "안녕하세요, 내일 역에서 만나요",
+              "final": true
+            },
+            "firstMs": 3224.7999999523163,
+            "totalMs": 3224.7999999523163,
+            "chunks": 1,
+            "missing": [],
+            "missingDetails": []
+          },
+          {
+            "id": "meeting-1",
+            "source": "こんにちは。明日の午後三時に駅で会いましょう。",
+            "result": {
+              "identity": {
+                "sessionId": "audit",
+                "targetId": "fixture",
+                "epoch": 0
+              },
+              "utteranceId": "meeting-1",
+              "sourceRevision": 1,
+              "translationRevision": 2,
+              "languages": {
+                "source": "ja",
+                "target": "ko"
+              },
+              "text": "안녕하세요. 내일 오후 3시에 기차역에서 만나겠습니다.",
+              "final": true
+            },
+            "firstMs": 1369.9000000953674,
+            "totalMs": 1369.9000000953674,
+            "chunks": 1,
+            "missing": [],
+            "missingDetails": []
+          },
+          {
+            "id": "meeting-3",
+            "source": "Please keep the reservation. Thank you for joining the meeting.",
+            "result": {
+              "identity": {
+                "sessionId": "audit",
+                "targetId": "fixture",
+                "epoch": 0
+              },
+              "utteranceId": "meeting-3",
+              "sourceRevision": 1,
+              "translationRevision": 3,
+              "languages": {
+                "source": "en",
+                "target": "ko"
+              },
+              "text": "예약은 계속 해주세요. 회의에 참석한 것에 감사드립니다.",
+              "final": true
+            },
+            "firstMs": 1353.2999999523163,
+            "totalMs": 1353.2999999523163,
+            "chunks": 1,
+            "missing": [],
+            "missingDetails": []
+          },
+          {
+            "id": "meeting-4",
+            "source": "予約は取り消さないでください。会議に参加してくれてありがとうございます。",
+            "result": {
+              "identity": {
+                "sessionId": "audit",
+                "targetId": "fixture",
+                "epoch": 0
+              },
+              "utteranceId": "meeting-4",
+              "sourceRevision": 1,
+              "translationRevision": 4,
+              "languages": {
+                "source": "ja",
+                "target": "ko"
+              },
+              "text": "예약은 취소하지 마세요. 회의에 참석한 것에 감사드립니다.",
+              "final": true
+            },
+            "firstMs": 1199.4000000953674,
+            "totalMs": 1199.4000000953674,
+            "chunks": 1,
+            "missing": [],
+            "missingDetails": []
+          },
+          {
+            "id": "conversation-ja-0",
+            "source": "ねえ、駅の近くにできたカフェ、もう行った？土曜日に一緒にお昼を食べようと思ってるんだけど。",
+            "result": {
+              "identity": {
+                "sessionId": "audit",
+                "targetId": "fixture",
+                "epoch": 0
+              },
+              "utteranceId": "conversation-ja-0",
+              "sourceRevision": 1,
+              "translationRevision": 5,
+              "languages": {
+                "source": "ja",
+                "target": "ko"
+              },
+              "text": "아뇨, 기차역 근처에 있는 카페에 갔어요. 토요일 점심 먹으러 가려고요.",
+              "final": true
+            },
+            "firstMs": 1989.5999999046326,
+            "totalMs": 1989.5999999046326,
+            "chunks": 1,
+            "missing": [],
+            "missingDetails": []
+          },
+          {
+            "id": "conversation-ja-1",
+            "source": "まだ行ってないよ。土曜日は妹の引っ越しを手伝うから、日曜日にしない？午前中はちょっと忙しいんだ。",
+            "result": {
+              "identity": {
+                "sessionId": "audit",
+                "targetId": "fixture",
+                "epoch": 0
+              },
+              "utteranceId": "conversation-ja-1",
+              "sourceRevision": 1,
+              "translationRevision": 6,
+              "languages": {
+                "source": "ja",
+                "target": "ko"
+              },
+              "text": "아직은 못 갔어요 토요일은 동생을 지탱할게요 일요일은 안 돼요",
+              "final": true
+            },
+            "firstMs": 1756.0999999046326,
+            "totalMs": 1756.0999999046326,
+            "chunks": 1,
+            "missing": [
+              "이사",
+              "오전|아침"
+            ],
+            "missingDetails": []
+          },
+          {
+            "id": "conversation-ja-2",
+            "source": "じゃあ、日曜日の午後一時半はどう？駅の東口で待ち合わせて、食事のあとに川沿いを散歩しよう。",
+            "result": {
+              "identity": {
+                "sessionId": "audit",
+                "targetId": "fixture",
+                "epoch": 0
+              },
+              "utteranceId": "conversation-ja-2",
+              "sourceRevision": 1,
+              "translationRevision": 7,
+              "languages": {
+                "source": "ja",
+                "target": "ko"
+              },
+              "text": "그럼 일요일 오후 한 시간 반은 어떨까요? 우리는 동쪽 역 입구에서 만나고, 식사 후 강을 따라 걷자.",
+              "final": true
+            },
+            "firstMs": 2351.600000143051,
+            "totalMs": 2351.600000143051,
+            "chunks": 1,
+            "missing": [
+              "1시 반|한 시 반|한시 반|1시 30분|1:30|한 시 삼십"
+            ],
+            "missingDetails": []
+          },
+          {
+            "id": "conversation-ja-3",
+            "source": "一時半なら大丈夫。ところで、そのカフェには肉を使わない料理もあるかな？最近、野菜をよく食べてるんだ。",
+            "result": {
+              "identity": {
+                "sessionId": "audit",
+                "targetId": "fixture",
+                "epoch": 0
+              },
+              "utteranceId": "conversation-ja-3",
+              "sourceRevision": 1,
+              "translationRevision": 8,
+              "languages": {
+                "source": "ja",
+                "target": "ko"
+              },
+              "text": "한 시간 반이면 괜찮습니다. 그런데, 그 카페에는 고기를 사용하지 않는 음식이 있나요?",
+              "final": true
+            },
+            "firstMs": 1704.5999999046326,
+            "totalMs": 1704.5999999046326,
+            "chunks": 1,
+            "missing": [
+              "1시 반|한 시 반|한시 반|1시 30분|1:30|한 시 삼십",
+              "채소|야채"
+            ],
+            "missingDetails": []
+          },
+          {
+            "id": "conversation-ja-4",
+            "source": "きのこのサンドイッチとトマトのスープがあるよ。予約が必要か、私が確認しておくね。まだ予約は取り消さないでね。",
+            "result": {
+              "identity": {
+                "sessionId": "audit",
+                "targetId": "fixture",
+                "epoch": 0
+              },
+              "utteranceId": "conversation-ja-4",
+              "sourceRevision": 1,
+              "translationRevision": 9,
+              "languages": {
+                "source": "ja",
+                "target": "ko"
+              },
+              "text": "오늘 샌드위치와 토마토 수프가 있습니다. 예약이 필요 있는지 확인해 보겠습니다. 아직 예약 취소하지 마세요.",
+              "final": true
+            },
+            "firstMs": 2686.100000143051,
+            "totalMs": 2686.100000143051,
+            "chunks": 1,
+            "missing": [
+              "버섯"
+            ],
+            "missingDetails": []
+          },
+          {
+            "id": "conversation-ja-5",
+            "source": "ありがとう。でも、雨が降ったら散歩はやめよう。カフェの向かいに本屋があるから、そこでゆっくり本を見たいな。",
+            "result": {
+              "identity": {
+                "sessionId": "audit",
+                "targetId": "fixture",
+                "epoch": 0
+              },
+              "utteranceId": "conversation-ja-5",
+              "sourceRevision": 1,
+              "translationRevision": 10,
+              "languages": {
+                "source": "ja",
+                "target": "ko"
+              },
+              "text": "감사합니다. 하지만 비가 오면 걷기를 멈추죠. 카페가 바로 앞에 책장이 있기 때문에 천천히 책을 보고 싶어하지요.",
+              "final": true
+            },
+            "firstMs": 3124.5,
+            "totalMs": 3124.5,
+            "chunks": 1,
+            "missing": [
+              "산책",
+              "서점"
+            ],
+            "missingDetails": []
+          },
+          {
+            "id": "conversation-ja-6",
+            "source": "いいね。それから、借りていた本も持っていくよ。帰る前に渡すから、私が忘れていたら声をかけてくれる？",
+            "result": {
+              "identity": {
+                "sessionId": "audit",
+                "targetId": "fixture",
+                "epoch": 0
+              },
+              "utteranceId": "conversation-ja-6",
+              "sourceRevision": 1,
+              "translationRevision": 11,
+              "languages": {
+                "source": "ja",
+                "target": "ko"
+              },
+              "text": "그럼, 제가 빌린 책도 가져갈게요. 집에 가기 전에 돌려줄게요. 제가 잊으면, 목소리도 들려줄까요?",
+              "final": true
+            },
+            "firstMs": 2832.699999809265,
+            "totalMs": 2832.699999809265,
+            "chunks": 1,
+            "missing": [],
+            "missingDetails": []
+          },
+          {
+            "id": "conversation-ja-7",
+            "source": "もちろん。じゃあ、日曜日の午後一時半に東口で。時間が変わったら、出かける前にメッセージを送ってね。",
+            "result": {
+              "identity": {
+                "sessionId": "audit",
+                "targetId": "fixture",
+                "epoch": 0
+              },
+              "utteranceId": "conversation-ja-7",
+              "sourceRevision": 1,
+              "translationRevision": 12,
+              "languages": {
+                "source": "ja",
+                "target": "ko"
+              },
+              "text": "물론, 일요일 오후 30분쯤 동쪽 입구에서, 시간이 바뀌면, 떠나기 전에 메시지를 보내세요.",
+              "final": true
+            },
+            "firstMs": 2388.7999999523163,
+            "totalMs": 2388.7999999523163,
+            "chunks": 1,
+            "missing": [
+              "1시 반|한 시 반|한시 반|1시 30분|1:30|한 시 삼십"
+            ],
+            "missingDetails": []
+          }
+        ],
+        "preparationMs": 32104.380957999994
+      },
+      {
+        "candidate": "nllb",
+        "target": "en",
+        "results": [
+          {
+            "id": "meeting-1",
+            "source": "こんにちは。明日の午後三時に駅で会いましょう。",
+            "result": {
+              "identity": {
+                "sessionId": "audit",
+                "targetId": "fixture",
+                "epoch": 0
+              },
+              "utteranceId": "meeting-1",
+              "sourceRevision": 1,
+              "translationRevision": 1,
+              "languages": {
+                "source": "ja",
+                "target": "en"
+              },
+              "text": "Hello. I'll see you at the station tomorrow at 3:00 p.m.",
+              "final": true
+            },
+            "firstMs": 3477.5,
+            "totalMs": 3477.600000143051,
+            "chunks": 1,
+            "missing": [],
+            "missingDetails": []
+          },
+          {
+            "id": "meeting-2",
+            "source": "안녕하세요. 내일 오후 세 시에 역에서 만나겠습니다.",
+            "result": {
+              "identity": {
+                "sessionId": "audit",
+                "targetId": "fixture",
+                "epoch": 0
+              },
+              "utteranceId": "meeting-2",
+              "sourceRevision": 1,
+              "translationRevision": 2,
+              "languages": {
+                "source": "ko",
+                "target": "en"
+              },
+              "text": "I'll meet you at the station tomorrow at 3:00.",
+              "final": true
+            },
+            "firstMs": 1825.8999998569489,
+            "totalMs": 1825.8999998569489,
+            "chunks": 1,
+            "missing": [],
+            "missingDetails": []
+          },
+          {
+            "id": "meeting-4",
+            "source": "予約は取り消さないでください。会議に参加してくれてありがとうございます。",
+            "result": {
+              "identity": {
+                "sessionId": "audit",
+                "targetId": "fixture",
+                "epoch": 0
+              },
+              "utteranceId": "meeting-4",
+              "sourceRevision": 1,
+              "translationRevision": 3,
+              "languages": {
+                "source": "ja",
+                "target": "en"
+              },
+              "text": "Please do not cancel your reservation. Thank you for attending the meeting.",
+              "final": true
+            },
+            "firstMs": 1809.5,
+            "totalMs": 1809.5,
+            "chunks": 1,
+            "missing": [],
+            "missingDetails": []
+          },
+          {
+            "id": "meeting-5",
+            "source": "예약을 취소하지 마세요. 회의에 참석해 주셔서 감사합니다.",
+            "result": {
+              "identity": {
+                "sessionId": "audit",
+                "targetId": "fixture",
+                "epoch": 0
+              },
+              "utteranceId": "meeting-5",
+              "sourceRevision": 1,
+              "translationRevision": 4,
+              "languages": {
+                "source": "ko",
+                "target": "en"
+              },
+              "text": "Don't cancel your reservation. Thank you for coming to the meeting.",
+              "final": true
+            },
+            "firstMs": 1418.2999999523163,
+            "totalMs": 1418.2999999523163,
+            "chunks": 1,
+            "missing": [],
+            "missingDetails": []
+          }
+        ],
+        "preparationMs": 4076.4366660000233
+      },
+      {
+        "candidate": "nllb",
+        "target": "ja",
+        "results": [
+          {
+            "id": "meeting-0",
+            "source": "Hello everyone. We will meet tomorrow at the station.",
+            "result": {
+              "identity": {
+                "sessionId": "audit",
+                "targetId": "fixture",
+                "epoch": 0
+              },
+              "utteranceId": "meeting-0",
+              "sourceRevision": 1,
+              "translationRevision": 1,
+              "languages": {
+                "source": "en",
+                "target": "ja"
+              },
+              "text": "皆さん こんにちは 明日駅で会います",
+              "final": true
+            },
+            "firstMs": 4694.599999904633,
+            "totalMs": 4694.700000047684,
+            "chunks": 1,
+            "missing": [],
+            "missingDetails": []
+          },
+          {
+            "id": "meeting-2",
+            "source": "안녕하세요. 내일 오후 세 시에 역에서 만나겠습니다.",
+            "result": {
+              "identity": {
+                "sessionId": "audit",
+                "targetId": "fixture",
+                "epoch": 0
+              },
+              "utteranceId": "meeting-2",
+              "sourceRevision": 1,
+              "translationRevision": 2,
+              "languages": {
+                "source": "ko",
+                "target": "ja"
+              },
+              "text": "明日午後3時に駅で 会います",
+              "final": true
+            },
+            "firstMs": 1707.7999999523163,
+            "totalMs": 1707.7999999523163,
+            "chunks": 1,
+            "missing": [],
+            "missingDetails": []
+          },
+          {
+            "id": "meeting-3",
+            "source": "Please keep the reservation. Thank you for joining the meeting.",
+            "result": {
+              "identity": {
+                "sessionId": "audit",
+                "targetId": "fixture",
+                "epoch": 0
+              },
+              "utteranceId": "meeting-3",
+              "sourceRevision": 1,
+              "translationRevision": 3,
+              "languages": {
+                "source": "en",
+                "target": "ja"
+              },
+              "text": "予約をしてください. 会場に来てくれてありがとう.",
+              "final": true
+            },
+            "firstMs": 1026.4000000953674,
+            "totalMs": 1026.4000000953674,
+            "chunks": 1,
+            "missing": [],
+            "missingDetails": []
+          },
+          {
+            "id": "meeting-5",
+            "source": "예약을 취소하지 마세요. 회의에 참석해 주셔서 감사합니다.",
+            "result": {
+              "identity": {
+                "sessionId": "audit",
+                "targetId": "fixture",
+                "epoch": 0
+              },
+              "utteranceId": "meeting-5",
+              "sourceRevision": 1,
+              "translationRevision": 4,
+              "languages": {
+                "source": "ko",
+                "target": "ja"
+              },
+              "text": "予約をキャンセルしないでください 会議に来ていただきありがとうございます",
+              "final": true
+            },
+            "firstMs": 1187.9000000953674,
+            "totalMs": 1187.9000000953674,
+            "chunks": 1,
+            "missing": [],
+            "missingDetails": []
+          }
+        ],
+        "preparationMs": 3372.0674999999756
+      },
+      {
+        "candidate": "hyMt2",
+        "target": "ko",
+        "results": [
+          {
+            "id": "meeting-0",
+            "source": "Hello everyone. We will meet tomorrow at the station.",
+            "result": {
+              "identity": {
+                "sessionId": "audit",
+                "targetId": "fixture",
+                "epoch": 0
+              },
+              "utteranceId": "meeting-0",
+              "sourceRevision": 1,
+              "translationRevision": 6,
+              "languages": {
+                "source": "en",
+                "target": "ko"
+              },
+              "text": "여러분, 안녕하세요. 내일 역에서 만나겠습니다.",
+              "final": true
+            },
+            "firstMs": 10557.300000190735,
+            "totalMs": 13273.600000143051,
+            "chunks": 6,
+            "missing": [],
+            "missingDetails": []
+          },
+          {
+            "id": "meeting-1",
+            "source": "こんにちは。明日の午後三時に駅で会いましょう。",
+            "result": {
+              "identity": {
+                "sessionId": "audit",
+                "targetId": "fixture",
+                "epoch": 0
+              },
+              "utteranceId": "meeting-1",
+              "sourceRevision": 1,
+              "translationRevision": 13,
+              "languages": {
+                "source": "ja",
+                "target": "ko"
+              },
+              "text": "안녕하세요. 내일 오후 3시에 역에서 만나요.",
+              "final": true
+            },
+            "firstMs": 1217,
+            "totalMs": 3294.399999856949,
+            "chunks": 7,
+            "missing": [],
+            "missingDetails": []
+          },
+          {
+            "id": "meeting-3",
+            "source": "Please keep the reservation. Thank you for joining the meeting.",
+            "result": {
+              "identity": {
+                "sessionId": "audit",
+                "targetId": "fixture",
+                "epoch": 0
+              },
+              "utteranceId": "meeting-3",
+              "sourceRevision": 1,
+              "translationRevision": 21,
+              "languages": {
+                "source": "en",
+                "target": "ko"
+              },
+              "text": "예약을 유지해 주세요. 회의에 참석해 주셔서 감사합니다.",
+              "final": true
+            },
+            "firstMs": 792.8999998569489,
+            "totalMs": 3443.2000000476837,
+            "chunks": 8,
+            "missing": [],
+            "missingDetails": []
+          },
+          {
+            "id": "meeting-4",
+            "source": "予約は取り消さないでください。会議に参加してくれてありがとうございます。",
+            "result": {
+              "identity": {
+                "sessionId": "audit",
+                "targetId": "fixture",
+                "epoch": 0
+              },
+              "utteranceId": "meeting-4",
+              "sourceRevision": 1,
+              "translationRevision": 29,
+              "languages": {
+                "source": "ja",
+                "target": "ko"
+              },
+              "text": "예약을 취소하지 말아주세요. 회의에 참석해 주셔서 감사합니다.",
+              "final": true
+            },
+            "firstMs": 1147.1000001430511,
+            "totalMs": 5174.900000095367,
+            "chunks": 8,
+            "missing": [],
+            "missingDetails": []
+          },
+          {
+            "id": "conversation-ja-0",
+            "source": "ねえ、駅の近くにできたカフェ、もう行った？土曜日に一緒にお昼を食べようと思ってるんだけど。",
+            "result": {
+              "identity": {
+                "sessionId": "audit",
+                "targetId": "fixture",
+                "epoch": 0
+              },
+              "utteranceId": "conversation-ja-0",
+              "sourceRevision": 1,
+              "translationRevision": 42,
+              "languages": {
+                "source": "ja",
+                "target": "ko"
+              },
+              "text": "네, 역 근처에 생긴 카페에 갔었어? 토요일에 같이 점심을 먹자고 생각하고 있어.",
+              "final": true
+            },
+            "firstMs": 621.3999998569489,
+            "totalMs": 5867.199999809265,
+            "chunks": 13,
+            "missing": [],
+            "missingDetails": []
+          },
+          {
+            "id": "conversation-ja-1",
+            "source": "まだ行ってないよ。土曜日は妹の引っ越しを手伝うから、日曜日にしない？午前中はちょっと忙しいんだ。",
+            "result": {
+              "identity": {
+                "sessionId": "audit",
+                "targetId": "fixture",
+                "epoch": 0
+              },
+              "utteranceId": "conversation-ja-1",
+              "sourceRevision": 1,
+              "translationRevision": 58,
+              "languages": {
+                "source": "ja",
+                "target": "ko"
+              },
+              "text": "아직 갈 수 없어요. 토요일에는 여동생의 이사 도와줄 거니까, 일요일로 하지 않을래요? 아침에는 조금 바쁘거든요.",
+              "final": true
+            },
+            "firstMs": 639,
+            "totalMs": 9056.600000143051,
+            "chunks": 16,
+            "missing": [],
+            "missingDetails": []
+          },
+          {
+            "id": "conversation-ja-2",
+            "source": "じゃあ、日曜日の午後一時半はどう？駅の東口で待ち合わせて、食事のあとに川沿いを散歩しよう。",
+            "result": {
+              "identity": {
+                "sessionId": "audit",
+                "targetId": "fixture",
+                "epoch": 0
+              },
+              "utteranceId": "conversation-ja-2",
+              "sourceRevision": 1,
+              "translationRevision": 73,
+              "languages": {
+                "source": "ja",
+                "target": "ko"
+              },
+              "text": "그럼, 일요일 오후 1시 반은 어때? 역의 동쪽 출구에서 만나고, 식사 후에 강가를 산책하자.",
+              "final": true
+            },
+            "firstMs": 1090.4000000953674,
+            "totalMs": 5943,
+            "chunks": 15,
+            "missing": [],
+            "missingDetails": []
+          },
+          {
+            "id": "conversation-ja-3",
+            "source": "一時半なら大丈夫。ところで、そのカフェには肉を使わない料理もあるかな？最近、野菜をよく食べてるんだ。",
+            "result": {
+              "identity": {
+                "sessionId": "audit",
+                "targetId": "fixture",
+                "epoch": 0
+              },
+              "utteranceId": "conversation-ja-3",
+              "sourceRevision": 1,
+              "translationRevision": 90,
+              "languages": {
+                "source": "ja",
+                "target": "ko"
+              },
+              "text": "1시 반이라면 괜찮아요. 그런데, 그 카페에는 고기를 사용하지 않는 요리도 있나요? 최근에는 채소를 많이 먹고 있어요.",
+              "final": true
+            },
+            "firstMs": 582,
+            "totalMs": 5863,
+            "chunks": 17,
+            "missing": [],
+            "missingDetails": []
+          },
+          {
+            "id": "conversation-ja-4",
+            "source": "きのこのサンドイッチとトマトのスープがあるよ。予約が必要か、私が確認しておくね。まだ予約は取り消さないでね。",
+            "result": {
+              "identity": {
+                "sessionId": "audit",
+                "targetId": "fixture",
+                "epoch": 0
+              },
+              "utteranceId": "conversation-ja-4",
+              "sourceRevision": 1,
+              "translationRevision": 105,
+              "languages": {
+                "source": "ja",
+                "target": "ko"
+              },
+              "text": "키노코 샌드위치와 토마토 수프가 있어요. 예약이 필요한지, 제가 확인해 드릴게요. 아직 예약을 취소하지 마세요.",
+              "final": true
+            },
+            "firstMs": 566.5,
+            "totalMs": 5867.899999856949,
+            "chunks": 15,
+            "missing": [
+              "버섯"
+            ],
+            "missingDetails": []
+          },
+          {
+            "id": "conversation-ja-5",
+            "source": "ありがとう。でも、雨が降ったら散歩はやめよう。カフェの向かいに本屋があるから、そこでゆっくり本を見たいな。",
+            "result": {
+              "identity": {
+                "sessionId": "audit",
+                "targetId": "fixture",
+                "epoch": 0
+              },
+              "utteranceId": "conversation-ja-5",
+              "sourceRevision": 1,
+              "translationRevision": 122,
+              "languages": {
+                "source": "ja",
+                "target": "ko"
+              },
+              "text": "감사합니다. 하지만 비가 오면 산책은 그만두고 싶어요. 카페 맞은편에 서점이 있으니, 거기서 편안하게 책을 읽고 싶어요.",
+              "final": true
+            },
+            "firstMs": 687.7999999523163,
+            "totalMs": 5291.600000143051,
+            "chunks": 17,
+            "missing": [],
+            "missingDetails": []
+          },
+          {
+            "id": "conversation-ja-6",
+            "source": "いいね。それから、借りていた本も持っていくよ。帰る前に渡すから、私が忘れていたら声をかけてくれる？",
+            "result": {
+              "identity": {
+                "sessionId": "audit",
+                "targetId": "fixture",
+                "epoch": 0
+              },
+              "utteranceId": "conversation-ja-6",
+              "sourceRevision": 1,
+              "translationRevision": 137,
+              "languages": {
+                "source": "ja",
+                "target": "ko"
+              },
+              "text": "좋아요. 그리고, 빌려왔던 책도 가져갈게요. 돌아가기 전에 주겠어요. 제가 잊어버릴까 봐 걱정되시면 말씀해 주세요.",
+              "final": true
+            },
+            "firstMs": 733.5,
+            "totalMs": 8143.299999952316,
+            "chunks": 15,
+            "missing": [],
+            "missingDetails": []
+          },
+          {
+            "id": "conversation-ja-7",
+            "source": "もちろん。じゃあ、日曜日の午後一時半に東口で。時間が変わったら、出かける前にメッセージを送ってね。",
+            "result": {
+              "identity": {
+                "sessionId": "audit",
+                "targetId": "fixture",
+                "epoch": 0
+              },
+              "utteranceId": "conversation-ja-7",
+              "sourceRevision": 1,
+              "translationRevision": 152,
+              "languages": {
+                "source": "ja",
+                "target": "ko"
+              },
+              "text": "물론이죠. 그럼, 일요일 오후 1시 반에 동쪽 출입구에서요. 시간이 바뀌면, 나가기 전에 메시지를 보내주세요.",
+              "final": true
+            },
+            "firstMs": 831.7000000476837,
+            "totalMs": 4629.600000143051,
+            "chunks": 15,
+            "missing": [],
+            "missingDetails": []
+          }
+        ],
+        "preparationMs": 120746.93141700001
+      },
+      {
+        "candidate": "hyMt2",
+        "target": "en",
+        "results": [
+          {
+            "id": "meeting-1",
+            "source": "こんにちは。明日の午後三時に駅で会いましょう。",
+            "result": {
+              "identity": {
+                "sessionId": "audit",
+                "targetId": "fixture",
+                "epoch": 0
+              },
+              "utteranceId": "meeting-1",
+              "sourceRevision": 1,
+              "translationRevision": 11,
+              "languages": {
+                "source": "ja",
+                "target": "en"
+              },
+              "text": "Hello. Let’s meet at the station tomorrow at 3 p.m.",
+              "final": true
+            },
+            "firstMs": 791.7000000476837,
+            "totalMs": 2473.800000190735,
+            "chunks": 11,
+            "missing": [],
+            "missingDetails": []
+          },
+          {
+            "id": "meeting-2",
+            "source": "안녕하세요. 내일 오후 세 시에 역에서 만나겠습니다.",
+            "result": {
+              "identity": {
+                "sessionId": "audit",
+                "targetId": "fixture",
+                "epoch": 0
+              },
+              "utteranceId": "meeting-2",
+              "sourceRevision": 1,
+              "translationRevision": 25,
+              "languages": {
+                "source": "ko",
+                "target": "en"
+              },
+              "text": "Hello. Let’s meet at the station tomorrow at three o’clock in the afternoon.",
+              "final": true
+            },
+            "firstMs": 300.40000009536743,
+            "totalMs": 1640.9000000953674,
+            "chunks": 14,
+            "missing": [],
+            "missingDetails": []
+          },
+          {
+            "id": "meeting-4",
+            "source": "予約は取り消さないでください。会議に参加してくれてありがとうございます。",
+            "result": {
+              "identity": {
+                "sessionId": "audit",
+                "targetId": "fixture",
+                "epoch": 0
+              },
+              "utteranceId": "meeting-4",
+              "sourceRevision": 1,
+              "translationRevision": 38,
+              "languages": {
+                "source": "ja",
+                "target": "en"
+              },
+              "text": "Please do not cancel the reservation. Thank you for attending the meeting.",
+              "final": true
+            },
+            "firstMs": 237.30000019073486,
+            "totalMs": 1280.4000000953674,
+            "chunks": 13,
+            "missing": [],
+            "missingDetails": []
+          },
+          {
+            "id": "meeting-5",
+            "source": "예약을 취소하지 마세요. 회의에 참석해 주셔서 감사합니다.",
+            "result": {
+              "identity": {
+                "sessionId": "audit",
+                "targetId": "fixture",
+                "epoch": 0
+              },
+              "utteranceId": "meeting-5",
+              "sourceRevision": 1,
+              "translationRevision": 49,
+              "languages": {
+                "source": "ko",
+                "target": "en"
+              },
+              "text": "Don’t cancel your reservation. Thank you for attending the meeting.",
+              "final": true
+            },
+            "firstMs": 435.89999985694885,
+            "totalMs": 1345.3999998569489,
+            "chunks": 11,
+            "missing": [],
+            "missingDetails": []
+          }
+        ],
+        "preparationMs": 9844.260167
+      },
+      {
+        "candidate": "hyMt2",
+        "target": "ja",
+        "results": [
+          {
+            "id": "meeting-0",
+            "source": "Hello everyone. We will meet tomorrow at the station.",
+            "result": {
+              "identity": {
+                "sessionId": "audit",
+                "targetId": "fixture",
+                "epoch": 0
+              },
+              "utteranceId": "meeting-0",
+              "sourceRevision": 1,
+              "translationRevision": 6,
+              "languages": {
+                "source": "en",
+                "target": "ja"
+              },
+              "text": "皆さん、こんにちは。明日、駅で会います。",
+              "final": true
+            },
+            "firstMs": 3472,
+            "totalMs": 6082,
+            "chunks": 6,
+            "missing": [],
+            "missingDetails": []
+          },
+          {
+            "id": "meeting-2",
+            "source": "안녕하세요. 내일 오후 세 시에 역에서 만나겠습니다.",
+            "result": {
+              "identity": {
+                "sessionId": "audit",
+                "targetId": "fixture",
+                "epoch": 0
+              },
+              "utteranceId": "meeting-2",
+              "sourceRevision": 1,
+              "translationRevision": 14,
+              "languages": {
+                "source": "ko",
+                "target": "ja"
+              },
+              "text": "こんにちは。明日の午後3時、駅で会いましょう。",
+              "final": true
+            },
+            "firstMs": 688,
+            "totalMs": 2416.2999999523163,
+            "chunks": 8,
+            "missing": [],
+            "missingDetails": []
+          },
+          {
+            "id": "meeting-3",
+            "source": "Please keep the reservation. Thank you for joining the meeting.",
+            "result": {
+              "identity": {
+                "sessionId": "audit",
+                "targetId": "fixture",
+                "epoch": 0
+              },
+              "utteranceId": "meeting-3",
+              "sourceRevision": 1,
+              "translationRevision": 22,
+              "languages": {
+                "source": "en",
+                "target": "ja"
+              },
+              "text": "予約を守ってください。会議に参加いただき、ありがとうございます。",
+              "final": true
+            },
+            "firstMs": 160.79999995231628,
+            "totalMs": 2192.699999809265,
+            "chunks": 8,
+            "missing": [],
+            "missingDetails": []
+          },
+          {
+            "id": "meeting-5",
+            "source": "예약을 취소하지 마세요. 회의에 참석해 주셔서 감사합니다.",
+            "result": {
+              "identity": {
+                "sessionId": "audit",
+                "targetId": "fixture",
+                "epoch": 0
+              },
+              "utteranceId": "meeting-5",
+              "sourceRevision": 1,
+              "translationRevision": 27,
+              "languages": {
+                "source": "ko",
+                "target": "ja"
+              },
+              "text": "予約をキャンセルしないでください。ご参加いただき、ありがとうございます。",
+              "final": true
+            },
+            "firstMs": 211,
+            "totalMs": 2363,
+            "chunks": 5,
+            "missing": [],
+            "missingDetails": []
+          }
+        ],
+        "preparationMs": 12621.240665999998
+      },
+      {
+        "candidate": "chrome",
+        "target": "ko",
+        "results": [
+          {
+            "id": "meeting-0",
+            "source": "Hello everyone. We will meet tomorrow at the station.",
+            "result": {
+              "identity": {
+                "sessionId": "audit",
+                "targetId": "fixture",
+                "epoch": 0
+              },
+              "utteranceId": "meeting-0",
+              "sourceRevision": 1,
+              "translationRevision": 3,
+              "languages": {
+                "source": "en",
+                "target": "ko"
+              },
+              "text": "안녕하세요 여러분. 우리는 내일 역에서 만날 것입니다.",
+              "final": true
+            },
+            "firstMs": 43.799999952316284,
+            "totalMs": 49.60000014305115,
+            "chunks": 3,
+            "missing": [],
+            "missingDetails": []
+          },
+          {
+            "id": "meeting-1",
+            "source": "こんにちは。明日の午後三時に駅で会いましょう。",
+            "result": {
+              "identity": {
+                "sessionId": "audit",
+                "targetId": "fixture",
+                "epoch": 0
+              },
+              "utteranceId": "meeting-1",
+              "sourceRevision": 1,
+              "translationRevision": 6,
+              "languages": {
+                "source": "ja",
+                "target": "ko"
+              },
+              "text": "안녕 내일 오후 3시에 역에서 만나요.",
+              "final": true
+            },
+            "firstMs": 4.800000190734863,
+            "totalMs": 53.60000014305115,
+            "chunks": 3,
+            "missing": [],
+            "missingDetails": []
+          },
+          {
+            "id": "meeting-3",
+            "source": "Please keep the reservation. Thank you for joining the meeting.",
+            "result": {
+              "identity": {
+                "sessionId": "audit",
+                "targetId": "fixture",
+                "epoch": 0
+              },
+              "utteranceId": "meeting-3",
+              "sourceRevision": 1,
+              "translationRevision": 9,
+              "languages": {
+                "source": "en",
+                "target": "ko"
+              },
+              "text": "예약을 유지하십시오. 회의에 참여해주셔서 감사합니다.",
+              "final": true
+            },
+            "firstMs": 3.8999998569488525,
+            "totalMs": 7.599999904632568,
+            "chunks": 3,
+            "missing": [],
+            "missingDetails": []
+          },
+          {
+            "id": "meeting-4",
+            "source": "予約は取り消さないでください。会議に参加してくれてありがとうございます。",
+            "result": {
+              "identity": {
+                "sessionId": "audit",
+                "targetId": "fixture",
+                "epoch": 0
+              },
+              "utteranceId": "meeting-4",
+              "sourceRevision": 1,
+              "translationRevision": 12,
+              "languages": {
+                "source": "ja",
+                "target": "ko"
+              },
+              "text": "예약을 취소하지 마십시오. 회의에 참석해 주셔서 감사합니다.",
+              "final": true
+            },
+            "firstMs": 7.200000047683716,
+            "totalMs": 14.200000047683716,
+            "chunks": 3,
+            "missing": [],
+            "missingDetails": []
+          },
+          {
+            "id": "conversation-ja-0",
+            "source": "ねえ、駅の近くにできたカフェ、もう行った？土曜日に一緒にお昼を食べようと思ってるんだけど。",
+            "result": {
+              "identity": {
+                "sessionId": "audit",
+                "targetId": "fixture",
+                "epoch": 0
+              },
+              "utteranceId": "conversation-ja-0",
+              "sourceRevision": 1,
+              "translationRevision": 15,
+              "languages": {
+                "source": "ja",
+                "target": "ko"
+              },
+              "text": "야, 역 근처 카페에 벌써 가봤어? 토요일에 함께 점심을 먹을 생각입니다.",
+              "final": true
+            },
+            "firstMs": 10.399999856948853,
+            "totalMs": 20.5,
+            "chunks": 3,
+            "missing": [],
+            "missingDetails": []
+          },
+          {
+            "id": "conversation-ja-1",
+            "source": "まだ行ってないよ。土曜日は妹の引っ越しを手伝うから、日曜日にしない？午前中はちょっと忙しいんだ。",
+            "result": {
+              "identity": {
+                "sessionId": "audit",
+                "targetId": "fixture",
+                "epoch": 0
+              },
+              "utteranceId": "conversation-ja-1",
+              "sourceRevision": 1,
+              "translationRevision": 19,
+              "languages": {
+                "source": "ja",
+                "target": "ko"
+              },
+              "text": "나는 아직 거기에 가본 적이 없다. 언니가 토요일에 이사를 도와줄게, 일요일은 왜 안되지? 나는 아침에 조금 바쁘다.",
+              "final": true
+            },
+            "firstMs": 6.6000001430511475,
+            "totalMs": 24.5,
+            "chunks": 4,
+            "missing": [],
+            "missingDetails": [
+              "여동생|동생"
+            ]
+          },
+          {
+            "id": "conversation-ja-2",
+            "source": "じゃあ、日曜日の午後一時半はどう？駅の東口で待ち合わせて、食事のあとに川沿いを散歩しよう。",
+            "result": {
+              "identity": {
+                "sessionId": "audit",
+                "targetId": "fixture",
+                "epoch": 0
+              },
+              "utteranceId": "conversation-ja-2",
+              "sourceRevision": 1,
+              "translationRevision": 22,
+              "languages": {
+                "source": "ja",
+                "target": "ko"
+              },
+              "text": "그럼 오후 1시 30분은 어떻습니까? 일요일에? 역 동쪽 출구에서 만나 저녁 식사 후 강을 따라 산책을 합시다.",
+              "final": true
+            },
+            "firstMs": 10.5,
+            "totalMs": 22.59999990463257,
+            "chunks": 3,
+            "missing": [],
+            "missingDetails": []
+          },
+          {
+            "id": "conversation-ja-3",
+            "source": "一時半なら大丈夫。ところで、そのカフェには肉を使わない料理もあるかな？最近、野菜をよく食べてるんだ。",
+            "result": {
+              "identity": {
+                "sessionId": "audit",
+                "targetId": "fixture",
+                "epoch": 0
+              },
+              "utteranceId": "conversation-ja-3",
+              "sourceRevision": 1,
+              "translationRevision": 26,
+              "languages": {
+                "source": "ja",
+                "target": "ko"
+              },
+              "text": "30분이면 괜찮습니다. 그건 그렇고, 그 카페에 고기를 사용하지 않는 요리가 있습니까? 최근에 야채를 많이 먹었네요.",
+              "final": true
+            },
+            "firstMs": 6.5,
+            "totalMs": 23.90000009536743,
+            "chunks": 4,
+            "missing": [
+              "1시 반|한 시 반|한시 반|1시 30분|1:30|한 시 삼십"
+            ],
+            "missingDetails": []
+          },
+          {
+            "id": "conversation-ja-4",
+            "source": "きのこのサンドイッチとトマトのスープがあるよ。予約が必要か、私が確認しておくね。まだ予約は取り消さないでね。",
+            "result": {
+              "identity": {
+                "sessionId": "audit",
+                "targetId": "fixture",
+                "epoch": 0
+              },
+              "utteranceId": "conversation-ja-4",
+              "sourceRevision": 1,
+              "translationRevision": 30,
+              "languages": {
+                "source": "ja",
+                "target": "ko"
+              },
+              "text": "버섯 샌드위치와 토마토 수프가 있습니다. 예약이 필요한지 확인하겠습니다. 아직 예약을 취소하지 마십시오.",
+              "final": true
+            },
+            "firstMs": 7.3999998569488525,
+            "totalMs": 19,
+            "chunks": 4,
+            "missing": [],
+            "missingDetails": []
+          },
+          {
+            "id": "conversation-ja-5",
+            "source": "ありがとう。でも、雨が降ったら散歩はやめよう。カフェの向かいに本屋があるから、そこでゆっくり本を見たいな。",
+            "result": {
+              "identity": {
+                "sessionId": "audit",
+                "targetId": "fixture",
+                "epoch": 0
+              },
+              "utteranceId": "conversation-ja-5",
+              "sourceRevision": 1,
+              "translationRevision": 34,
+              "languages": {
+                "source": "ja",
+                "target": "ko"
+              },
+              "text": "감사합니다. 그러나 비가 오면 산책을 하지 마십시오. 카페 맞은편에 서점이 있어서 그곳에서 책을 여유롭게 살펴보고 싶습니다.",
+              "final": true
+            },
+            "firstMs": 4.1000001430511475,
+            "totalMs": 24.700000047683716,
+            "chunks": 4,
+            "missing": [],
+            "missingDetails": []
+          },
+          {
+            "id": "conversation-ja-6",
+            "source": "いいね。それから、借りていた本も持っていくよ。帰る前に渡すから、私が忘れていたら声をかけてくれる？",
+            "result": {
+              "identity": {
+                "sessionId": "audit",
+                "targetId": "fixture",
+                "epoch": 0
+              },
+              "utteranceId": "conversation-ja-6",
+              "sourceRevision": 1,
+              "translationRevision": 38,
+              "languages": {
+                "source": "ja",
+                "target": "ko"
+              },
+              "text": "좋은. 그럼 내가 빌린 책을 가져오겠습니다. 집에 가기 전에 줄게, 잊어버리면 불러줄래?",
+              "final": true
+            },
+            "firstMs": 4.200000047683716,
+            "totalMs": 23.700000047683716,
+            "chunks": 4,
+            "missing": [],
+            "missingDetails": []
+          },
+          {
+            "id": "conversation-ja-7",
+            "source": "もちろん。じゃあ、日曜日の午後一時半に東口で。時間が変わったら、出かける前にメッセージを送ってね。",
+            "result": {
+              "identity": {
+                "sessionId": "audit",
+                "targetId": "fixture",
+                "epoch": 0
+              },
+              "utteranceId": "conversation-ja-7",
+              "sourceRevision": 1,
+              "translationRevision": 42,
+              "languages": {
+                "source": "ja",
+                "target": "ko"
+              },
+              "text": "물론. 그럼 일요일 오후 1시 30분 동쪽 출구에서. 시간이 변경되면 떠나기 전에 메시지를 보내주십시오.",
+              "final": true
+            },
+            "firstMs": 3.0999999046325684,
+            "totalMs": 19.5,
+            "chunks": 4,
+            "missing": [],
+            "missingDetails": []
+          }
+        ],
+        "preparationMs": 362.621541
+      },
+      {
+        "candidate": "chrome",
+        "target": "en",
+        "results": [
+          {
+            "id": "meeting-1",
+            "source": "こんにちは。明日の午後三時に駅で会いましょう。",
+            "result": {
+              "identity": {
+                "sessionId": "audit",
+                "targetId": "fixture",
+                "epoch": 0
+              },
+              "utteranceId": "meeting-1",
+              "sourceRevision": 1,
+              "translationRevision": 3,
+              "languages": {
+                "source": "ja",
+                "target": "en"
+              },
+              "text": "Hi there Let's meet at the station at 3 pm tomorrow.",
+              "final": true
+            },
+            "firstMs": 4,
+            "totalMs": 16.5,
+            "chunks": 3,
+            "missing": [],
+            "missingDetails": []
+          },
+          {
+            "id": "meeting-2",
+            "source": "안녕하세요. 내일 오후 세 시에 역에서 만나겠습니다.",
+            "result": {
+              "identity": {
+                "sessionId": "audit",
+                "targetId": "fixture",
+                "epoch": 0
+              },
+              "utteranceId": "meeting-2",
+              "sourceRevision": 1,
+              "translationRevision": 6,
+              "languages": {
+                "source": "ko",
+                "target": "en"
+              },
+              "text": "Hello We will meet at the station at 3pm tomorrow.",
+              "final": true
+            },
+            "firstMs": 0.7999999523162842,
+            "totalMs": 27.5,
+            "chunks": 3,
+            "missing": [],
+            "missingDetails": []
+          },
+          {
+            "id": "meeting-4",
+            "source": "予約は取り消さないでください。会議に参加してくれてありがとうございます。",
+            "result": {
+              "identity": {
+                "sessionId": "audit",
+                "targetId": "fixture",
+                "epoch": 0
+              },
+              "utteranceId": "meeting-4",
+              "sourceRevision": 1,
+              "translationRevision": 9,
+              "languages": {
+                "source": "ja",
+                "target": "en"
+              },
+              "text": "Please do not cancel the reservation. Thank you for attending the meeting.",
+              "final": true
+            },
+            "firstMs": 3.5,
+            "totalMs": 6,
+            "chunks": 3,
+            "missing": [],
+            "missingDetails": []
+          },
+          {
+            "id": "meeting-5",
+            "source": "예약을 취소하지 마세요. 회의에 참석해 주셔서 감사합니다.",
+            "result": {
+              "identity": {
+                "sessionId": "audit",
+                "targetId": "fixture",
+                "epoch": 0
+              },
+              "utteranceId": "meeting-5",
+              "sourceRevision": 1,
+              "translationRevision": 12,
+              "languages": {
+                "source": "ko",
+                "target": "en"
+              },
+              "text": "Please do not cancel your reservation. Thank you for attending the meeting.",
+              "final": true
+            },
+            "firstMs": 3.799999952316284,
+            "totalMs": 7.099999904632568,
+            "chunks": 3,
+            "missing": [],
+            "missingDetails": []
+          }
+        ],
+        "preparationMs": 159.0858330000001
+      },
+      {
+        "candidate": "chrome",
+        "target": "ja",
+        "results": [
+          {
+            "id": "meeting-0",
+            "source": "Hello everyone. We will meet tomorrow at the station.",
+            "result": {
+              "identity": {
+                "sessionId": "audit",
+                "targetId": "fixture",
+                "epoch": 0
+              },
+              "utteranceId": "meeting-0",
+              "sourceRevision": 1,
+              "translationRevision": 3,
+              "languages": {
+                "source": "en",
+                "target": "ja"
+              },
+              "text": "Hello everyone. 明日駅で会いましょう。",
+              "final": true
+            },
+            "firstMs": 33.5,
+            "totalMs": 37.30000019073486,
+            "chunks": 3,
+            "missing": [],
+            "missingDetails": []
+          },
+          {
+            "id": "meeting-2",
+            "source": "안녕하세요. 내일 오후 세 시에 역에서 만나겠습니다.",
+            "result": {
+              "identity": {
+                "sessionId": "audit",
+                "targetId": "fixture",
+                "epoch": 0
+              },
+              "utteranceId": "meeting-2",
+              "sourceRevision": 1,
+              "translationRevision": 5,
+              "languages": {
+                "source": "ko",
+                "target": "ja"
+              },
+              "text": "こんにちは、明日の午後 3 時に駅で会いましょう。",
+              "final": true
+            },
+            "firstMs": 18.90000009536743,
+            "totalMs": 19,
+            "chunks": 2,
+            "missing": [],
+            "missingDetails": []
+          },
+          {
+            "id": "meeting-3",
+            "source": "Please keep the reservation. Thank you for joining the meeting.",
+            "result": {
+              "identity": {
+                "sessionId": "audit",
+                "targetId": "fixture",
+                "epoch": 0
+              },
+              "utteranceId": "meeting-3",
+              "sourceRevision": 1,
+              "translationRevision": 8,
+              "languages": {
+                "source": "en",
+                "target": "ja"
+              },
+              "text": "予約をしてください。 会議に参加していただきありがとうございます。",
+              "final": true
+            },
+            "firstMs": 4.099999904632568,
+            "totalMs": 10.099999904632568,
+            "chunks": 3,
+            "missing": [],
+            "missingDetails": []
+          },
+          {
+            "id": "meeting-5",
+            "source": "예약을 취소하지 마세요. 회의에 참석해 주셔서 감사합니다.",
+            "result": {
+              "identity": {
+                "sessionId": "audit",
+                "targetId": "fixture",
+                "epoch": 0
+              },
+              "utteranceId": "meeting-5",
+              "sourceRevision": 1,
+              "translationRevision": 11,
+              "languages": {
+                "source": "ko",
+                "target": "ja"
+              },
+              "text": "予約をキャンセルしないでください。 会議に出席していただきありがとうございます。",
+              "final": true
+            },
+            "firstMs": 7.900000095367432,
+            "totalMs": 11.200000047683716,
+            "chunks": 3,
+            "missing": [],
+            "missingDetails": []
+          }
+        ],
+        "preparationMs": 173.3247919999999
+      }
+    ],
+    "browser": "153.0.8010.12"
+  },
+  "audioLanguageDetection": {
+    "mode": "detection",
+    "date": "2026-10-25T01:20:19.047Z",
+    "scope": "Actual browser inference on synthetic checked-in turns; not live overlay latency or human evaluation",
+    "runs": [
+      {
+        "candidate": "voxlingua",
+        "target": "ko",
+        "results": [
+          {
+            "expected": "en",
+            "seconds": 1,
+            "language": "en",
+            "confidence": 0.9941505707082976,
+            "inferenceMs": 116.89999985694885
+          },
+          {
+            "expected": "en",
+            "seconds": 2,
+            "language": "en",
+            "confidence": 0.9939168176613933,
+            "inferenceMs": 173.29999995231628
+          },
+          {
+            "expected": "en",
+            "seconds": 3,
+            "language": "en",
+            "confidence": 0.9976962497332232,
+            "inferenceMs": 263.39999985694885
+          },
+          {
+            "expected": "ja",
+            "seconds": 1,
+            "language": "ja",
+            "confidence": 0.9999999979782732,
+            "inferenceMs": 99.59999990463257
+          },
+          {
+            "expected": "ja",
+            "seconds": 2,
+            "language": "ja",
+            "confidence": 0.9999999984975365,
+            "inferenceMs": 196.5
+          },
+          {
+            "expected": "ja",
+            "seconds": 3,
+            "language": "ja",
+            "confidence": 0.9999999990201429,
+            "inferenceMs": 261
+          },
+          {
+            "expected": "ko",
+            "seconds": 1,
+            "language": "ko",
+            "confidence": 0.9999210806141063,
+            "inferenceMs": 88.5
+          },
+          {
+            "expected": "ko",
+            "seconds": 2,
+            "language": "ko",
+            "confidence": 0.9998234377835986,
+            "inferenceMs": 163.59999990463257
+          },
+          {
+            "expected": "ko",
+            "seconds": 3,
+            "language": "ko",
+            "confidence": 0.9999821172769634,
+            "inferenceMs": 259.59999990463257
+          },
+          {
+            "expected": "en",
+            "seconds": 1,
+            "language": "en",
+            "confidence": 0.9999992861079068,
+            "inferenceMs": 110.69999980926514
+          },
+          {
+            "expected": "en",
+            "seconds": 2,
+            "language": "en",
+            "confidence": 0.9999975536813147,
+            "inferenceMs": 173.19999980926514
+          },
+          {
+            "expected": "en",
+            "seconds": 3,
+            "language": "en",
+            "confidence": 0.9999850952631228,
+            "inferenceMs": 249.39999985694885
+          },
+          {
+            "expected": "ja",
+            "seconds": 1,
+            "language": "ja",
+            "confidence": 0.9999945879292745,
+            "inferenceMs": 93.10000014305115
+          },
+          {
+            "expected": "ja",
+            "seconds": 2,
+            "language": "ja",
+            "confidence": 0.9999972222545871,
+            "inferenceMs": 180.30000019073486
+          },
+          {
+            "expected": "ja",
+            "seconds": 3,
+            "language": "ja",
+            "confidence": 0.9999999640782198,
+            "inferenceMs": 252.5
+          },
+          {
+            "expected": "ko",
+            "seconds": 1,
+            "language": "ko",
+            "confidence": 0.9769090556743442,
+            "inferenceMs": 94.09999990463257
+          },
+          {
+            "expected": "ko",
+            "seconds": 2,
+            "language": "ko",
+            "confidence": 0.9970920365497984,
+            "inferenceMs": 173.5
+          },
+          {
+            "expected": "ko",
+            "seconds": 3,
+            "language": "ko",
+            "confidence": 0.9999783649220639,
+            "inferenceMs": 277.2999999523163
+          }
+        ],
+        "preparationMs": 5231.195833
+      }
+    ],
+    "browser": "153.0.8010.12"
+  },
+  "rejectedBaseLid": {
+    "mode": "detection",
+    "date": "2026-10-25T01:19:18.530Z",
+    "scope": "Actual browser inference on synthetic checked-in turns; not live overlay latency or human evaluation",
+    "runs": [
+      {
+        "candidate": "baseLid",
+        "target": "ko",
+        "results": [
+          {
+            "expected": "en",
+            "seconds": 1,
+            "language": "en",
+            "confidence": 0.9975546080657368,
+            "inferenceMs": 1859.7000000476837
+          },
+          {
+            "expected": "en",
+            "seconds": 2,
+            "language": "en",
+            "confidence": 0.9966582977775819,
+            "inferenceMs": 1841.4000000953674
+          },
+          {
+            "expected": "en",
+            "seconds": 3,
+            "language": "en",
+            "confidence": 0.9987501937663682,
+            "inferenceMs": 1983.5
+          },
+          {
+            "expected": "ja",
+            "seconds": 1,
+            "language": "ja",
+            "confidence": 0.9490040844245048,
+            "inferenceMs": 1930.5
+          },
+          {
+            "expected": "ja",
+            "seconds": 2,
+            "language": "ja",
+            "confidence": 0.9755429203326638,
+            "inferenceMs": 1964.2000000476837
+          },
+          {
+            "expected": "ja",
+            "seconds": 3,
+            "language": "ja",
+            "confidence": 0.9836902874440399,
+            "inferenceMs": 1980.2999999523163
+          },
+          {
+            "expected": "ko",
+            "seconds": 1,
+            "language": "ko",
+            "confidence": 0.990775669551711,
+            "inferenceMs": 1922.3999998569489
+          },
+          {
+            "expected": "ko",
+            "seconds": 2,
+            "language": "ko",
+            "confidence": 0.9813238076862051,
+            "inferenceMs": 1863.0999999046326
+          },
+          {
+            "expected": "ko",
+            "seconds": 3,
+            "language": "ko",
+            "confidence": 0.9844120789292407,
+            "inferenceMs": 2081.600000143051
+          },
+          {
+            "expected": "en",
+            "seconds": 1,
+            "language": "en",
+            "confidence": 0.9977370094525145,
+            "inferenceMs": 1950.7000000476837
+          },
+          {
+            "expected": "en",
+            "seconds": 2,
+            "language": "en",
+            "confidence": 0.9996714036679248,
+            "inferenceMs": 1940.2000000476837
+          },
+          {
+            "expected": "en",
+            "seconds": 3,
+            "language": "en",
+            "confidence": 0.9992496191159523,
+            "inferenceMs": 2010.0999999046326
+          },
+          {
+            "expected": "ja",
+            "seconds": 1,
+            "language": "ja",
+            "confidence": 0.9642197386475096,
+            "inferenceMs": 2023.2999999523163
+          },
+          {
+            "expected": "ja",
+            "seconds": 2,
+            "language": "ja",
+            "confidence": 0.9989707327198132,
+            "inferenceMs": 2009.7999999523163
+          },
+          {
+            "expected": "ja",
+            "seconds": 3,
+            "language": "ja",
+            "confidence": 0.999485944550579,
+            "inferenceMs": 2033.4000000953674
+          },
+          {
+            "expected": "ko",
+            "seconds": 1,
+            "language": "ko",
+            "confidence": 0.9858896916890251,
+            "inferenceMs": 2065.899999856949
+          },
+          {
+            "expected": "ko",
+            "seconds": 2,
+            "language": "ko",
+            "confidence": 0.9892475432938747,
+            "inferenceMs": 2040.2999999523163
+          },
+          {
+            "expected": "ko",
+            "seconds": 3,
+            "language": "ko",
+            "confidence": 0.9933268800765058,
+            "inferenceMs": 2061.4000000953674
+          }
+        ],
+        "preparationMs": 6990.8697919999995
+      }
+    ],
+    "browser": "153.0.8010.12"
+  },
+  "preFixFailures": [
+    {
+      "candidate": "Chrome automatic Japanese output",
+      "error": "Two first-use native create calls consumed the same transient activation; fixed with an English bridge and re-run successfully."
+    }
+  ],
+  "environment": {
+    "cpu": "Apple M5",
+    "memoryGiB": 16,
+    "browser": "Chrome for Testing 153.0.8010.12",
+    "platform": "macOS arm64",
+    "wasmThreads": 1
+  },
+  "liveVerification": {
+    "subtitleTargets": {
+      "passed": true,
+      "pairs": [
+        "ja to en",
+        "en to ja"
+      ],
+      "scope": "Looping short synthetic clips, final sentence topics and actual page overlay"
+    },
+    "voxlingua": {
+      "passed": true,
+      "captions": 10,
+      "decisions": 20,
+      "medianDecisionMs": 199.39999997615814,
+      "asrJobs": 20,
+      "playbackGain": 0.005,
+      "captionsFinal": true,
+      "texts": [
+        {
+          "language": "en",
+          "source": "Hello everyone.",
+          "translation": "안녕하세요 여러분."
+        },
+        {
+          "language": "en",
+          "source": "We will meet tomorrow at the station.",
+          "translation": "우리는 내일 역에서 만날 것입니다."
+        },
+        {
+          "language": "ja",
+          "source": "こんにちは明日の午後3時に駅で会いましょう。",
+          "translation": "안녕하세요, 내일 오후 3시에 역에서 만나요."
+        },
+        {
+          "language": "ko",
+          "source": "안녕하세요 내일 오후 3시에 여기서 만나겠습니다",
+          "translation": "안녕하세요 내일 오후 3시에 여기서 만나겠습니다"
+        },
+        {
+          "language": "en",
+          "source": "Please keep the reservation.",
+          "translation": "예약을 유지하십시오."
+        },
+        {
+          "language": "en",
+          "source": "Thank you for joining the meeting.",
+          "translation": "회의에 참여해주셔서 감사합니다."
+        },
+        {
+          "language": "ja",
+          "source": "予約は取り消さないでください。",
+          "translation": "예약을 취소하지 마십시오."
+        },
+        {
+          "language": "ja",
+          "source": "会議に参加してくれてありがとうございます。",
+          "translation": "회의에 참석해 주셔서 감사합니다."
+        },
+        {
+          "language": "ko",
+          "source": "예약을 취소하지 마세요.",
+          "translation": "예약을 취소하지 마세요."
+        },
+        {
+          "language": "ko",
+          "source": "회의에 참석해 주셔서 감사합니다.",
+          "translation": "회의에 참석해 주셔서 감사합니다."
+        }
+      ]
+    },
+    "japaneseConversation": {
+      "passed": false,
+      "playbackGain": 0.005,
+      "accuracy": {
+        "metric": "CER",
+        "edits": 11,
+        "referenceUnits": 357,
+        "rate": 0.03081232492997199
+      },
+      "latency": {
+        "firstSourceVisibleMs": 1074,
+        "firstKoreanVisibleMs": 1145.6000001430511
+      },
+      "finalCaptions": 18,
+      "remainingOverlay": [],
+      "qualityFailures": [
+        {
+          "reference": "ありがとう。でも、雨が降ったら散歩はやめよう。カフェの向かいに本屋があるから、そこでゆっくり本を見たいな。",
+          "missingSource": [],
+          "missingKorean": [
+            "서점"
+          ],
+          "missingKoreanDetails": []
+        }
+      ]
+    }
+  },
+  "languageSwitchReuse": {
+    "mode": "translation",
+    "date": "2026-10-25T02:00:45.330Z",
+    "scope": "Actual browser inference on synthetic checked-in turns; not live overlay latency or human evaluation",
+    "runs": [
+      {
+        "candidate": "hyMt2",
+        "target": "ko",
+        "results": [
+          {
+            "id": "meeting-0",
+            "source": "Hello everyone. We will meet tomorrow at the station.",
+            "result": {
+              "identity": {
+                "sessionId": "audit",
+                "targetId": "fixture",
+                "epoch": 0
+              },
+              "utteranceId": "meeting-0",
+              "sourceRevision": 1,
+              "translationRevision": 6,
+              "languages": {
+                "source": "en",
+                "target": "ko"
+              },
+              "text": "여러분, 안녕하세요. 내일 역에서 만나겠습니다.",
+              "final": true
+            },
+            "firstMs": 3756.100000143051,
+            "totalMs": 5296.600000143051,
+            "chunks": 6,
+            "missing": [],
+            "missingDetails": []
+          },
+          {
+            "id": "meeting-1",
+            "source": "こんにちは。明日の午後三時に駅で会いましょう。",
+            "result": {
+              "identity": {
+                "sessionId": "audit",
+                "targetId": "fixture",
+                "epoch": 0
+              },
+              "utteranceId": "meeting-1",
+              "sourceRevision": 1,
+              "translationRevision": 13,
+              "languages": {
+                "source": "ja",
+                "target": "ko"
+              },
+              "text": "안녕하세요. 내일 오후 3시에 역에서 만나요.",
+              "final": true
+            },
+            "firstMs": 752.7999999523163,
+            "totalMs": 2134.9000000953674,
+            "chunks": 7,
+            "missing": [],
+            "missingDetails": []
+          },
+          {
+            "id": "meeting-3",
+            "source": "Please keep the reservation. Thank you for joining the meeting.",
+            "result": {
+              "identity": {
+                "sessionId": "audit",
+                "targetId": "fixture",
+                "epoch": 0
+              },
+              "utteranceId": "meeting-3",
+              "sourceRevision": 1,
+              "translationRevision": 21,
+              "languages": {
+                "source": "en",
+                "target": "ko"
+              },
+              "text": "예약을 유지해 주세요. 회의에 참석해 주셔서 감사합니다.",
+              "final": true
+            },
+            "firstMs": 474.09999990463257,
+            "totalMs": 2088.899999856949,
+            "chunks": 8,
+            "missing": [],
+            "missingDetails": []
+          },
+          {
+            "id": "meeting-4",
+            "source": "予約は取り消さないでください。会議に参加してくれてありがとうございます。",
+            "result": {
+              "identity": {
+                "sessionId": "audit",
+                "targetId": "fixture",
+                "epoch": 0
+              },
+              "utteranceId": "meeting-4",
+              "sourceRevision": 1,
+              "translationRevision": 29,
+              "languages": {
+                "source": "ja",
+                "target": "ko"
+              },
+              "text": "예약을 취소하지 말아주세요. 회의에 참석해 주셔서 감사합니다.",
+              "final": true
+            },
+            "firstMs": 570.5,
+            "totalMs": 2282,
+            "chunks": 8,
+            "missing": [],
+            "missingDetails": []
+          },
+          {
+            "id": "conversation-ja-0",
+            "source": "ねえ、駅の近くにできたカフェ、もう行った？土曜日に一緒にお昼を食べようと思ってるんだけど。",
+            "result": {
+              "identity": {
+                "sessionId": "audit",
+                "targetId": "fixture",
+                "epoch": 0
+              },
+              "utteranceId": "conversation-ja-0",
+              "sourceRevision": 1,
+              "translationRevision": 42,
+              "languages": {
+                "source": "ja",
+                "target": "ko"
+              },
+              "text": "네, 역 근처에 생긴 카페에 갔었어? 토요일에 같이 점심을 먹자고 생각하고 있어.",
+              "final": true
+            },
+            "firstMs": 299,
+            "totalMs": 2761.2999999523163,
+            "chunks": 13,
+            "missing": [],
+            "missingDetails": []
+          },
+          {
+            "id": "conversation-ja-1",
+            "source": "まだ行ってないよ。土曜日は妹の引っ越しを手伝うから、日曜日にしない？午前中はちょっと忙しいんだ。",
+            "result": {
+              "identity": {
+                "sessionId": "audit",
+                "targetId": "fixture",
+                "epoch": 0
+              },
+              "utteranceId": "conversation-ja-1",
+              "sourceRevision": 1,
+              "translationRevision": 58,
+              "languages": {
+                "source": "ja",
+                "target": "ko"
+              },
+              "text": "아직 갈 수 없어요. 토요일에는 여동생의 이사 도와줄 거니까, 일요일로 하지 않을래요? 아침에는 조금 바쁘거든요.",
+              "final": true
+            },
+            "firstMs": 320.2999999523163,
+            "totalMs": 3986.7000000476837,
+            "chunks": 16,
+            "missing": [],
+            "missingDetails": []
+          },
+          {
+            "id": "conversation-ja-2",
+            "source": "じゃあ、日曜日の午後一時半はどう？駅の東口で待ち合わせて、食事のあとに川沿いを散歩しよう。",
+            "result": {
+              "identity": {
+                "sessionId": "audit",
+                "targetId": "fixture",
+                "epoch": 0
+              },
+              "utteranceId": "conversation-ja-2",
+              "sourceRevision": 1,
+              "translationRevision": 73,
+              "languages": {
+                "source": "ja",
+                "target": "ko"
+              },
+              "text": "그럼, 일요일 오후 1시 반은 어때? 역의 동쪽 출구에서 만나고, 식사 후에 강가를 산책하자.",
+              "final": true
+            },
+            "firstMs": 403.7999999523163,
+            "totalMs": 3152.399999856949,
+            "chunks": 15,
+            "missing": [],
+            "missingDetails": []
+          },
+          {
+            "id": "conversation-ja-3",
+            "source": "一時半なら大丈夫。ところで、そのカフェには肉を使わない料理もあるかな？最近、野菜をよく食べてるんだ。",
+            "result": {
+              "identity": {
+                "sessionId": "audit",
+                "targetId": "fixture",
+                "epoch": 0
+              },
+              "utteranceId": "conversation-ja-3",
+              "sourceRevision": 1,
+              "translationRevision": 90,
+              "languages": {
+                "source": "ja",
+                "target": "ko"
+              },
+              "text": "1시 반이라면 괜찮아요. 그런데, 그 카페에는 고기를 사용하지 않는 요리도 있나요? 최근에는 채소를 많이 먹고 있어요.",
+              "final": true
+            },
+            "firstMs": 289.5,
+            "totalMs": 3619.7000000476837,
+            "chunks": 17,
+            "missing": [],
+            "missingDetails": []
+          },
+          {
+            "id": "conversation-ja-4",
+            "source": "きのこのサンドイッチとトマトのスープがあるよ。予約が必要か、私が確認しておくね。まだ予約は取り消さないでね。",
+            "result": {
+              "identity": {
+                "sessionId": "audit",
+                "targetId": "fixture",
+                "epoch": 0
+              },
+              "utteranceId": "conversation-ja-4",
+              "sourceRevision": 1,
+              "translationRevision": 105,
+              "languages": {
+                "source": "ja",
+                "target": "ko"
+              },
+              "text": "키노코 샌드위치와 토마토 수프가 있어요. 예약이 필요한지, 제가 확인해 드릴게요. 아직 예약을 취소하지 마세요.",
+              "final": true
+            },
+            "firstMs": 440.5,
+            "totalMs": 3769.7999999523163,
+            "chunks": 15,
+            "missing": [
+              "버섯"
+            ],
+            "missingDetails": []
+          },
+          {
+            "id": "conversation-ja-5",
+            "source": "ありがとう。でも、雨が降ったら散歩はやめよう。カフェの向かいに本屋があるから、そこでゆっくり本を見たいな。",
+            "result": {
+              "identity": {
+                "sessionId": "audit",
+                "targetId": "fixture",
+                "epoch": 0
+              },
+              "utteranceId": "conversation-ja-5",
+              "sourceRevision": 1,
+              "translationRevision": 122,
+              "languages": {
+                "source": "ja",
+                "target": "ko"
+              },
+              "text": "감사합니다. 하지만 비가 오면 산책은 그만두고 싶어요. 카페 맞은편에 서점이 있으니, 거기서 편안하게 책을 읽고 싶어요.",
+              "final": true
+            },
+            "firstMs": 656.3999998569489,
+            "totalMs": 4233.200000047684,
+            "chunks": 17,
+            "missing": [],
+            "missingDetails": []
+          },
+          {
+            "id": "conversation-ja-6",
+            "source": "いいね。それから、借りていた本も持っていくよ。帰る前に渡すから、私が忘れていたら声をかけてくれる？",
+            "result": {
+              "identity": {
+                "sessionId": "audit",
+                "targetId": "fixture",
+                "epoch": 0
+              },
+              "utteranceId": "conversation-ja-6",
+              "sourceRevision": 1,
+              "translationRevision": 137,
+              "languages": {
+                "source": "ja",
+                "target": "ko"
+              },
+              "text": "좋아요. 그리고, 빌려왔던 책도 가져갈게요. 돌아가기 전에 주겠어요. 제가 잊어버릴까 봐 걱정되시면 말씀해 주세요.",
+              "final": true
+            },
+            "firstMs": 684.2000000476837,
+            "totalMs": 4602.900000095367,
+            "chunks": 15,
+            "missing": [],
+            "missingDetails": []
+          },
+          {
+            "id": "conversation-ja-7",
+            "source": "もちろん。じゃあ、日曜日の午後一時半に東口で。時間が変わったら、出かける前にメッセージを送ってね。",
+            "result": {
+              "identity": {
+                "sessionId": "audit",
+                "targetId": "fixture",
+                "epoch": 0
+              },
+              "utteranceId": "conversation-ja-7",
+              "sourceRevision": 1,
+              "translationRevision": 152,
+              "languages": {
+                "source": "ja",
+                "target": "ko"
+              },
+              "text": "물론이죠. 그럼, 일요일 오후 1시 반에 동쪽 출입구에서요. 시간이 바뀌면, 나가기 전에 메시지를 보내주세요.",
+              "final": true
+            },
+            "firstMs": 556.8000001907349,
+            "totalMs": 3739.600000143051,
+            "chunks": 15,
+            "missing": [],
+            "missingDetails": []
+          }
+        ],
+        "preparationMs": 8607.447792
+      },
+      {
+        "candidate": "hyMt2",
+        "target": "en",
+        "results": [
+          {
+            "id": "meeting-1",
+            "source": "こんにちは。明日の午後三時に駅で会いましょう。",
+            "result": {
+              "identity": {
+                "sessionId": "audit",
+                "targetId": "fixture",
+                "epoch": 0
+              },
+              "utteranceId": "meeting-1",
+              "sourceRevision": 1,
+              "translationRevision": 163,
+              "languages": {
+                "source": "ja",
+                "target": "en"
+              },
+              "text": "Hello. Let’s meet at the station tomorrow at 3 p.m.",
+              "final": true
+            },
+            "firstMs": 289.10000014305115,
+            "totalMs": 1375.3000001907349,
+            "chunks": 11,
+            "missing": [],
+            "missingDetails": []
+          },
+          {
+            "id": "meeting-2",
+            "source": "안녕하세요. 내일 오후 세 시에 역에서 만나겠습니다.",
+            "result": {
+              "identity": {
+                "sessionId": "audit",
+                "targetId": "fixture",
+                "epoch": 0
+              },
+              "utteranceId": "meeting-2",
+              "sourceRevision": 1,
+              "translationRevision": 177,
+              "languages": {
+                "source": "ko",
+                "target": "en"
+              },
+              "text": "Hello. Let’s meet at the station tomorrow at three o’clock in the afternoon.",
+              "final": true
+            },
+            "firstMs": 288.60000014305115,
+            "totalMs": 1563.8000001907349,
+            "chunks": 14,
+            "missing": [],
+            "missingDetails": []
+          },
+          {
+            "id": "meeting-4",
+            "source": "予約は取り消さないでください。会議に参加してくれてありがとうございます。",
+            "result": {
+              "identity": {
+                "sessionId": "audit",
+                "targetId": "fixture",
+                "epoch": 0
+              },
+              "utteranceId": "meeting-4",
+              "sourceRevision": 1,
+              "translationRevision": 190,
+              "languages": {
+                "source": "ja",
+                "target": "en"
+              },
+              "text": "Please do not cancel the reservation. Thank you for attending the meeting.",
+              "final": true
+            },
+            "firstMs": 213.79999995231628,
+            "totalMs": 1189.8999998569489,
+            "chunks": 13,
+            "missing": [],
+            "missingDetails": []
+          },
+          {
+            "id": "meeting-5",
+            "source": "예약을 취소하지 마세요. 회의에 참석해 주셔서 감사합니다.",
+            "result": {
+              "identity": {
+                "sessionId": "audit",
+                "targetId": "fixture",
+                "epoch": 0
+              },
+              "utteranceId": "meeting-5",
+              "sourceRevision": 1,
+              "translationRevision": 201,
+              "languages": {
+                "source": "ko",
+                "target": "en"
+              },
+              "text": "Don’t cancel your reservation. Thank you for attending the meeting.",
+              "final": true
+            },
+            "firstMs": 403.5,
+            "totalMs": 1225.1000001430511,
+            "chunks": 11,
+            "missing": [],
+            "missingDetails": []
+          }
+        ],
+        "preparationMs": 36.152540999995836,
+        "reuse": {
+          "before": {
+            "created": 1,
+            "prepared": 1,
+            "terminated": 0,
+            "statuses": 4
+          },
+          "after": {
+            "created": 1,
+            "prepared": 1,
+            "terminated": 0,
+            "statuses": 4
+          },
+          "downloads": 0
+        }
+      },
+      {
+        "candidate": "hyMt2",
+        "target": "ja",
+        "results": [
+          {
+            "id": "meeting-0",
+            "source": "Hello everyone. We will meet tomorrow at the station.",
+            "result": {
+              "identity": {
+                "sessionId": "audit",
+                "targetId": "fixture",
+                "epoch": 0
+              },
+              "utteranceId": "meeting-0",
+              "sourceRevision": 1,
+              "translationRevision": 207,
+              "languages": {
+                "source": "en",
+                "target": "ja"
+              },
+              "text": "皆さん、こんにちは。明日、駅で会います。",
+              "final": true
+            },
+            "firstMs": 138.5,
+            "totalMs": 1349.5,
+            "chunks": 6,
+            "missing": [],
+            "missingDetails": []
+          },
+          {
+            "id": "meeting-2",
+            "source": "안녕하세요. 내일 오후 세 시에 역에서 만나겠습니다.",
+            "result": {
+              "identity": {
+                "sessionId": "audit",
+                "targetId": "fixture",
+                "epoch": 0
+              },
+              "utteranceId": "meeting-2",
+              "sourceRevision": 1,
+              "translationRevision": 215,
+              "languages": {
+                "source": "ko",
+                "target": "ja"
+              },
+              "text": "こんにちは。明日の午後3時、駅で会いましょう。",
+              "final": true
+            },
+            "firstMs": 618.2000000476837,
+            "totalMs": 1747.5999999046326,
+            "chunks": 8,
+            "missing": [],
+            "missingDetails": []
+          },
+          {
+            "id": "meeting-3",
+            "source": "Please keep the reservation. Thank you for joining the meeting.",
+            "result": {
+              "identity": {
+                "sessionId": "audit",
+                "targetId": "fixture",
+                "epoch": 0
+              },
+              "utteranceId": "meeting-3",
+              "sourceRevision": 1,
+              "translationRevision": 223,
+              "languages": {
+                "source": "en",
+                "target": "ja"
+              },
+              "text": "予約を守ってください。会議に参加いただき、ありがとうございます。",
+              "final": true
+            },
+            "firstMs": 135.90000009536743,
+            "totalMs": 1970.5,
+            "chunks": 8,
+            "missing": [],
+            "missingDetails": []
+          },
+          {
+            "id": "meeting-5",
+            "source": "예약을 취소하지 마세요. 회의에 참석해 주셔서 감사합니다.",
+            "result": {
+              "identity": {
+                "sessionId": "audit",
+                "targetId": "fixture",
+                "epoch": 0
+              },
+              "utteranceId": "meeting-5",
+              "sourceRevision": 1,
+              "translationRevision": 228,
+              "languages": {
+                "source": "ko",
+                "target": "ja"
+              },
+              "text": "予約をキャンセルしないでください。ご参加いただき、ありがとうございます。",
+              "final": true
+            },
+            "firstMs": 139.60000014305115,
+            "totalMs": 2192.7000000476837,
+            "chunks": 5,
+            "missing": [],
+            "missingDetails": []
+          }
+        ],
+        "preparationMs": 17.25591600000189,
+        "reuse": {
+          "before": {
+            "created": 1,
+            "prepared": 1,
+            "terminated": 0,
+            "statuses": 4
+          },
+          "after": {
+            "created": 1,
+            "prepared": 1,
+            "terminated": 0,
+            "statuses": 4
+          },
+          "downloads": 0
+        }
+      }
+    ],
+    "browser": "153.0.8010.12"
+  },
+  "languageSwitchConversation": {
+    "latency": {
+      "firstSourceVisibleMs": 1027.3999998569489,
+      "firstKoreanVisibleMs": 1078.2000000476837
+    },
+    "accuracy": {
+      "metric": "CER",
+      "edits": 9,
+      "referenceUnits": 357,
+      "rate": 0.025210084033613446
+    },
+    "meaning": [
+      {
+        "reference": "ねえ、駅の近くにできたカフェ、もう行った？土曜日に一緒にお昼を食べようと思ってるんだけど。",
+        "missingSource": [],
+        "missingKorean": [],
+        "missingKoreanDetails": []
+      },
+      {
+        "reference": "まだ行ってないよ。土曜日は妹の引っ越しを手伝うから、日曜日にしない？午前中はちょっと忙しいんだ。",
+        "missingSource": [
+          "行ってない"
+        ],
+        "missingKorean": [],
+        "missingKoreanDetails": []
+      },
+      {
+        "reference": "じゃあ、日曜日の午後一時半はどう？駅の東口で待ち合わせて、食事のあとに川沿いを散歩しよう。",
+        "missingSource": [],
+        "missingKorean": [],
+        "missingKoreanDetails": []
+      },
+      {
+        "reference": "一時半なら大丈夫。ところで、そのカフェには肉を使わない料理もあるかな？最近、野菜をよく食べてるんだ。",
+        "missingSource": [],
+        "missingKorean": [],
+        "missingKoreanDetails": []
+      },
+      {
+        "reference": "きのこのサンドイッチとトマトのスープがあるよ。予約が必要か、私が確認しておくね。まだ予約は取り消さないでね。",
+        "missingSource": [],
+        "missingKorean": [],
+        "missingKoreanDetails": []
+      },
+      {
+        "reference": "ありがとう。でも、雨が降ったら散歩はやめよう。カフェの向かいに本屋があるから、そこでゆっくり本を見たいな。",
+        "missingSource": [],
+        "missingKorean": [],
+        "missingKoreanDetails": []
+      },
+      {
+        "reference": "いいね。それから、借りていた本も持っていくよ。帰る前に渡すから、私が忘れていたら声をかけてくれる？",
+        "missingSource": [],
+        "missingKorean": [],
+        "missingKoreanDetails": []
+      },
+      {
+        "reference": "もちろん。じゃあ、日曜日の午後一時半に東口で。時間が変わったら、出かける前にメッセージを送ってね。",
+        "missingSource": [],
+        "missingKorean": [],
+        "missingKoreanDetails": []
+      }
+    ],
+    "remainingOverlay": [],
+    "captions": 17,
+    "firstTurnKoreanUpdates": 18,
+    "qualityPassed": false,
+    "playbackGain": 0.005,
+    "sourceError": {
+      "reference": "まだ行ってないよ",
+      "recognized": "まだ怒ってないよ",
+      "korean": "나는 아직 화가 나지 않는다"
+    },
+    "displayAndLifecyclePassed": true
+  }
+}

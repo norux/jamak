@@ -98,7 +98,7 @@ export function createTranslationQueue(identity: SessionIdentity, languages: Lan
         settled();
         return true;
       }
-      if ((pair.source === "auto" || pair.source === "ko") && source.language === pair.target) {
+      if (source.language === pair.target) {
         pending.delete(source.utteranceId);
         const paired = store.accept({ type: "translation", revision: { identity: source.identity, utteranceId: source.utteranceId,
           sourceRevision: source.sourceRevision, translationRevision: ++translationRevision,

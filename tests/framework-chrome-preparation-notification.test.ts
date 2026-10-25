@@ -17,7 +17,8 @@ test("Advanced preparation emits one completion event after readiness, never aft
       if (replies !== "wait") queueMicrotask(() => this.reply(replies));
     }
     reply(type: string) { this.onmessage?.({ data: { version: 1, requestId: this.last?.requestId, type, reason: "model-load-failed" } }); }
-    terminate() {}
+    terminated = false;
+    terminate() { this.terminated = true; }
   }
   const base = "chrome-extension://fixture/";
   const document = Object.assign(new EventTarget(), { visibilityState: "hidden", defaultView: Object.assign(new EventTarget(), {
@@ -33,7 +34,7 @@ test("Advanced preparation emits one completion event after readiness, never aft
   const command = (command: BackgroundCommand) => new Promise<BackgroundSnapshot>(resolve => receive({ channel: backgroundChannel, command },
     { id: "fixture", url: `${base}service-worker.js` }, result => resolve(result.snapshot)));
   const completions = () => events.filter(event => event.channel === eventChannel && event.type === "models-ready").length;
-  const options = { recognition: "tiny", translation: "m2m100" } as const;
+  const options = { recognition: "smallFp16", translation: "hyMt2" } as const;
   const settle = () => new Promise<void>(resolve => setTimeout(resolve, 0));
   try {
     await import("../apps/chrome/offscreen");
@@ -46,7 +47,17 @@ test("Advanced preparation emits one completion event after readiness, never aft
     await command({ type: "prepare", tabId: 10, source: "ja", options }); await settle();
     assert.equal((await command({ type: "snapshot" })).state, "ready");
     assert.equal(completions(), 1, "Automatic popup preparation of cached models does not notify");
+    const resident = [...workers];
+    await command({ type: "prepare", tabId: 10, source: "en", options: { ...options, targetLanguage: "ja" } }); await settle();
+    const changed = await command({ type: "snapshot" });
+    assert.equal(changed.state, "ready");
+    assert.equal(changed.source, "en");
+    assert.equal(changed.options?.targetLanguage, "ja");
+    assert.equal(workers.length, resident.length, "Language changes must retain the prepared engine's workers");
+    assert.ok(resident.slice(-4).every(worker => !worker.terminated));
+    assert.equal(completions(), 1, "Language-only preparation does not notify");
     await command({ type: "stop" });
+    assert.ok(workers.every(worker => worker.terminated), "Explicit Stop still releases all retained models");
     replies = "wait";
     const before = workers.length;
     await command({ type: "models", source: "ja", options });

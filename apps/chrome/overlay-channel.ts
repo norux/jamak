@@ -34,7 +34,7 @@ function caption(value: unknown): value is CaptionRevision {
   return value.translation.state === "paired" && record(translation) && identity(translation.identity)
     && sameIdentity(source.identity, translation.identity) && translation.utteranceId === source.utteranceId
     && translation.sourceRevision === source.sourceRevision && integer(translation.translationRevision) && translation.translationRevision > 0
-    && record(translation.languages) && translation.languages.source === source.language && translation.languages.target === "ko"
+    && record(translation.languages) && translation.languages.source === source.language && ["ko", "en", "ja"].includes(String(translation.languages.target))
     && text(translation.text, 12000) && typeof translation.final === "boolean";
 }
 

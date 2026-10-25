@@ -3,7 +3,7 @@ import { createSessionController } from "../../packages/core/session-controller"
 import { backgroundChannel, eventChannel, type BackgroundCommand, type BackgroundSnapshot } from "./background-protocol";
 import { createChromeEngine } from "./engine";
 import { createChromeTabInput } from "./tab-input";
-import { defaultModelOptions, validModelOptions } from "./model-options";
+import { defaultModelOptions, sameModelChoices, validModelOptions } from "./model-options";
 
 let snapshot: BackgroundSnapshot = { state: "idle", source: "en", message: "음성 언어를 선택하고 모델을 준비하세요.", captions: [] };
 let engine: ReturnType<typeof createChromeEngine> | undefined;
@@ -48,24 +48,26 @@ async function command(value: BackgroundCommand) {
   if (value.type === "snapshot") return snapshot;
   if (value.type === "stop") { await stop(); return snapshot; }
   if (value.type === "prepare" || value.type === "models") {
-    if (engine || stopping) throw new Error("먼저 중지를 눌러주세요.");
     if (((value.type === "prepare" || value.tabId !== undefined) && (!Number.isSafeInteger(value.tabId) || (value.tabId ?? 0) <= 0)) || !["auto", "ja", "en", "ko"].includes(value.source)) throw new Error("번역할 탭과 언어를 선택하세요.");
     const options = value.options ?? defaultModelOptions;
     if (!validModelOptions(options)) throw new Error("지원하지 않는 모델입니다.");
-    const current = ++generation;
+    const reuse = value.type === "prepare" && snapshot.state === "ready" && engine?.ready && sameModelChoices(snapshot.options, options);
+    if (stopping || engine && !reuse) throw new Error("먼저 중지를 눌러주세요.");
+    const current = reuse ? generation : ++generation;
     snapshot = { state: "preparing", source: value.source, tabId: value.tabId, options: { ...options },
       message: "음성 인식과 번역 모델 준비 중…", captions: [] };
-    engine = createChromeEngine(document, value.source, (diagnostic, progress, fraction) => {
+    if (!reuse) engine = createChromeEngine(document, value.source, (diagnostic, progress, fraction) => {
       if (current !== generation) return;
       snapshot.diagnostic = diagnostic;
       if (progress && progress === snapshot.message && fraction === snapshot.downloadProgress) return;
       if (progress) { snapshot.message = progress; snapshot.downloadProgress = fraction; }
       publish();
     }, "offscreen", () => capture?.audioTrack, options);
-    snapshot.models = engine.models;
     const owned = engine;
+    if (!owned) throw new Error("모델 실행에 연결할 수 없습니다.");
     // Preparation starts while Chrome forwards the popup click's user gesture.
-    const prepared = owned.prepareFromGesture(); publish();
+    const prepared = owned.prepareFromGesture({ source: value.source, target: options.targetLanguage ?? "ko" });
+    snapshot.models = owned.models; publish();
     void prepared.then(() => {
       if (current === generation) {
         update("ready", "모델 준비 완료 · 번역 시작을 눌러 연결하세요.");
@@ -102,7 +104,7 @@ async function command(value: BackgroundCommand) {
         },
       });
       controller = session;
-      await session.start(input.target, { source: snapshot.source, target: "ko" });
+      await session.start(input.target, { source: snapshot.source, target: snapshot.options?.targetLanguage ?? "ko" });
     } catch (error) {
       if (current === generation) { await stop(); update("failed", `탭 연결 실패: ${String(error)}`); }
     }

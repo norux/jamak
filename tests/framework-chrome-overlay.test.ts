@@ -87,6 +87,19 @@ test("overlay transport accepts only final empty unpaired withdrawals", () => {
   }
 });
 
+test("overlay transport accepts Korean, English and Japanese targets and rejects unsupported languages", () => {
+  for (const language of ["ko", "en", "ja", "fr"]) {
+    const wire = port();
+    const served = serveVideoOutput(wire as unknown as chrome.runtime.Port, undefined, {} as Document);
+    const paired = { ...caption, translation: { state: "paired", revision: { identity, utteranceId: caption.source.utteranceId,
+      sourceRevision: 1, translationRevision: 1, languages: { source: "ja", target: language }, text: "Translated caption", final: true } } };
+    wire.receive({ version: 1, sequence: 0, type: "caption", caption: paired });
+    assert.equal(wire.disconnected, language === "fr" ? 1 : 0);
+    assert.equal(wire.sent.length, language === "fr" ? 0 : 1);
+    served.dispose();
+  }
+});
+
 test("tab page output validates mixed-input identity and forbids fabricated video ranges before DOM", () => {
   const tab = { ...target, frameId: "tab", scope: "tab-mix", tabId: 12 };
   for (const value of [

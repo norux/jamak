@@ -15,6 +15,8 @@ test("model settings restore Chrome defaults on invalid data and retain independ
     for (const invalid of [null, "{", '{}', '{"recognition":"tiny","translation":"remote-api"}']) {
       saved = invalid; assert.deepEqual(readModelOptions(), defaultModelOptions);
     }
+    saved = JSON.stringify({recognition:"tiny",translation:"hyMt2",targetLanguage:"en",languageDetection:"voxlingua",speaker:"off"});
+    assert.deepEqual(readModelOptions(),{recognition:"chrome",translation:"hyMt2",targetLanguage:"en",languageDetection:"voxlingua",speaker:"off"},"Retired recognition keeps independent target and model selections");
     for (const recognition of recognitionChoices) for (const translation of translationChoices) {
       const options = {recognition:recognition.id,translation:translation.id};
       assert.equal(validModelOptions(options),true); saved = JSON.stringify(options); assert.deepEqual(readModelOptions(),options);
@@ -64,10 +66,10 @@ test("engine prepares the explicit recognition and translation choices, with Chr
       } finally {await engine.port.close();}
       assert.ok(workers.slice(before).every(w => w.terminated),"Switching models must release every resident worker");
     }
-    for(const source of ["auto","ko"] as const) for(const translation of ["nllb","hyMt2"] as const) {
+    for(const source of ["auto","ko"] as const) for(const translation of ["chrome","hyMt2"] as const) {
       const before = workers.length;
-      const engine = createChromeEngine(document,source,()=>{},"offscreen",()=>undefined,{recognition:"tiny",translation});
-      try {await engine.prepareFromGesture();assert.equal(workers.slice(before).find(w=>w.url.pathname.endsWith("asr-worker.ts"))?.messages[0].candidate,"tiny");assert.equal(workers.slice(before).some(w=>w.url.pathname.endsWith("model-translator-worker.ts")),source !== "ko");}
+      const engine = createChromeEngine(document,source,()=>{},"offscreen",()=>undefined,{recognition:"smallFp16",translation});
+      try {await engine.prepareFromGesture();assert.equal(workers.slice(before).find(w=>w.url.pathname.endsWith("asr-worker.ts"))?.messages[0].candidate,"smallFp16");assert.equal(workers.slice(before).some(w=>w.url.pathname.endsWith("model-translator-worker.ts")),source !== "ko" && translation !== "chrome");}
       finally {await engine.port.close();}
     }
   } finally {if(original) Object.defineProperty(globalThis,"Worker",original);else Reflect.deleteProperty(globalThis,"Worker");}
