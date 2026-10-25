@@ -3,6 +3,8 @@ import { createSessionController } from "../../packages/core/session-controller"
 import { backgroundChannel, eventChannel, type BackgroundCommand, type BackgroundSnapshot } from "./background-protocol";
 import { createChromeEngine } from "./engine";
 import { createChromeTabInput } from "./tab-input";
+import { prepareOcr, stopOcr } from "./image-runtime";
+import { validImageOptions } from "./image-options";
 import { defaultModelOptions, sameModelChoices, validModelOptions } from "./model-options";
 
 let snapshot: BackgroundSnapshot = { state: "idle", source: "en", message: "음성 언어를 선택하고 모델을 준비하세요.", captions: [] };
@@ -11,6 +13,7 @@ let capture: ReturnType<typeof createChromeTabInput> | undefined;
 let controller: ReturnType<typeof createSessionController> | undefined;
 let generation = 0;
 let stopping: Promise<void> | undefined;
+let preparationStage: "audio" | "ocr" | undefined;
 
 function publish() {
   void chrome.runtime.sendMessage({ channel: eventChannel, type: "status" }).catch(() => {});
@@ -31,7 +34,7 @@ function accept(caption: CaptionRevision) {
 }
 function stop() {
   if (stopping) return stopping;
-  generation++;
+  generation++; preparationStage = undefined; stopOcr();
   update("stopping", "중지 중…");
   const owned = engine; engine = undefined;
   const input = capture; capture = undefined;
@@ -51,16 +54,19 @@ async function command(value: BackgroundCommand) {
     if (((value.type === "prepare" || value.tabId !== undefined) && (!Number.isSafeInteger(value.tabId) || (value.tabId ?? 0) <= 0)) || !["auto", "ja", "en", "ko"].includes(value.source)) throw new Error("번역할 탭과 언어를 선택하세요.");
     const options = value.options ?? defaultModelOptions;
     if (!validModelOptions(options)) throw new Error("지원하지 않는 모델입니다.");
+    const imageOptions = value.type === "models" ? value.imageOptions : snapshot.state === "ready" ? snapshot.imageOptions : undefined;
+    if (imageOptions !== undefined && !validImageOptions(imageOptions)) throw new Error("지원하지 않는 이미지 모델 설정입니다.");
     const reuse = value.type === "prepare" && snapshot.state === "ready" && engine?.ready && sameModelChoices(snapshot.options, options);
     if (stopping || engine && !reuse) throw new Error("먼저 중지를 눌러주세요.");
     const current = reuse ? generation : ++generation;
-    snapshot = { state: "preparing", source: value.source, tabId: value.tabId, options: { ...options },
+    preparationStage = value.type === "models" && imageOptions ? "audio" : undefined;
+    snapshot = { state: "preparing", source: value.source, tabId: value.tabId, options: { ...options }, ...imageOptions ? { imageOptions: { ...imageOptions } } : {},
       message: "음성 인식과 번역 모델 준비 중…", captions: [] };
     if (!reuse) engine = createChromeEngine(document, value.source, (diagnostic, progress, fraction) => {
-      if (current !== generation) return;
+      if (current !== generation || preparationStage === "ocr") return;
       snapshot.diagnostic = diagnostic;
       if (progress && progress === snapshot.message && fraction === snapshot.downloadProgress) return;
-      if (progress) { snapshot.message = progress; snapshot.downloadProgress = fraction; }
+      if (progress) { snapshot.message = preparationStage === "audio" ? `1/2 · 오디오·번역 · ${progress}` : progress; snapshot.downloadProgress = fraction; }
       publish();
     }, "offscreen", () => capture?.audioTrack, options);
     const owned = engine;
@@ -68,12 +74,28 @@ async function command(value: BackgroundCommand) {
     // Preparation starts while Chrome forwards the popup click's user gesture.
     const prepared = owned.prepareFromGesture({ source: value.source, target: options.targetLanguage ?? "ko" });
     snapshot.models = owned.models; publish();
-    void prepared.then(() => {
+    void prepared.then(async () => {
+      if (current !== generation) return;
+      if (value.type === "models" && imageOptions) {
+        preparationStage = "ocr";
+        snapshot.downloadProgress = undefined;
+        update("preparing", "2/2 · 이미지 OCR 모델 다운로드·검증 중…");
+        await prepareOcr(imageOptions.ocr, state => {
+          if (current !== generation || state.state !== "preparing") return;
+          snapshot.downloadProgress = state.downloadProgress;
+          update("preparing", `2/2 · 이미지 OCR · ${state.message}`);
+        });
+      }
       if (current === generation) {
-        update("ready", "모델 준비 완료 · 번역 시작을 눌러 연결하세요.");
+        preparationStage = undefined;
+        update("ready", imageOptions && value.type === "models" ? "선택한 모델 전체 준비 완료 · 번역을 시작하세요." : "모델 준비 완료 · 번역 시작을 눌러 연결하세요.");
         if (value.type === "models") emit({ type: "models-ready" });
       }
-    }).catch(error => {
+    }).catch(async error => {
+      if (current !== generation) return;
+      preparationStage = undefined;
+      if (engine === owned) engine = undefined;
+      await owned.port.close().catch(error => { console.error("Failed preparation cleanup", error); });
       if (current === generation) update("failed", `모델 준비 실패: ${error.message}`);
     });
     return snapshot;

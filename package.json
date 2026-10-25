@@ -35,7 +35,8 @@
     "vite": "8.3.2"
   },
   "dependencies": {
-    "@huggingface/transformers": "4.3.0"
+    "@huggingface/transformers": "4.3.0",
+    "@paddleocr/paddleocr-js": "0.4.2"
   },
   "license": "MIT"
 }

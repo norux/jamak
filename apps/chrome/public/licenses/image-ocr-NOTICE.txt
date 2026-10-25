@@ -1,0 +1,34 @@
+Jamak image OCR attribution
+
+PaddleOCR.js 0.4.2 and PP-OCRv5 Mobile and PP-OCRv6 Small/Medium detection/recognition models
+Copyright PaddlePaddle Authors. Apache-2.0.
+https://github.com/PaddlePaddle/PaddleOCR
+https://github.com/PaddlePaddle/PaddleOCR/tree/main/paddleocr-js
+
+OpenCV.js (@techstark/opencv-js 4.10.0-release.1)
+Copyright OpenCV contributors. Apache-2.0.
+https://github.com/opencv/opencv
+https://github.com/TechStark/opencv-js
+See image-ocr-apache-2.0.txt.
+
+ONNX Runtime Web 1.30.0
+Copyright Microsoft Corporation. MIT.
+https://github.com/microsoft/onnxruntime
+See image-ocr-onnxruntime-MIT.txt.
+
+Clipper 6.4.2 JavaScript port
+Copyright Angus Johnson 2010-2017; JavaScript port by Timo. Boost Software License 1.0.
+https://sourceforge.net/projects/jsclipper/
+See image-ocr-clipper-boost.txt.
+Includes JSBN by Tom Wu (copyright 2005-2009); see image-ocr-jsbn.txt.
+
+js-yaml 4.3.2
+Copyright Vitaly Puzrin. MIT. https://github.com/nodeca/js-yaml
+See image-ocr-js-yaml-MIT.txt.
+
+argparse 2.0.1
+Python-2.0. https://github.com/nodeca/argparse
+See image-ocr-argparse-Python-2.0.txt.
+
+These upstream licenses are separate from Jamak's MIT application license.
+Model archives are downloaded separately; model weights are not packaged.

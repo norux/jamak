@@ -1,16 +1,17 @@
 <!doctype html>
 <html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Jamak · Advanced</title><link rel="stylesheet" href="./host.css"></head>
 <body class="advanced">
-<header class="header"><img class="mark" src="./icons/jamak.svg" alt="" width="40" height="40"><div><h1>Advanced</h1><p class="subtitle">받아쓰기·번역·언어 감지·화자 구분을 선택하세요.</p></div></header>
+<header class="header"><img class="mark" src="./icons/jamak.svg" alt="" width="40" height="40"><div><h1>Advanced</h1><p class="subtitle">오디오와 이미지에 사용할 로컬 모델을 선택하세요.</p></div></header>
 <main>
-<section class="model-choice"><label for="recognition">받아쓰기 모델</label><select class="jamak-select" id="recognition" aria-describedby="recognition-detail recognition-download"></select><p id="recognition-detail"></p><p id="recognition-download" role="status">다운로드 상태 확인 중…</p></section>
-<section class="model-choice"><label for="translation">번역 모델</label><select class="jamak-select" id="translation" aria-describedby="translation-detail translation-download"></select><p id="translation-detail"></p><p id="translation-download" role="status">다운로드 상태 확인 중…</p></section>
-<section class="model-choice"><label for="language-detection">언어 자동 감지 모델</label><select class="jamak-select" id="language-detection" aria-describedby="language-detection-detail language-detection-download"></select><p id="language-detection-detail"></p><p id="language-detection-download" role="status"></p></section>
-<section class="model-choice"><label for="speaker">화자 구분 모델</label><select class="jamak-select" id="speaker" aria-describedby="speaker-detail speaker-download"></select><p id="speaker-detail"></p><p id="speaker-download" role="status"></p></section>
-<p class="preparation-status">모델은 기기 안에서 실행됩니다. 선택하면 없는 파일을 바로 다운로드하며, 모델별 반응 속도와 정확도는 다를 수 있습니다.</p>
-<p class="preparation-status">모델을 바꾸면 현재 번역이 중지됩니다. 준비가 끝나면 원래 탭의 Jamak 팝업에서 번역을 다시 시작하세요.</p>
-<p class="preparation-status">모델 준비가 완료되면 Chrome 알림을 보냅니다. 창을 닫아도 준비가 계속됩니다.</p>
-<div class="advanced-actions"><button id="retry" type="button">다시 준비</button><button id="stop" type="button">다운로드 중지</button><button id="reset" type="button">모두 기본값으로</button></div>
+<section class="model-choice"><div class="model-heading"><label for="recognition">받아쓰기 모델</label><span class="model-scopes"><span class="scope-badge">오디오</span></span></div><select class="jamak-select" id="recognition" aria-describedby="recognition-detail recognition-download"></select><p id="recognition-detail"></p><p id="recognition-download" role="status">다운로드 상태 확인 중…</p></section>
+<section class="model-choice"><div class="model-heading"><label for="translation">번역 모델</label><span class="model-scopes"><span class="scope-badge">오디오</span><span class="scope-badge">이미지</span></span></div><select class="jamak-select" id="translation" aria-describedby="translation-detail translation-download"></select><p id="translation-detail"></p><p id="translation-download" role="status">다운로드 상태 확인 중…</p></section>
+<section class="model-choice"><div class="model-heading"><label for="language-detection">언어 자동 감지 모델</label><span class="model-scopes"><span class="scope-badge">오디오</span></span></div><select class="jamak-select" id="language-detection" aria-describedby="language-detection-detail language-detection-download"></select><p id="language-detection-detail"></p><p id="language-detection-download" role="status"></p></section>
+<section class="model-choice"><div class="model-heading"><label for="speaker">화자 구분 모델</label><span class="model-scopes"><span class="scope-badge">오디오</span></span></div><select class="jamak-select" id="speaker" aria-describedby="speaker-detail speaker-download"></select><p id="speaker-detail"></p><p id="speaker-download" role="status"></p></section>
+<section class="model-choice"><div class="model-heading"><label for="image-ocr">이미지 문자 인식 모델 · OCR</label><span class="model-scopes"><span class="scope-badge">이미지</span></span></div><select class="jamak-select" id="image-ocr" aria-describedby="image-ocr-detail image-ocr-download"></select><p id="image-ocr-detail"></p><p id="image-ocr-download" role="status"></p><p>선택한 모델은 아래의 공통 준비 과정에서 함께 다운로드·검증합니다. 이미지의 원문 언어는 Chrome 로컬 텍스트 분류기로 자동 판별합니다.</p></section>
+<p class="preparation-status">모든 모델은 기기 안에서 실행됩니다. 모델을 선택하면 오디오·번역과 OCR을 하나의 과정으로 준비합니다. 단계별 진행 상태는 아래에서 확인할 수 있습니다.</p>
+<p class="preparation-status">번역 모델은 오디오·이미지가 공유합니다. 모델 변경 시 진행 중인 오디오를 중지하며, 번역·OCR 변경 시 이미지 분석도 중지합니다. 준비가 끝나면 원래 탭의 Jamak 팝업에서 번역을 다시 시작하세요.</p>
+<p class="preparation-status">선택한 모델 전체 준비가 완료되면 Chrome 알림을 보냅니다. 창을 닫아도 준비가 계속됩니다.</p>
+<div class="advanced-actions"><button id="retry" type="button">모델 준비·재시도</button><button id="stop" type="button">준비 중지</button><button id="reset" type="button">모두 기본값으로</button></div>
 <p id="status" role="status" aria-live="polite"></p>
 <div id="download-progress" hidden><div class="download-label"><span>현재 준비 단계</span><span id="download-percent">준비 중…</span></div><progress id="model-progress" max="1" aria-label="모델 다운로드 진행률"></progress></div>
 </main><script type="module" src="./advanced.ts"></script></body></html>

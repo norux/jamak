@@ -3,6 +3,7 @@ import { asrCandidates, registeredCandidate, vadCandidate, languageCandidate } f
 import { readModelOptions, modelOptionsKey, recognitionChoices, translationChoices, subtitleLanguages, detectionChoices, sameModelOptions, sameModelChoices } from "./model-options";
 import { translationCandidates } from "../../packages/engines-browser/translation-model";
 import { localSpeechLanguages } from "../../packages/engines-browser/local-speech";
+import { setupImagePopup } from "./popup-image";
 
 const targetLanguage = document.querySelector("#target-language") as HTMLSelectElement;
 targetLanguage.value = readModelOptions().targetLanguage ?? "ko";
@@ -200,6 +201,30 @@ void chrome.tabs.query({ active: true, currentWindow: true }).then(async tabs =>
   const initial = await request("snapshot");
   if (disposed) return;
   if (initial) { automatic.checked = initial.source === "auto"; if (initial.source !== "auto") language.value = initial.source; render(initial); }
-  await ensureReady();
+  if (mode === "audio") await ensureReady();
 }).catch(error => { status.textContent = error.message; });
 window.addEventListener("pagehide", () => { disposed = true; chrome.runtime.onMessage.removeListener(changed); });
+
+const imagePopup = setupImagePopup(() => tabId);
+let mode = localStorage.getItem("jamak-popup-mode-v1") === "image" ? "image" : "audio";
+function selectMode(next: string) {
+  mode = next === "image" ? "image" : "audio";
+  for (const name of ["audio", "image"]) {
+    const tab = document.querySelector(`#${name}-tab`) as HTMLButtonElement;
+    tab.setAttribute("aria-selected", String(name === mode)); tab.tabIndex = name === mode ? 0 : -1;
+    (document.querySelector(`#${name}-panel`) as HTMLElement).hidden = name !== mode;
+  }
+  localStorage.setItem("jamak-popup-mode-v1", mode);
+  if (mode === "image") imagePopup.refresh();
+  else if (snapshot) { targetLanguage.value = readModelOptions().targetLanguage ?? "ko"; render(snapshot); void ensureReady(); }
+}
+for (const name of ["audio", "image"]) {
+  const tab = document.querySelector(`#${name}-tab`) as HTMLButtonElement;
+  tab.onclick = () => selectMode(name);
+  tab.onkeydown = event => {
+    if (!["ArrowLeft", "ArrowRight", "Home", "End"].includes(event.key)) return;
+    event.preventDefault(); const next = event.key === "Home" ? "audio" : event.key === "End" ? "image" : mode === "audio" ? "image" : "audio";
+    selectMode(next); (document.querySelector(`#${next}-tab`) as HTMLElement).focus();
+  };
+}
+selectMode(mode);

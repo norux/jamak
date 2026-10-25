@@ -1,9 +1,10 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
+import { imageModels } from "../apps/chrome/image-model";
 import { backgroundChannel, eventChannel, type BackgroundCommand, type BackgroundSnapshot } from "../apps/chrome/background-protocol";
 
 test("Advanced preparation emits one completion event after readiness, never after Stop or failure", async () => {
-  const originals = ["chrome", "document", "Worker"].map(name => [name, Object.getOwnPropertyDescriptor(globalThis, name)] as const);
+  const originals = ["chrome", "document", "Worker", "caches", "fetch", "crypto"].map(name => [name, Object.getOwnPropertyDescriptor(globalThis, name)] as const);
   let receive!: (message: object, sender: object, respond: (value: { snapshot: BackgroundSnapshot }) => void) => unknown;
   const events: { channel: string; type: string }[] = [];
   const workers: FakeWorker[] = [];
@@ -70,6 +71,43 @@ test("Advanced preparation emits one completion event after readiness, never aft
     await command({ type: "models", source: "ja", options }); await settle();
     assert.equal((await command({ type: "snapshot" })).state, "failed");
     assert.equal(completions(), 1, "Failed preparation never reports completion");
+    await command({ type: "stop" });
+    replies = "ready";
+    const downloads: (() => void)[] = [];
+    Object.defineProperty(globalThis, "caches", { configurable: true, value: { open: async () => ({ match: async () => undefined, put: async () => {} }) } });
+    Object.defineProperty(globalThis, "crypto", { configurable: true, value: { subtle: { digest: async (_: string, bytes: ArrayBuffer) => {
+      const model = imageModels.find(model => model.bytes === bytes.byteLength); if (!model) throw Error("Unexpected OCR fixture");
+      return Uint8Array.from(model.sha256.match(/../g) ?? [], part => Number.parseInt(part, 16)).buffer;
+    } } } });
+    Object.defineProperty(globalThis, "fetch", { configurable: true, value: async (url: string, init: { signal: AbortSignal }) => new Promise<Response>((resolve, reject) => {
+      const model = imageModels.find(model => url.endsWith(model.file)); if (!model) throw Error("Unexpected model request");
+      init.signal.addEventListener("abort", () => reject(new DOMException("Stopped", "AbortError")), { once: true });
+      downloads.push(() => resolve(new Response(new Uint8Array(model.bytes))));
+    }) });
+    const unified = { type: "models", source: "ja", options, imageOptions: { ocr: "mobile", fontScale: 1 } } as const;
+    await command(unified); await settle();
+    assert.equal((await command({ type: "snapshot" })).state, "preparing", "Audio readiness alone cannot finish unified preparation");
+    assert.equal(completions(), 1);
+    assert.equal(downloads.length, 1, "The same background preparation must advance to OCR");
+    downloads.shift()?.(); await settle(); await settle(); downloads.shift()?.(); await settle(); await settle();
+    assert.equal((await command({ type: "snapshot" })).state, "ready");
+    assert.equal(completions(), 2, "Only the complete combined preparation emits one notification");
+    await command({ type: "stop" });
+    await command(unified); await settle();
+    assert.equal(downloads.length, 1);
+    await command({ type: "stop" }); downloads.shift()?.(); await settle();
+    assert.equal((await command({ type: "snapshot" })).state, "idle");
+    assert.equal(completions(), 2, "Stopping in the OCR stage cannot emit a late combined readiness notification");
+    Object.defineProperty(globalThis, "fetch", { configurable: true, value: async () => { throw Error("OCR network failure"); } });
+    const beforeFailure = workers.length;
+    await command(unified); await settle();
+    assert.equal((await command({ type: "snapshot" })).state, "failed");
+    assert.equal(completions(), 2, "OCR failure cannot announce overall readiness after audio succeeds");
+    assert.ok(workers.length > beforeFailure);
+    assert.ok(workers.slice(beforeFailure).every(worker => worker.terminated), "A failed combined preparation must release already-loaded audio/translation workers");
+    await command({ type: "prepare", tabId: 10, source: "ja", options }); await settle();
+    assert.equal((await command({ type: "snapshot" })).state, "ready");
+    assert.equal((await command({ type: "snapshot" })).imageOptions, undefined, "Audio-only recovery cannot claim the failed OCR selection is prepared");
     await command({ type: "stop" });
   } finally {
     for (const [name, original] of originals) {

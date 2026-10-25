@@ -1,6 +1,8 @@
+import { validImageOptions, type ImageOptions } from "./image-options";
 import { backgroundChannel, controlChannel, eventChannel, type BackgroundCommand, type BackgroundSnapshot } from "./background-protocol";
 import { createRemoteVideoOutput, tabOverlayChannelName } from "./overlay-channel";
 import { validModelOptions, type ModelOptions } from "./model-options";
+import { setupImageBackground } from "./image-background";
 
 let creating: Promise<void> | undefined;
 let output: ReturnType<typeof createRemoteVideoOutput> | undefined;
@@ -16,11 +18,12 @@ async function ensureRuntime() {
   if (creating) return creating;
   creating = (async () => {
     const contexts = await chrome.runtime.getContexts({ contextTypes: [chrome.runtime.ContextType.OFFSCREEN_DOCUMENT], documentUrls: [offscreenUrl] });
-    if (!contexts.length) await chrome.offscreen.createDocument({ url: "offscreen.html", reasons: [chrome.offscreen.Reason.USER_MEDIA, chrome.offscreen.Reason.WORKERS],
-      justification: "Keep tab audio capture, model downloads and local interpretation running independently of popup and reference windows." });
+    if (!contexts.length) await chrome.offscreen.createDocument({ url: "offscreen.html", reasons: [chrome.offscreen.Reason.USER_MEDIA, chrome.offscreen.Reason.WORKERS, chrome.offscreen.Reason.IFRAME_SCRIPTING, chrome.offscreen.Reason.BLOBS],
+      justification: "Keep local audio/image inference, OCR sandboxing and image export running after the popup closes." });
   })().finally(() => { creating = undefined; });
   return creating;
 }
+const images = setupImageBackground(ensureRuntime);
 async function send(command: BackgroundCommand): Promise<BackgroundSnapshot> {
   const result = await chrome.runtime.sendMessage({ channel: backgroundChannel, command });
   if (result?.error) throw new Error(result.error);
@@ -40,15 +43,18 @@ async function connectOutput(snapshot: BackgroundSnapshot) {
     if (last) output.compare(last);
   } catch { if (current === generation) outputSession = undefined; }
 }
-async function control(command: { type: string; tabId?: number; source?: "ja" | "en" | "ko" | "auto"; options?: ModelOptions }) {
+async function control(command: { type: string; tabId?: number; source?: "ja" | "en" | "ko" | "auto"; options?: ModelOptions; imageOptions?: ImageOptions }) {
   if (command.type === "models" && command.source && validModelOptions(command.options)) {
+    if (command.imageOptions !== undefined && !validImageOptions(command.imageOptions)) throw new Error("지원하지 않는 이미지 모델 설정입니다.");
     const current = ++preparationRevision;
     await ensureRuntime();
     if (current !== preparationRevision) return send({ type: "snapshot" });
     generation++; selectedTabId = command.tabId; output?.dispose(); output = undefined; outputSession = undefined;
     await send({ type: "stop" });
     if (current !== preparationRevision) return send({ type: "snapshot" });
-    return send({ type: "models", tabId: command.tabId, source: command.source, options: command.options });
+    if (command.imageOptions) await images.configure(command.options, command.imageOptions);
+    if (current !== preparationRevision) return send({ type: "snapshot" });
+    return send({ type: "models", tabId: command.tabId, source: command.source, options: command.options, ...command.imageOptions ? { imageOptions: command.imageOptions } : {} });
   }
   if (command.type === "prepare" && command.tabId && command.source) {
     preparationRevision++;
