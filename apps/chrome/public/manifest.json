@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Jamak \u2014 Live Subtitles",
-  "version": "0.1.1",
+  "version": "0.2.1",
   "description": "On-device audio captions and image translation in Korean, English or Japanese, with movable overlays and PNG export.",
   "minimum_chrome_version": "138",
   "permissions": [

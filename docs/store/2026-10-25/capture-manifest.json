@@ -1,0 +1,34 @@
+{
+  "capturedAt": "2026-10-25",
+  "sourceCommit": "6e86d0a2ceb58d0e7e6b316faf9d2805f9cada07",
+  "dimensions": [
+    1280,
+    800
+  ],
+  "format": "24-bit RGB PNG",
+  "ocr": "PP-OCRv5 Mobile, real packaged WASM",
+  "translation": "Chrome TranslateKit, real local browser packs",
+  "fixtures": "Synthetic English/Japanese text images; no personal content",
+  "files": [
+    {
+      "file": "01-image-translation.png",
+      "sha256": "cbc7656a59a9678955c22d2b040d970f7ff9d0facd5412dba22b71e9b5824d1c"
+    },
+    {
+      "file": "02-caption-editor.png",
+      "sha256": "b3e0e4d45c9beb93bbb22c2c9f433a351fd4f2cabe089772d774d64b4ca9ebe6"
+    },
+    {
+      "file": "03-movable-captions.png",
+      "sha256": "ee494f2d3f67867fe18e7eaf59a8d0e0dea939d13f87dc04256c67b8510cb703"
+    },
+    {
+      "file": "04-japanese-output.png",
+      "sha256": "d0d43063231248e05abecb5e0425b4c91502fcf0659085e97d6c4c2aafb35048"
+    },
+    {
+      "file": "05-model-settings.png",
+      "sha256": "ffb0484907372d0744dd8414c1d044cba5e2637753ac53fb26eab15cf28ae17f"
+    }
+  ]
+}
